@@ -15,6 +15,8 @@ import Fourth from "./RightSecContents/Fourth";
 import Fifth from "./RightSecContents/Fifth";
 import FirstSlide from "./RightSecContents/FirstSlide";
 
+export const mobComponents = [FirstSlide, Second, Third, Fourth, First, Fifth];
+
 const RightSecContent = forwardRef(
   ({ index, onIndexChange, onEmblaReady }, ref) => {
     const [emblaRef, emblaApi] = useEmblaCarousel({
@@ -27,7 +29,6 @@ const RightSecContent = forwardRef(
     const isReadyRef = useRef(false);
 
     const components = [Second, Third, Fourth, First, Fifth];
-    const mobComponents = [FirstSlide, Second, Third, Fourth, First, Fifth];
 
     const isAnimatingRef = useRef(false);
     // Track animation state to avoid multiple advances while animating

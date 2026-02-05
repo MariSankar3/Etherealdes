@@ -2,7 +2,8 @@
 import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
 import MidSecContent from "./MidSecContent";
 import TopRightSec from "./common/TopRightSec";
-import RightSecContent from "./RightSecContent";
+import RightSecContent, { mobComponents } from "./RightSecContent";
+import useEmblaCarousel from "embla-carousel-react";
 import { gsap } from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { motion, AnimatePresence } from "framer-motion";
@@ -40,7 +41,8 @@ gsap.registerPlugin(ScrollTrigger);
 function Home() {
   const containerRef = useRef(null);
   const rightSecRef = useRef(null);
-  const emblaApiRef = useRef(null);
+  const emblaApiRef = useRef(null); // Desktop Embla API
+  const [mobileEmblaRef, mobileEmblaApi] = useEmblaCarousel({ loop: true }); // Mobile Embla
   const isAnimatingRef = useRef(false);
   const touchLockRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
@@ -56,7 +58,23 @@ function Home() {
 
   useEffect(() => {
     activeIndexRef.current = activeIndex;
-  }, [activeIndex]);
+    // Sync Mobile Embla when activeIndex changes (driven by other means)
+    if (mobileEmblaApi) {
+      if (mobileEmblaApi.selectedScrollSnap() !== activeIndex) {
+        mobileEmblaApi.scrollTo(activeIndex);
+      }
+    }
+  }, [activeIndex, mobileEmblaApi]);
+
+  // Sync state when Mobile Embla is scrolled by user
+  useEffect(() => {
+    if (!mobileEmblaApi) return;
+    const onSelect = () => {
+      setActiveIndex(mobileEmblaApi.selectedScrollSnap());
+    };
+    mobileEmblaApi.on("select", onSelect);
+    return () => mobileEmblaApi.off("select", onSelect);
+  }, [mobileEmblaApi]);
 
   useEffect(() => {
     window.openPricingModal = () => setPricingOpen(true);
@@ -313,41 +331,24 @@ function Home() {
 
         {/* Mobile Content with touch-action fixed */}
         <section className="flex-1 sm:hidden relative h-[calc(100vh-103px)] overflow-hidden">
-          <AnimatePresence initial={false} custom={getDirection(activeIndex)}>
-            <motion.div
-              key={activeIndex}
-              custom={getDirection(activeIndex)}
-              variants={slideVariants}
-              initial="enter"
-              animate="center"
-              exit="exit"
-              transition={{
-                x: { duration: 0.35, ease: "easeOut" },
-              }}
-              className="absolute inset-0 w-full h-full"
-            >
-              <div className="w-full h-full flex flex-col">
-                {activeIndex === 0 ? (
-                  <div className="flex-1 overflow-hidden">
-                    <MidSecContent index={0} />
-                  </div>
-                ) : (
-                  <div className="flex-1 overflow-hidden">
-                    {console.log(
-                      "Rendering slide:",
-                      activeIndex,
-                      "Component index:",
-                      activeIndex - 1,
-                    )}
-                    <RightSecContent
-                      ref={rightSecRef}
-                      index={activeIndex - 1}
-                    />
-                  </div>
-                )}
+          <div className="w-full h-full" ref={mobileEmblaRef}>
+            <div className="flex w-full h-full touch-pan-x">
+              {/* Slide 0: MidSecContent (Home) */}
+              <div className="flex-[0_0_100%] min-w-0 h-full overflow-hidden">
+                <MidSecContent index={0} />
               </div>
-            </motion.div>
-          </AnimatePresence>
+
+              {/* Slides 1-5: RightSecContent Components */}
+              {mobComponents.map((Component, i) => (
+                <div
+                  key={i}
+                  className="flex-[0_0_100%] min-w-0 h-full overflow-hidden"
+                >
+                  <Component />
+                </div>
+              ))}
+            </div>
+          </div>
         </section>
       </main>
     </>
