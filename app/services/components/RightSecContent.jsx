@@ -58,29 +58,29 @@ function RightSecContent({ activeService, onActiveServiceChange }) {
 
   // Handle scroll events to hide indicator and prevent page scroll
   useEffect(() => {
-    const container = document.querySelector('.services-container');
+    const container = document.querySelector(".services-container");
     const handleScroll = (e) => {
       if (showScrollIndicator) {
         setShowScrollIndicator(false);
       }
-      
+
       // Prevent the scroll event from bubbling up to the page
       e.stopPropagation();
     };
-    
+
     const handleWheel = (e) => {
       // Prevent page scroll when scrolling within the accordion container
       if (container && container.contains(e.target)) {
         e.stopPropagation();
       }
     };
-    
+
     if (container && isMobile) {
-      container.addEventListener('scroll', handleScroll);
-      container.addEventListener('wheel', handleWheel, { passive: false });
+      container.addEventListener("scroll", handleScroll);
+      container.addEventListener("wheel", handleWheel, { passive: false });
       return () => {
-        container.removeEventListener('scroll', handleScroll);
-        container.removeEventListener('wheel', handleWheel);
+        container.removeEventListener("scroll", handleScroll);
+        container.removeEventListener("wheel", handleWheel);
       };
     }
   }, [showScrollIndicator, isMobile]);
@@ -96,8 +96,8 @@ function RightSecContent({ activeService, onActiveServiceChange }) {
   useEffect(() => {
     if (isMobile && cardRefs.current[openIndex]) {
       const el = cardRefs.current[openIndex];
-      const container = el?.closest('.services-container');
-      
+      const container = el?.closest(".services-container");
+
       if (el && container) {
         // Prevent page scroll and only scroll within the container
         setTimeout(() => {
@@ -108,33 +108,40 @@ function RightSecContent({ activeService, onActiveServiceChange }) {
           const containerHeight = containerRect.height;
           const elementOffsetTop = el.offsetTop;
           const containerScrollHeight = container.scrollHeight;
-          
+
           // Show scroll indicator if needed
           setShowScrollIndicator(elementHeight > containerHeight);
-          
+
           let targetScrollTop = container.scrollTop;
-          
+
           // Calculate the position to show the full accordion
           const elementTop = elementRect.top - containerRect.top;
           const elementBottom = elementTop + elementHeight;
-          
+
           if (elementBottom > containerHeight) {
             // Element extends beyond the bottom, scroll to show it fully
-            targetScrollTop = elementOffsetTop - (containerHeight - elementHeight);
+            targetScrollTop =
+              elementOffsetTop - (containerHeight - elementHeight);
           } else if (elementTop < 0) {
             // Element is above the visible area, scroll to show it from the top
             targetScrollTop = elementOffsetTop - 20;
           }
-          
+
           // Ensure we don't scroll past boundaries
-          const maxScrollTop = Math.max(0, containerScrollHeight - containerHeight);
-          targetScrollTop = Math.max(0, Math.min(targetScrollTop, maxScrollTop));
-          
+          const maxScrollTop = Math.max(
+            0,
+            containerScrollHeight - containerHeight,
+          );
+          targetScrollTop = Math.max(
+            0,
+            Math.min(targetScrollTop, maxScrollTop),
+          );
+
           // Only scroll if needed and within the container
           if (Math.abs(container.scrollTop - targetScrollTop) > 5) {
             container.scrollTo({
               top: targetScrollTop,
-              behavior: 'smooth'
+              behavior: "smooth",
             });
           }
         }, 200);
@@ -161,23 +168,20 @@ function RightSecContent({ activeService, onActiveServiceChange }) {
     }
   };
 
-
-
   return (
-    <section 
+    <section
       className="services-container flex flex-col sm:h-full border-r border-l-0 md:border-l border-[#4E4E4E] focus:outline-none h-[calc(100vh-320px)] overflow-auto md:overflow-hidden relative"
       onClick={handleContainerClick}
-       aria-labelledby="services-list-heading"
-  itemScope
-  itemType="https://schema.org/ItemList"
+      aria-labelledby="services-list-heading"
+      itemScope
+      itemType="https://schema.org/ItemList"
     >
       <meta itemProp="name" content="Design Studio Services" />
-<meta itemProp="itemListOrder" content="Unordered" />
-
+      <meta itemProp="itemListOrder" content="Unordered" />
 
       <h2 id="services-list-heading" className="sr-only">
-  Design Studio Services — What We Offer
-</h2>
+        Design Studio Services — What We Offer
+      </h2>
 
       {/* Scroll indicator for mobile */}
       {isMobile && showScrollIndicator && (
@@ -185,10 +189,11 @@ function RightSecContent({ activeService, onActiveServiceChange }) {
           Scroll to see more
         </div>
       )}
-      
+
       {services.map((service, index) => (
         <article
           key={service.id}
+          
           ref={(el) => (cardRefs.current[index] = el)}
           onClick={() => handleCardClick(index)}
           onMouseEnter={() => handleMouseEnter(index)}

@@ -63,10 +63,10 @@ function MidSec({
       const isMobile = window.innerWidth < 645;
 
       const currentImage = container.querySelector(
-        isMobile ? ".current-image-mobile" : ".current-image-desktop"
+        isMobile ? ".current-image-mobile" : ".current-image-desktop",
       );
       const newImage = container.querySelector(
-        isMobile ? ".new-image-mobile" : ".new-image-desktop"
+        isMobile ? ".new-image-mobile" : ".new-image-desktop",
       );
 
       if (currentImage && newImage) {
@@ -88,7 +88,7 @@ function MidSec({
               duration: 1.2, // slightly shorter for better feel
               ease: "power2.inOut",
             },
-            0
+            0,
           )
           .to(
             newImage,
@@ -98,7 +98,7 @@ function MidSec({
               duration: 1.2,
               ease: "power2.inOut",
             },
-            0
+            0,
           )
           .call(() => {
             gsap.set(currentImage, { clearProps: "all" });
