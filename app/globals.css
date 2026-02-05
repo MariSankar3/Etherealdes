@@ -1,0 +1,173 @@
+@import "tailwindcss";
+
+:root {
+  /* --background: #ffffff;
+  --foreground: #171717; */
+  --primary: #DBF900;
+}
+
+@theme inline {
+  /* --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-geist-sans);
+  --font-mono: var(--font-geist-mono); */
+  --font-anton: var(--font-anton);
+  --font-antonio: var(--font-antonio);
+  --font-ubuntu: var(--font-ubuntu);
+  --font-raleway: var(--font-raleway);
+  --color-primary: var(--primary);
+}
+
+@media (prefers-color-scheme: dark) {
+  /* :root {
+    --background: #0a0a0a;
+    --foreground: #ededed;
+  } */
+}
+*{
+  box-sizing: border-box;
+}
+
+body {
+  /* background: var(--background);
+  color: var(--foreground);
+  font-family: Arial, Helvetica, sans-serif; */
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+canvas{
+  height: 100% !important;
+  width: 100% !important;
+}
+
+/* Custom cursor for services page - specific to services page only */
+.services-page {
+  cursor: url('/images/custom-cursor.svg') 2 2, auto !important;
+}
+
+.services-page * {
+  cursor: url('/images/custom-cursor.svg') 2 2, auto !important;
+}
+
+/* Override any conflicting cursor styles within services page */
+.services-page button,
+.services-page a,
+.services-page [role="button"],
+.services-page input,
+.services-page textarea,
+.services-page select {
+  cursor: url('/images/custom-cursor.svg') 2 2, pointer !important;
+}
+
+/* Alternative approach for better browser support */
+.services-page,
+.services-page * {
+  cursor: url('/images/custom-cursor.svg') 2 2, pointer !important;
+}
+
+@layer utilities {
+  .writing-horizontal {
+    writing-mode: horizontal-tb;
+  }
+}
+
+ul{
+  list-style: disc;
+  padding-left: 2rem;
+}
+
+*{
+  scroll-behavior: smooth;
+}
+
+.flag-emoji{
+  display:inline-block;
+  font-size:1em;
+  line-height:1;
+  vertical-align:-0.15em;
+}
+
+/* Slim and dark scrollbar for all browsers */
+::-webkit-scrollbar {
+  width: 3px;
+  height: 3px;
+}
+::-webkit-scrollbar-thumb {
+  background: #232323;
+  border-radius: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+html {
+  scrollbar-width: thin;
+  scrollbar-color: #232323 transparent;
+}
+
+/* Services accordion specific styles */
+.services-container {
+  scroll-behavior: smooth;
+}
+
+.card-content {
+  transition: all 0.3s ease-in-out;
+}
+
+.card-content--open {
+  opacity: 1;
+  max-height: none;
+  overflow: visible;
+}
+
+.card-content--closed {
+  opacity: 0;
+  max-height: 0;
+  overflow: hidden;
+}
+
+/* Ensure mobile accordion content is fully visible */
+@media (max-width: 767px) {
+  .services-container {
+    -webkit-overflow-scrolling: touch;
+    /* Prevent page scroll when scrolling within accordion */
+    overscroll-behavior: contain;
+  }
+
+  .card-content--open {
+    padding-bottom: 10px;
+  }
+
+  /* Ensure the last accordion has minimal extra space */
+  .services-container > div:last-child .card-content--open {
+    padding-bottom: 15px;
+  }
+}
+
+/* Prevent page scroll when accordion is being scrolled */
+.services-container:focus-within {
+  overscroll-behavior: contain;
+}
+
+/* Ensure smooth scrolling within accordion only */
+.services-container {
+  overscroll-behavior: contain;
+  scroll-behavior: smooth;
+}
+
+.custom-list li {
+  margin-bottom: 1.5rem;
+}
+.custom-list li:last-child {
+  margin-bottom: 0;
+}
+
+
+@media (min-width: 1700px) {
+.xl-4{
+  width: 100px;
+  height: 100px;
+}
+}

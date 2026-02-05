@@ -1,0 +1,39 @@
+{
+  "name": "ethereal-design-website",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev --turbopack",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint"
+  },
+  "dependencies": {
+    "@emailjs/browser": "^4.4.1",
+    "@gsap/react": "^2.1.2",
+    "@hookform/resolvers": "^5.2.1",
+    "@next/third-parties": "^15.3.4",
+    "@react-three/drei": "^9.0.1",
+    "@react-three/fiber": "^9.1.2",
+    "@types/three": "^0.177.0",
+    "embla-carousel-react": "^8.6.0",
+    "embla-carousel-wheel-gestures": "^8.1.0",
+    "framer-motion": "^12.16.0",
+    "gsap": "^3.13.0",
+    "motion": "^12.18.1",
+    "next": "^15.3.4",
+    "react": "^19.1.0",
+    "react-dom": "^19.1.0",
+    "react-hook-form": "^7.62.0",
+    "react-phone-number-input": "^3.4.12",
+    "three": "^0.177.0",
+    "zod": "^4.0.17"
+  },
+  "devDependencies": {
+    "@tailwindcss/postcss": "^4",
+    "@types/node": "22.15.29",
+    "@types/react": "19.1.6",
+    "tailwindcss": "^4",
+    "typescript": "5.8.3"
+  }
+}

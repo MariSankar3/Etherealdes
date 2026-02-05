@@ -1,0 +1,67 @@
+import CaseStudyInfo from "./CaseStudyInfo";
+
+export const CASE_STUDY = [
+  {
+    id: "CS_001",
+    title: "Jugl Mobile CRM",
+    clientIcon: "/clients/jugl.svg",
+    image: "/clients/hover_img/jugl.png",
+    component: CaseStudyInfo,
+    detailsKey: "jugl",
+  },
+  {
+    id: "CS_002",
+    title: "Purple_Quarter",
+    clientIcon: "/clients/purple_quarter.svg",
+    image: "/clients/hover_img/purple_quarter.png",
+    component: CaseStudyInfo,
+    detailsKey: "purple_quarter",
+  },
+  {
+    id: "CS_003",
+    title: "STX",
+    clientIcon: "/clients/stx.svg",
+    image: "/clients/hover_img/stx.png",
+    component: CaseStudyInfo,
+    detailsKey: "shopify",
+  },
+  {
+    id: "CS_004",
+    title: "SaltBox B2B",
+    clientIcon: "/clients/img_5.svg",
+    image: "/clients/hover_img/saltbox_tinyhome.png",
+    component: CaseStudyInfo,
+    detailsKey: "saltbox",
+  },
+  {
+    id: "CS_005",
+    title: "SaltBox Health Care",
+    clientIcon: "/clients/img_6.svg",
+    image: "/clients/hover_img/saltbox.png",
+    component: CaseStudyInfo,
+    detailsKey: "saltbox_healthcare",
+  },
+  {
+    id: "CS_006",
+    title: "Kalagato",
+    clientIcon: "/clients/kalagato.svg",
+    image: "/clients/hover_img/kalagato.png",
+    component: CaseStudyInfo,
+    detailsKey: "kalagato",
+  },
+  {
+    title: "More Projects",
+    clientIcon: "/clients/More_Projects.svg",
+    image: "/clients/hover_img/shopify.png",
+    component: CaseStudyInfo,
+    detailsKey: "more_projects",
+  },
+  {
+    id: "CS_008",
+    title: "Jugl Bee",
+    clientIcon: "/clients/jugl_bee.svg",
+    image: "/clients/hover_img/jugl-bee.png",
+    component: CaseStudyInfo,
+    detailsKey: "jugl_bee",
+  },
+];

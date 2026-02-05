@@ -1,0 +1,173 @@
+{
+  "TeamsTrust": {
+    "MidSection": {
+      "Title": "OUR APPROACH",
+      "Para": "Every screen we design is backed by user behavior and research insights."
+    },
+    "RightSecContent": [
+      {
+        "Title": "MULTI-DISCIPLINARY EXPERTISE",
+        "Para": "A multidisciplinary UX designer possesses expertise in various fields beyond design, such as psychology, technology, and engineering, to create intuitive and user-friendly products and interfaces.",
+        "Bullet ponts": [
+          "User-Centered Approach",
+          "Research and Analysis",
+          "Collaboratio",
+          "Prototyping and Iteration",
+          "Visual Design and Visual Hierarchy",
+          "Technical Skills",
+          "Problem-Solving",
+          "Soft Skills"
+        ]
+      },
+      {
+        "Title": "User-Centric design",
+        "Para": "Every screen we design is backed by user behavior and research insights.",
+        "Bullet ponts": [
+          "Focus on the User",
+          "Iterative Process",
+          "User Involvement",
+          "Usability and Accessibility",
+          "Benefits",
+          "Tools and Techniques"
+        ]
+      },
+      {
+        "Title": "Visual Clarity, Functional Impact",
+        "Para": "Our interfaces are not just beautiful — they convert and perform.",
+        "Bullet ponts": [
+          "Comprehension",
+          "Ease of Use",
+          "Engagement",
+          "Hierarchy and Emphasis",
+          "Contrast and White Space",
+          "Task Completion",
+          "Efficiency",
+          "Feedback and Consistency"
+        ]
+      },
+      {
+        "Title": "Lean & Agile Collaboration",
+        "Para": "We work closely with your team, adapt fast, and deliver on time.",
+        "Bullet ponts": [
+          "Flexibility and Adaptability",
+          "Faster Value Delivery",
+          "Improved Collaboration",
+          "Continuous Improvement"
+        ]
+      },
+      {
+        "Title": "Scalable Design Systems",
+        "Para": "Reusable components and consistent UI libraries for long-term growth.",
+        "Bullet ponts": [
+          "Consistency and Reusability",
+          "Scalability",
+          "Component Libraries"
+        ]
+      }
+    ]
+  },
+  "Work": [
+    {
+      "id": "1",
+      "slug": "everise",
+      "title": "Everise",
+      "img": "/work-page-mid-sec-img.png",
+      "description": "We helped Everise revamp their digital platform with a user-centric approach, simplifying workflows and enhancing engagement across all touchpoints.",
+      "banner_img": "/banner-dummy.png",
+      "data": [
+        {
+          "id": "1",
+          "title": "About and aim",
+          "para": "Everise partnered with us to modernize their legacy user interface and streamline operational flows. Our aim was to create an intuitive and scalable experience that improves efficiency for internal teams and satisfaction for customers."
+        },
+        {
+          "id": "2",
+          "title": "About and aim",
+          "para": "The redesign addressed key usability pain points, integrating seamless navigation and clean visual hierarchy to ensure users can perform actions with minimal effort and maximum clarity."
+        }
+      ]
+    },
+    {
+      "id": "2",
+      "slug": "amazon",
+      "title": "Amazon",
+      "img": "/work-page-mid-sec-img.png",
+      "description": "Redesigning Amazon’s internal logistics dashboard to improve performance tracking, reduce friction, and boost productivity across the supply chain.",
+      "banner_img": "/banner-dummy.png",
+      "data": [
+        {
+          "id": "1",
+          "title": "About and aim",
+          "para": "Amazon's internal logistics tools required a UX uplift to match their fast-paced environment. We focused on designing a responsive and role-based dashboard to provide key metrics at a glance for different stakeholders."
+        },
+        {
+          "id": "2",
+          "title": "About and aim",
+          "para": "By conducting targeted user interviews and workflow analysis, we aligned our solutions with actual user needs—streamlining repetitive actions and improving decision-making speed."
+        }
+      ]
+    },
+    {
+      "id": "3",
+      "slug": "flipkart",
+      "title": "Flipkart",
+      "img": "/work-page-mid-sec-img.png",
+      "description": "We collaborated with Flipkart to overhaul the user onboarding experience, resulting in faster conversions and increased retention across mobile and web platforms.",
+      "banner_img": "/banner-dummy.png",
+      "data": [
+        {
+          "id": "1",
+          "title": "About and aim",
+          "para": "Our project with Flipkart focused on refining the user onboarding process. We redesigned the entry journey to minimize cognitive load and increase user confidence right from the first interaction."
+        },
+        {
+          "id": "2",
+          "title": "About and aim",
+          "para": "We introduced adaptive interfaces and contextual guidance, which reduced drop-offs significantly and helped users complete their first purchase more efficiently."
+        }
+      ]
+    },
+    {
+      "id": "4",
+      "slug": "google",
+      "title": "Google",
+      "img": "/work-page-mid-sec-img.png",
+      "description": "Enhancing accessibility and design coherence across Google’s internal design system by aligning visual language and improving cross-team usability.",
+      "banner_img": "/banner-dummy.png",
+      "data": [
+        {
+          "id": "1",
+          "title": "About and aim",
+          "para": "We assisted Google in consolidating multiple design variants into a unified system. The objective was to ensure accessibility compliance while improving scalability across multiple product teams."
+        },
+        {
+          "id": "2",
+          "title": "About and aim",
+          "para": "By introducing flexible components and strict design guidelines, we empowered teams to build consistent, accessible, and performant user interfaces faster and more efficiently."
+        }
+      ]
+    }
+  ],
+  "SOCIAL_LINKS": {
+    "LINKEDIN": {
+      "LABEL": "Linkedin",
+      "PATH": "https://www.linkedin.com/in/ethereal-design-b95453363/"
+    },
+    "INSTAGRAM": {
+      "LABEL": "Instagram",
+      "PATH": "#"
+    },
+    "BEHANCE": {
+      "LABEL": "Behance",
+      "PATH": "#"
+    },
+    "MOBILE": {
+      "LABEL": "+91 915-000-5430",
+      "PATH": "+919150005430"
+    },
+    "EMAIL": {
+      "LABEL": "hello@etherealdesign.io",
+      "PATH": "hello@etherealdesign.io"
+    }
+  }
+}
