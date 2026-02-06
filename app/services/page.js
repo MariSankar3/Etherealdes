@@ -11,7 +11,7 @@ const SERVICES_COUNT = 6; // Update if you add/remove services
 function ServicesPage() {
   const [activeService, setActiveService] = useState(0);
   const [scrollDirection, setScrollDirection] = useState("down");
-  const lastScrollTime = useRef(0);
+  // lastScrollTime removed for lint
   const activeServiceRef = useRef(activeService);
   const scrollLock = useRef(false);
   const touchCooldownRef = useRef(false);
@@ -81,7 +81,6 @@ function ServicesPage() {
             : activeServiceRef.current + 1;
         setScrollDirection("down");
         setActiveService(nextService);
-        lastScrollTime.current = now;
       } else if (deltaY < -120) {
         const prevService =
           activeServiceRef.current === 0
@@ -89,16 +88,12 @@ function ServicesPage() {
             : activeServiceRef.current - 1;
         setScrollDirection("up");
         setActiveService(prevService);
-        lastScrollTime.current = now;
       }
     };
 
     const handleTouchStart = (event) => {
       if (touchCooldownRef.current) return;
       // Get the *first* touch point
-      event.changedTouches && event.changedTouches.length > 0
-        ? (lastScrollTime.current = event.changedTouches[0].screenY) 
-        : (lastScrollTime.current = 0);
     };
 
     const handleTouchEnd = (event) => {
@@ -128,7 +123,6 @@ function ServicesPage() {
               : activeServiceRef.current + 1;
           setScrollDirection("down");
           setActiveService(nextService);
-          lastScrollTime.current = Date.now();
           break;
         case "ArrowUp":
           event.preventDefault();
@@ -138,7 +132,6 @@ function ServicesPage() {
               : activeServiceRef.current - 1;
           setScrollDirection("up");
           setActiveService(prevService);
-          lastScrollTime.current = Date.now();
           break;
       }
     };
@@ -187,12 +180,10 @@ function ServicesPage() {
            const nextService = activeServiceRef.current === SERVICES_COUNT - 1 ? 0 : activeServiceRef.current + 1;
            setScrollDirection("down");
            setActiveService(nextService);
-           lastScrollTime.current = now;
         } else {
            const prevService = activeServiceRef.current === 0 ? SERVICES_COUNT - 1 : activeServiceRef.current - 1;
            setScrollDirection("up");
            setActiveService(prevService);
-           lastScrollTime.current = now;
         }
       }
     };

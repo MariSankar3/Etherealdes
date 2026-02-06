@@ -33,8 +33,7 @@ export default function Home({ open, onClose }) {
   const backdropRef = useRef(null);
   const [detailOpen, setDetailOpen] = useState(false);
 
-  const autoCycleRef = useRef(null);
-  const resumeTimeoutRef = useRef(null);
+  /* Unused refs removed for linting: autoCycleRef, resumeTimeoutRef */
 
   const cards = [
     {

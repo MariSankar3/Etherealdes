@@ -10,7 +10,7 @@ function RightSecContent({ setActiveIndex }) {
   const [activeIndex, setActiveIndexState] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
   const [cardWidth, setCardWidth] = useState(0);
-  const [visibleCount, setVisibleCount] = useState(2.25);
+  // visibleCount removed for linting
   const [gap, setGap] = useState(20);
   const [currentBreakpoint, setCurrentBreakpoint] = useState("lg");
 
@@ -40,27 +40,21 @@ function RightSecContent({ setActiveIndex }) {
         setCardWidth(width);
 
         if (window.innerWidth >= 1536) {
-          setVisibleCount(2.5);
           setGap(50);
           setCurrentBreakpoint("2xl");
         } else if (window.innerWidth >= 1280) {
-          setVisibleCount(2.1);
           setGap(50);
           setCurrentBreakpoint("xl");
         } else if (window.innerWidth >= 1024) {
-          setVisibleCount(2.1);
           setGap(40);
           setCurrentBreakpoint("lg");
         } else if (window.innerWidth >= 768) {
-          setVisibleCount(1.8);
           setGap(40);
           setCurrentBreakpoint("md");
         } else if (window.innerWidth >= 640) {
-          setVisibleCount(1.4);
           setGap(40);
           setCurrentBreakpoint("sm");
         } else {
-          setVisibleCount(1.1);
           setGap(20);
           setCurrentBreakpoint("xs");
         }
