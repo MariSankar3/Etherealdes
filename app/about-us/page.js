@@ -10,22 +10,9 @@ const SLIDE_DURATION = 5; // 5 seconds per slide as per previous logic
 
 export default function About() {
   const containerRef = useRef(null);
-  const [cardWidth, setCardWidth] = useState(320);
-
-  // Update card width on resize to match original 85% logic
-  useEffect(() => {
-    const handleResize = () => {
-      // Original logic was w-[85%] container with w-full card.
-      // So card width effectively 85% of screen.
-      // We cap it at 350 to avoid getting too huge on tablets before shifting layout.
-      const newWidth = Math.min(window.innerWidth * 0.85, 350); 
-      setCardWidth(newWidth);
-    };
-    
-    handleResize(); // Initial set
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+  
+  // Ref to track if we've done the initial instant scroll
+  const hasInitialized = useRef(false);
 
   const cards = [
     {
@@ -107,43 +94,73 @@ export default function About() {
   const [currentIndex, setCurrentIndex] = useState(cards.length);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupCardIndex, setPopupCardIndex] = useState(null);
+  const [isReady, setIsReady] = useState(false);
 
   // Centering Logic Function
   const getScrollPosition = useCallback((index) => {
     if (!containerRef.current) return 0;
     const containerWidth = containerRef.current.offsetWidth;
-    const cardTotalWidth = cardWidth + CARD_GAP;
+    
+    // Calculate card width dynamically (matching CSS: 85vw capped at 350px)
+    const computedCardWidth = Math.min(window.innerWidth * 0.85, 350);
+    const cardTotalWidth = computedCardWidth + CARD_GAP;
 
     // Center the card: (Position of card) - (Half of container) + (Half of card)
-    return index * cardTotalWidth - containerWidth / 2 + cardWidth / 2;
-  }, [cardWidth]);
-
-  // Handle the "Infinite" Jump (Snap back to middle set without animation)
-  const handleInfiniteLoop = useCallback(() => {
-    const container = containerRef.current;
-    if (!container) return;
-
-    if (currentIndex >= cards.length * 2) {
-      const jumpIndex = currentIndex - cards.length;
-      container.scrollTo({ left: getScrollPosition(jumpIndex) });
-      setCurrentIndex(jumpIndex);
-    } else if (currentIndex < cards.length) {
-      const jumpIndex = currentIndex + cards.length;
-      container.scrollTo({ left: getScrollPosition(jumpIndex) });
-      setCurrentIndex(jumpIndex);
-    }
-  }, [currentIndex, cards.length, getScrollPosition]);
+    return index * cardTotalWidth - containerWidth / 2 + computedCardWidth / 2;
+  }, []);
 
   // Scroll to active card whenever index changes
   useEffect(() => {
     const container = containerRef.current;
     if (container && !isPopupOpen) {
-      container.scrollTo({
-        left: getScrollPosition(currentIndex),
-        behavior: "smooth",
-      });
+      if (!hasInitialized.current) {
+        // First render: Jump instantly to position
+        container.scrollTo({
+          left: getScrollPosition(currentIndex),
+          behavior: "auto",
+        });
+        hasInitialized.current = true;
+        
+        // Show the carousel only after positioning is done
+        requestAnimationFrame(() => {
+           setIsReady(true);
+        });
+      } else {
+        // Subsequent navigations: Smooth scroll
+        container.scrollTo({
+          left: getScrollPosition(currentIndex),
+          behavior: "smooth",
+        });
+
+        // Check for infinite loop bounds after scroll animation (approx 500ms)
+        const totalCards = cards.length; // e.g., 4
+        // Valid main set is from totalCards to 2*totalCards - 1
+        // If we are at 2*totalCards (first of 3rd set), we look like index 0 of main set.
+        // If we are at totalCards - 1 (last of 1st set), we look like last of main set.
+        
+        if (currentIndex >= totalCards * 2 || currentIndex < totalCards) {
+          const timer = setTimeout(() => {
+            if (currentIndex >= totalCards * 2) {
+               const newIndex = currentIndex - totalCards;
+               container.scrollTo({
+                 left: getScrollPosition(newIndex),
+                 behavior: "auto"
+               });
+               setCurrentIndex(newIndex);
+            } else if (currentIndex < totalCards) {
+               const newIndex = currentIndex + totalCards;
+               container.scrollTo({
+                 left: getScrollPosition(newIndex),
+                 behavior: "auto"
+               });
+               setCurrentIndex(newIndex);
+            }
+          }, 600); // Wait for smooth scroll to finish
+          return () => clearTimeout(timer);
+        }
+      }
     }
-  }, [currentIndex, isPopupOpen, getScrollPosition]);
+  }, [currentIndex, isPopupOpen, getScrollPosition, cards.length]);
 
   // Handle screen resize to keep card centered
   useEffect(() => {
@@ -151,6 +168,7 @@ export default function About() {
       if (containerRef.current) {
         containerRef.current.scrollTo({
           left: getScrollPosition(currentIndex),
+          behavior: "auto" // Instant re-center on resize
         });
       }
     };
@@ -246,7 +264,7 @@ export default function About() {
       {/* Center-Aligned Infinite Carousel */}
       <div className="sm:hidden mobile-cards-container relative h-[450px] w-full mt-40 overflow-hidden flex flex-col items-center">
         <div
-          className="flex overflow-x-hidden scrollbar-hide w-full "
+          className={`flex overflow-x-hidden scrollbar-hide w-full transition-opacity duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
           ref={containerRef}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
@@ -260,7 +278,8 @@ export default function About() {
                   : "opacity-40 border-[#4E4E4E]"
               }`}
               style={{
-                width: cardWidth,
+                width: "85vw",
+                maxWidth: "350px",
                 height: 275, // Fixed height for mobile cards
                 marginRight: CARD_GAP,
               }}
