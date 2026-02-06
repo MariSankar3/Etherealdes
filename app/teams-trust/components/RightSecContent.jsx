@@ -176,7 +176,7 @@ function RightSecContent({ setActiveIndex }) {
     /* ===== Semantic Section ===== */
     <section
       aria-labelledby="teams-trust-heading"
-      className="h-full w-full py-[20px] md:py-[20px] lg:py-[30px] xl:py-[40px] flex flex-col justify-center items-center md:border-l border-[#4E4E4E] gap-[10px] overflow-hidden ml-[20px] sm:ml-[0]"
+      className="h-full w-full py-[20px] md:py-[20px] lg:py-[30px] xl:py-[40px] flex flex-col sm:justify-center sm:items-center md:border-l border-[#4E4E4E] gap-[10px] overflow-hidden ml-[20px] sm:ml-[0]"
       itemScope
       itemType="https://schema.org/Service"
     >
@@ -272,7 +272,7 @@ function RightSecContent({ setActiveIndex }) {
 
       {/* ===== Mobile Indicators ===== */}
       <div
-        className="flex md:hidden flex-row gap-[5px] justify-end items-end mt-4"
+        className="flex md:hidden flex-row gap-[5px] justify-end items-end mt-1"
         aria-hidden="true"
       >
         {rightSecContentData.map((_, i) => (
