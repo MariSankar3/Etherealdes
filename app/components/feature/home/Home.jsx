@@ -181,7 +181,7 @@ function Home() {
     previousIndexRef.current = activeIndex;
   }, [activeIndex]);
 
-  // Remove custom wheel handling; rely on Embla inside RightSecContent.
+  // Global wheel handling: scroll anywhere controls the right carousel
   useLayoutEffect(() => {
     const stopAutoScroll = () => {
       if (autoScrollIntervalRef.current) {
@@ -192,9 +192,21 @@ function Home() {
 
     const tick = () => {
       if (userInteractingRef.current) return;
-      const currentIndex = activeIndexRef.current;
-      const newIndex = (currentIndex + 1) % 5;
-      setActiveIndex(newIndex);
+
+      // Mobile: Use Embla's native scrollNext for correct looping (6 items) and smooth physics
+      if (mobileEmblaApi) {
+        mobileEmblaApi.scrollNext();
+        return;
+      }
+
+      // Desktop: Manual state update (5 items)
+      // If we have access to desktop api, use it too, otherwise fallback to state
+      const api = emblaApiRef.current;
+      if (api) {
+        api.scrollNext();
+      } else {
+        setActiveIndex((prev) => (prev + 1) % 5);
+      }
     };
 
     const startAutoScroll = () => {
@@ -208,7 +220,7 @@ function Home() {
       if (autoScrollTimeoutRef.current)
         clearTimeout(autoScrollTimeoutRef.current);
     };
-  }, []);
+  }, [mobileEmblaApi]); // Added mobileEmblaApi dependency
 
   // Global wheel handling: scroll anywhere controls the right carousel
   useEffect(() => {
