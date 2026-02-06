@@ -116,36 +116,24 @@ export default function Home({ open, onClose }) {
     }
   }, [activeDesktopIndex, cards]);
 
-  // Desktop auto-cycle every 5 seconds, skip for mobile
+  // Desktop auto-cycle is now driven by the progress bar's onAnimationComplete
+  // to ensure perfect synchronization between the visual loader and the slide change.
   useEffect(() => {
-    if (typeof window !== "undefined" && window.innerWidth < 640) return;
+    // Just reset to 0 on open
+    if (open) {
+      if (typeof window !== "undefined" && window.innerWidth >= 640) {
+        setActiveDesktopIndex(0);
+      }
+    }
+  }, [open]);
 
-    autoCycleRef.current = setInterval(() => {
-      setActiveDesktopIndex((prev) => (prev + 1) % cards.length);
-    }, 4000);
-
-    return () => clearInterval(autoCycleRef.current);
-  }, [cards.length]);
-
-  // Handle manual activate for desktop and mobile; restarts auto-cycle after delay
+  // Handle manual activate
   const handleManualActivate = (id) => {
-    clearInterval(autoCycleRef.current);
-    clearTimeout(resumeTimeoutRef.current);
-
     const idx = cards.findIndex((c) => c.id === id);
     if (idx !== -1) {
       setSelectedCard(id);
       setActiveDesktopIndex(idx);
       setMobileActiveIndex(idx);
-    }
-
-    // Resume auto-cycle after 5.5s delay (desktop only)
-    if (typeof window !== "undefined" && window.innerWidth >= 640) {
-      resumeTimeoutRef.current = setTimeout(() => {
-        autoCycleRef.current = setInterval(() => {
-          setActiveDesktopIndex((prev) => (prev + 1) % cards.length);
-        }, 4000);
-      }, 5000);
     }
   };
 
@@ -163,7 +151,7 @@ export default function Home({ open, onClose }) {
 
     const scrollToIndex = (index) => {
       const container = document.querySelector(
-        ".mobile-cards-container .overflow-x-auto"
+        ".mobile-cards-container .overflow-x-auto",
       );
       if (container) {
         container.scrollTo({
@@ -198,7 +186,7 @@ export default function Home({ open, onClose }) {
   // Swipe handler for mobile
   useEffect(() => {
     const container = document.querySelector(
-      ".mobile-cards-container .overflow-x-auto"
+      ".mobile-cards-container .overflow-x-auto",
     );
     if (!container) return;
     let startX = 0;
@@ -256,7 +244,7 @@ export default function Home({ open, onClose }) {
             duration: 1,
             ease: "power2.out",
             delay: index * 0.2,
-          }
+          },
         );
       }
     });
@@ -311,53 +299,6 @@ export default function Home({ open, onClose }) {
 
   return (
     <>
-    {/* SEO-visible static content */}
-<div className="sr-only" aria-hidden="false">
-  <main>
-    <h1>About Ethereal Design — Digital Product Studio</h1>
-
-    <section>
-      <h2>Our Story</h2>
-      <p>
-        Ethereal Design is a digital product studio specializing in transforming complex ideas into intuitive, high-performing digital experiences. We partner with startups and enterprises to design and deliver meaningful products.
-      </p>
-    </section>
-
-    <section>
-      <h2>The Ethereal Difference</h2>
-      <ul>
-        <li>AI-powered design velocity</li>
-        <li>Strategic UX and product thinking</li>
-        <li>Senior-level quality with startup speed</li>
-      </ul>
-    </section>
-
-    <section>
-      <h2>Our Core Team</h2>
-      <p>Our leadership team brings deep expertise in UX, product strategy, and technical execution.</p>
-    </section>
-
-    <section>
-      <h2>Work With Us</h2>
-      <p>We help founders and enterprises turn vision into reality through thoughtful design and technology.</p>
-    </section>
-  </main>
-</div>
-<script
-  type="application/ld+json"
-  dangerouslySetInnerHTML={{
-    __html: JSON.stringify({
-      "@context": "https://schema.org",
-      "@type": "Organization",
-      name: "Ethereal Design",
-      description:
-        "A digital product studio specializing in UX, product strategy, and AI-powered design.",
-      url: "https://etherealdesign.in",
-      sameAs: ["https://www.linkedin.com/in/ethereal-design-b95453363/"],
-    }),
-  }}
-/>
-
       <AnimatePresence>
         {open && (
           <motion.div
@@ -442,15 +383,15 @@ export default function Home({ open, onClose }) {
                                   onClick={() =>
                                     handleManualActivate(
                                       cards.find((c) =>
-                                        c.MainContent.includes(section)
-                                      )?.id || selectedCard
+                                        c.MainContent.includes(section),
+                                      )?.id || selectedCard,
                                     )
                                   }
                                   onMouseEnter={() =>
                                     handleManualActivate(
                                       cards.find((c) =>
-                                        c.MainContent.includes(section)
-                                      )?.id || selectedCard
+                                        c.MainContent.includes(section),
+                                      )?.id || selectedCard,
                                     )
                                   }
                                 >
@@ -491,8 +432,6 @@ export default function Home({ open, onClose }) {
                                         alt={section.name || ""}
                                         height={130}
                                         width={130}
-                                        role="dialog"
-                                          aria-modal="true"
                                       />
                                       <h3 className="font-antonio text-white font-[400] text-[18px] mt-2">
                                         {section.name}
@@ -528,7 +467,7 @@ export default function Home({ open, onClose }) {
                         onMouseEnter={() => handleManualActivate(card.id)}
                       >
                         {/* Title/preview */}
-                        <section
+                        <motion.div
                           className="absolute top-4 left-4 text-left"
                           initial={{ x: 0, y: 0, opacity: 1 }}
                           animate={
@@ -544,7 +483,7 @@ export default function Home({ open, onClose }) {
                           <p className="text-gray-400 font-antonio text-[14px] pr-[20px]">
                             {card.content}
                           </p>
-                        </section>
+                        </motion.div>
                         {/* Full content view */}
                         <motion.div
                           className="absolute inset-0 flex items-center justify-center"
@@ -576,6 +515,12 @@ export default function Home({ open, onClose }) {
                                 initial={{ scaleX: 0 }}
                                 animate={{ scaleX: 1 }}
                                 transition={{ duration: 4, ease: "linear" }}
+                                onAnimationComplete={() => {
+                                  // Trigger next slide exactly when animation finishes
+                                  setActiveDesktopIndex(
+                                    (prev) => (prev + 1) % cards.length,
+                                  );
+                                }}
                               />
                             )}
                           </div>
@@ -663,7 +608,7 @@ export default function Home({ open, onClose }) {
                         onClick={() => {
                           setMobileActiveIndex(index);
                           const container = document.querySelector(
-                            ".mobile-cards-container .overflow-x-auto"
+                            ".mobile-cards-container .overflow-x-auto",
                           );
                           if (container) {
                             container.scrollTo({
@@ -746,9 +691,6 @@ export default function Home({ open, onClose }) {
                                           alt={section.name || ""}
                                           height={150}
                                           width={150}
-                                          role="dialog"
-                                          aria-modal="true"
-
                                         />
                                         <h3 className="font-antonio text-white font-[400] text-[18px] mt-2">
                                           {section.name}
@@ -764,7 +706,7 @@ export default function Home({ open, onClose }) {
                                       </div>
                                     )}
                                 </div>
-                              )
+                              ),
                             )}
                           </div>
                         </motion.div>

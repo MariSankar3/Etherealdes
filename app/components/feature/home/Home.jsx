@@ -42,10 +42,95 @@ function Home() {
   const containerRef = useRef(null);
   const rightSecRef = useRef(null);
   const emblaApiRef = useRef(null); // Desktop Embla API
-  const [mobileEmblaRef, mobileEmblaApi] = useEmblaCarousel({ loop: true }); // Mobile Embla
+  // Mobile Embla with customized speed
+  const [mobileEmblaRef, mobileEmblaApi] = useEmblaCarousel({
+    loop: true,
+    duration: 50, // Slower/Smoother transition (default is ~25ish or based on spring physics)
+  });
+
   const isAnimatingRef = useRef(false);
   const touchLockRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
+
+  // Mobile touch handling: vertical swipe maps to slide change
+  useEffect(() => {
+    const el = containerRef.current || window;
+    let startY = 0;
+    const threshold = 50; // Increased threshold to avoid accidental triggers
+    const cooldownMs = 300; // Cooldown to define "one swipe"
+
+    const onTouchStart = (e) => {
+      if (!e.changedTouches || e.changedTouches.length === 0) return;
+      startY = e.changedTouches[0].clientY;
+    };
+
+    const onTouchEnd = (e) => {
+      if (touchLockRef.current) return;
+      if (!e.changedTouches || e.changedTouches.length === 0) return;
+
+      const endY = e.changedTouches[0].clientY;
+      const diff = startY - endY;
+
+      // Ignore small swipes
+      if (Math.abs(diff) < threshold) return;
+
+      const isMob = window.innerWidth < 640;
+      const count = isMob ? 6 : 5;
+
+      // Logic:
+      // Diff > 0 means StartY > EndY (Finger moved UP). Content should move UP.
+      // This corresponds to scrolling DOWN to the NEXT item.
+      // So Swipe UP = Next Slide.
+
+      // Diff < 0 means StartY < EndY (Finger moved DOWN). Content should move DOWN.
+      // This corresponds to scrolling UP to the PREVIOUS item.
+      // So Swipe DOWN = Prev Slide.
+
+      if (isMob && mobileEmblaApi) {
+        if (diff > 0) {
+          // Swipe Up -> Next
+          mobileEmblaApi.scrollNext();
+        } else {
+          // Swipe Down -> Prev
+          mobileEmblaApi.scrollPrev();
+        }
+      } else {
+        // Fallback logic
+        const api = emblaApiRef.current;
+        if (diff > 0) {
+          // Swipe Up -> Next
+          if (api) api.scrollNext();
+          else setActiveIndex((prev) => (prev + 1) % count);
+        } else {
+          // Swipe Down -> Prev
+          if (api) api.scrollPrev();
+          else setActiveIndex((prev) => (prev + (count - 1)) % count);
+        }
+      }
+
+      touchLockRef.current = true;
+      userInteractingRef.current = true;
+      clearTimeout(autoScrollTimeoutRef.current);
+      autoScrollTimeoutRef.current = setTimeout(() => {
+        userInteractingRef.current = false;
+      }, 500);
+
+      setTimeout(() => (touchLockRef.current = false), cooldownMs);
+    };
+
+    const mq = window.matchMedia && window.matchMedia("(pointer: coarse)");
+    const enable = !mq || mq.matches;
+    if (enable) {
+      el.addEventListener("touchstart", onTouchStart, { passive: true });
+      el.addEventListener("touchend", onTouchEnd, { passive: true });
+    }
+    return () => {
+      if (enable) {
+        el.removeEventListener("touchstart", onTouchStart);
+        el.removeEventListener("touchend", onTouchEnd);
+      }
+    };
+  }, [mobileEmblaApi]);
   const activeIndexRef = useRef(activeIndex);
 
   const autoScrollTimeoutRef = useRef(null);
@@ -194,60 +279,6 @@ function Home() {
     };
   }, [emblaApiRef.current]);
 
-  // Mobile touch handling: vertical swipe maps to slide change
-  useEffect(() => {
-    const el = containerRef.current || window;
-    let startY = 0;
-    const threshold = 35;
-    const cooldownMs = 0;
-
-    const onTouchStart = (e) => {
-      if (!e.changedTouches || e.changedTouches.length === 0) return;
-      startY = e.changedTouches[0].clientY;
-    };
-
-    const onTouchEnd = (e) => {
-      if (touchLockRef.current) return;
-      if (!e.changedTouches || e.changedTouches.length === 0) return;
-      const endY = e.changedTouches[0].clientY;
-      const diff = startY - endY;
-      if (Math.abs(diff) < threshold) return;
-
-      // finger up (diff > 0) => scroll down => N -> N-1
-      // finger down (diff < 0) => scroll up => N -> N+1
-      const api = emblaApiRef.current;
-      if (diff > 0) {
-        if (api) api.scrollPrev();
-        else setActiveIndex((prev) => (prev + 4) % 5);
-      } else {
-        if (api) api.scrollNext();
-        else setActiveIndex((prev) => (prev + 1) % 5);
-      }
-
-      touchLockRef.current = true;
-      userInteractingRef.current = true;
-      clearTimeout(autoScrollTimeoutRef.current);
-      autoScrollTimeoutRef.current = setTimeout(() => {
-        userInteractingRef.current = false;
-      }, 500);
-      setTimeout(() => (touchLockRef.current = false), cooldownMs);
-    };
-
-    // Only attach on coarse pointers (mobile)
-    const mq = window.matchMedia && window.matchMedia("(pointer: coarse)");
-    const enable = !mq || mq.matches;
-    if (enable) {
-      el.addEventListener("touchstart", onTouchStart, { passive: true });
-      el.addEventListener("touchend", onTouchEnd, { passive: true });
-    }
-    return () => {
-      if (enable) {
-        el.removeEventListener("touchstart", onTouchStart);
-        el.removeEventListener("touchend", onTouchEnd);
-      }
-    };
-  }, []);
-
   return (
     <>
       <PricingModal open={pricingOpen} onClose={() => setPricingOpen(false)} />
@@ -333,11 +364,6 @@ function Home() {
         <section className="flex-1 sm:hidden relative h-[calc(100vh-103px)] overflow-hidden">
           <div className="w-full h-full" ref={mobileEmblaRef}>
             <div className="flex w-full h-full touch-pan-x">
-              {/* Slide 0: MidSecContent (Home) */}
-              <div className="flex-[0_0_100%] min-w-0 h-full overflow-hidden">
-                <MidSecContent index={0} />
-              </div>
-
               {/* Slides 1-5: RightSecContent Components */}
               {mobComponents.map((Component, i) => (
                 <div
@@ -351,6 +377,61 @@ function Home() {
           </div>
         </section>
       </main>
+
+      <section aria-labelledby="seo-content-heading">
+        <details open className="sr-only">
+          <summary id="seo-content-heading">
+            Ethereal Design Studio – UI UX & Digital Product Design
+          </summary>
+
+          <p>
+            Ethereal Design Studio is a creative digital agency specializing in
+            UI UX design, modern web development, and scalable digital product
+            experiences for startups and growing businesses.
+          </p>
+
+          <p>
+            We help founders and product teams transform complex ideas into
+            intuitive, high-performance digital interfaces. Our services include
+            user experience research, interface design, responsive web
+            development, and digital product strategy.
+          </p>
+
+          <p>
+            Our team focuses on usability, accessibility, performance, and
+            scalability to ensure long-term success for digital products. We
+            work with SaaS platforms, mobile applications, dashboards, and
+            AI-powered systems.
+          </p>
+
+          <p>
+            Ethereal Design Studio partners with startups and enterprises to
+            deliver meaningful, user-centered digital solutions that drive
+            engagement, conversion, and growth.
+          </p>
+          <p>
+            Our design process combines research-driven insights with modern
+            design systems and cutting-edge frontend technologies. By aligning
+            business goals with user needs, we create digital products that are
+            intuitive, reliable, and scalable across platforms and devices.
+          </p>
+
+          <p>
+            With experience across fintech, SaaS, e-commerce, and AI-driven
+            platforms, Ethereal Design Studio helps teams launch faster, reduce
+            development friction, and deliver consistent user experiences that
+            adapt as products grow.
+          </p>
+          <p>
+            Our approach emphasizes long-term product thinking, ensuring that
+            every interface is built to scale alongside evolving user needs and
+            business objectives. By combining design strategy, technical
+            expertise, and continuous iteration, we help organizations build
+            digital experiences that remain effective, adaptable, and
+            competitive in rapidly changing markets.
+          </p>
+        </details>
+      </section>
     </>
   );
 }

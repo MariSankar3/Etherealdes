@@ -193,7 +193,6 @@ function RightSecContent({ activeService, onActiveServiceChange }) {
       {services.map((service, index) => (
         <article
           key={service.id}
-          
           ref={(el) => (cardRefs.current[index] = el)}
           onClick={() => handleCardClick(index)}
           onMouseEnter={() => handleMouseEnter(index)}
