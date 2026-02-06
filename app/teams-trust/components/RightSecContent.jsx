@@ -76,9 +76,7 @@ function RightSecContent({ setActiveIndex }) {
     function startAutoScroll() {
       stopAutoScroll();
       autoScrollIntervalRef.current = setInterval(() => {
-        requestAnimationFrame(() => {
-          setActiveIndexState((prev) => prev + 1);
-        });
+        setActiveIndexState((prev) => prev + 1);
       }, 8000);
     }
     function restartAutoScrollAfterDelay() {
@@ -158,28 +156,25 @@ function RightSecContent({ setActiveIndex }) {
   };
 
   const translateX = -(activeIndex * (cardWidth + gap));
-  useEffect(() => {
-    if (activeIndex === numCards * 2) {
-      setTimeout(() => {
-        setIsResetting(true);
-        setActiveIndexState(0);
-        requestAnimationFrame(() => {
-          requestAnimationFrame(() => {
-            setIsResetting(false);
-          });
-        });
-      }, 850);
+
+  const handleAnimationComplete = () => {
+    if (activeIndex >= numCards * 2) {
+      setIsResetting(true);
+      setActiveIndexState(0);
+      // Small delay to allow the state change to apply with duration: 0
+      requestAnimationFrame(() => {
+        setIsResetting(false);
+      });
     }
-  }, [activeIndex, numCards]);
+  };
 
   return (
     /* ===== Semantic Section ===== */
     <section
-      aria-labelledby="teams-trust-heading"
-      className="h-full w-full py-[20px] md:py-[20px] lg:py-[30px] xl:py-[40px] flex flex-col sm:justify-center sm:items-center md:border-l border-[#4E4E4E] gap-[10px] overflow-hidden ml-[20px] sm:ml-[0]"
-      itemScope
-      itemType="https://schema.org/Service"
-    >
+  aria-labelledby="teams-trust-heading"
+  className="relative h-full w-full py-[20px] md:py-[20px] lg:py-[30px] xl:py-[40px] flex flex-col sm:justify-center sm:items-center md:border-l border-[#4E4E4E] gap-[10px] overflow-hidden ml-[20px] sm:ml-[0]"
+>
+
       <meta itemProp="serviceType" content="Design Studio" />
       <meta itemProp="provider" content="Ethereal Design Studio" />
 
@@ -211,8 +206,10 @@ function RightSecContent({ setActiveIndex }) {
               ? { duration: 0 }
               : { duration: 0.8, ease: [0.32, 0.72, 0, 1] }
           }
+          onAnimationComplete={handleAnimationComplete}
           style={{
             paddingRight: gap,
+            willChange: "transform",
           }}
         >
           {infiniteData.map((item, index) => (
@@ -239,7 +236,7 @@ function RightSecContent({ setActiveIndex }) {
               transition={{
                 height: { duration: 0.5, ease: "easeInOut" },
                 scale: { duration: 0.5, ease: "easeInOut" },
-                boxShadow: { duration: 0.5, ease: "easeInOut" },
+                boxShadow: { duration: 0, ease: "easeInOut" },
               }}
             >
               {/* Proper heading hierarchy */}
@@ -272,9 +269,9 @@ function RightSecContent({ setActiveIndex }) {
 
       {/* ===== Mobile Indicators ===== */}
       <div
-        className="flex md:hidden flex-row gap-[5px] justify-end items-end mt-1"
-        aria-hidden="true"
-      >
+  className="md:hidden absolute bottom-[6px] right-[16px] flex flex-col gap-[6px] items-end z-20"
+  aria-hidden="true"
+>
         {rightSecContentData.map((_, i) => (
           <Indicator
             key={i}
