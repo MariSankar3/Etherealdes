@@ -35,7 +35,6 @@ export default function CommonLayout({
           DESKTOP / TABLET
       ========================== */}
       <div className="hidden md:flex w-full h-full">
-
         {/* LEFT SECTION */}
         <div className="flex flex-col w-[40%] h-full border-r border-[#2F2F2F] overflow-hidden">
           {midsec}
@@ -43,7 +42,6 @@ export default function CommonLayout({
 
         {/* RIGHT SECTION */}
         <div className="flex flex-col flex-1 h-full overflow-hidden">
-
           {/* TOP HEADER (NO SCROLL) */}
           <div className="shrink-0">
             <TopRightSec
@@ -53,10 +51,7 @@ export default function CommonLayout({
           </div>
 
           {/* SCROLLABLE CONTENT */}
-          <div className="flex-1 overflow-y-auto">
-            {children}
-          </div>
-
+          <div className="flex-1 overflow-y-auto">{children}</div>
         </div>
       </div>
 
@@ -64,7 +59,6 @@ export default function CommonLayout({
           MOBILE
       ========================== */}
       <div className="flex md:hidden flex-col w-full h-full overflow-hidden">
-
         {/* TOP HEADER */}
         <div className="shrink-0">
           <TopRightSec
@@ -73,20 +67,15 @@ export default function CommonLayout({
           />
         </div>
 
-        {/* MID SECTION */}
-        <div className="shrink-0">
-          {midsec}
-        </div>
-
         {/* SCROLLABLE CONTENT */}
         <div
           className={`flex-1 w-full ${
             isTeamsTrustPage ? "overflow-hidden" : "overflow-y-auto"
           }`}
         >
+          <div className="shrink-0">{midsec}</div>
           {children}
         </div>
-
       </div>
     </div>
   );

@@ -14,10 +14,9 @@ function MidSec() {
   const laptopAnimationControls = useAnimationControls();
 
   const [isMobile, setIsMobile] = useState(false);
-useEffect(() => {
-  setIsMobile(window.innerWidth < 768);
-}, []);
-
+  useEffect(() => {
+    setIsMobile(window.innerWidth < 768);
+  }, []);
 
   useEffect(() => {
     if (isInView) {
@@ -34,15 +33,23 @@ useEffect(() => {
   }, [isInView, laptopAnimationControls]);
 
   return (
-    <section aria-labelledby="solution-heading" className="flex flex-col items-center md:h-full border border-l-0 border-b-0 border-t-0 border-l-[#4E4E4E] border-r-[#4E4E4E] py-5 px-4 md:px-10 md:py-10 space-y-10">
+    <section
+      aria-labelledby="solution-heading"
+      className="flex flex-col items-center md:h-full border border-l-0 border-b-0 border-t-0 border-l-[#4E4E4E] border-r-[#4E4E4E] py-5 px-4 md:px-10 md:py-10 space-y-10"
+    >
       <meta itemProp="serviceType" content="Design Studio" />
       <meta itemProp="areaServed" content="Worldwide" />
       <div className="flex flex-col gap-4 w-full">
-        <h2 id="solution-heading" className="font-anton text-[20px] uppercase 2xl:text-[24px]">
-        Our solution to your digital product experience
+        <h2
+          id="solution-heading"
+          className="font-anton text-[20px] uppercase 2xl:text-[24px]"
+        >
+          Our solution to your digital product experience
         </h2>
         <p className="sr-only">
-        Our design studio helps startups and businesses design, build, and improve digital products through user-centered design, UI UX, and branding.
+          Our design studio helps startups and businesses design, build, and
+          improve digital products through user-centered design, UI UX, and
+          branding.
         </p>
       </div>
       <div

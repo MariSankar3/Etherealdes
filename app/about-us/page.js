@@ -17,11 +17,13 @@ function debounce(func, delay) {
 }
 
 export default function About() {
+  const isProgressRunningRef = useRef(false);
   const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupCardIndex, setPopupCardIndex] = useState(null);
 
-  const progressKey = `${mobileActiveIndex}-${isPopupOpen}`;
+  const progressKey = mobileActiveIndex;
+
   const autoScrollInterval = useRef(null);
   const containerRef = useRef(null);
 
@@ -130,7 +132,7 @@ export default function About() {
       const scrollLeft = calculateScrollPosition(mobileActiveIndex);
       container.scrollTo({
         left: scrollLeft,
-        behavior: "smooth",
+        behavior: isProgressRunningRef.current ? "auto" : "smooth",
       });
     }
   }, [mobileActiveIndex, calculateScrollPosition]);
@@ -144,7 +146,7 @@ export default function About() {
     const adjusted = center - cardHalf;
     const newIndex = Math.round(adjusted / (CARD_WIDTH + CARD_GAP));
     const clamped = Math.max(0, Math.min(cards.length - 1, newIndex));
-    if (clamped !== mobileActiveIndex) {
+    if (!isProgressRunningRef.current && clamped !== mobileActiveIndex) {
       setMobileActiveIndex(clamped);
     }
   }, [cards.length, mobileActiveIndex]);
@@ -174,7 +176,7 @@ export default function About() {
     const handleTouchEnd = (e) => {
       if (isPopupOpen) return;
       // Resume auto-scroll after a delay to allow snap to complete
-      // No explicit resume needed; changing index (even by scroll) 
+      // No explicit resume needed; changing index (even by scroll)
       // resets the progress bar key, which restarts the animation automatically.
     };
 
@@ -280,10 +282,13 @@ export default function About() {
                   className="absolute top-0 left-0 h-[5px] bg-white"
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
-                  transition={{ duration: 5, ease: "linear" }}
-                  style={{ transformOrigin: "left center" }}
+                  transition={{ duration: 2, ease: "linear" }}
+                  onAnimationStart={() => {
+                    isProgressRunningRef.current = true;
+                  }}
                   onAnimationComplete={() => {
-                     setMobileActiveIndex((prev) => (prev + 1) % cards.length);
+                    isProgressRunningRef.current = false;
+                    setMobileActiveIndex((prev) => (prev + 1) % cards.length);
                   }}
                 />
               )}
