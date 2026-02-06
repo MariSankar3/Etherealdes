@@ -104,17 +104,12 @@ export default function About() {
   }, []);
 
   // Reset auto-scroll whenever index/close changes
+  // Auto-scroll is now driven by the progress bar's onAnimationComplete
+  // to ensure perfect synchronization.
   useEffect(() => {
+    // Clear any existing intervals if they exist (cleanup)
     clearAutoScroll();
-    if (!isPopupOpen) {
-      autoScrollInterval.current = setInterval(() => {
-        setMobileActiveIndex((prev) =>
-          prev + 1 < cards.length ? prev + 1 : 0
-        );
-      }, 5000);
-    }
-    return clearAutoScroll;
-  }, [cards.length, isPopupOpen, clearAutoScroll]);
+  }, [clearAutoScroll]);
 
   const calculateScrollPosition = useCallback((index) => {
     const container = containerRef.current;
@@ -179,13 +174,8 @@ export default function About() {
     const handleTouchEnd = (e) => {
       if (isPopupOpen) return;
       // Resume auto-scroll after a delay to allow snap to complete
-      setTimeout(() => {
-        autoScrollInterval.current = setInterval(() => {
-          setMobileActiveIndex((prev) =>
-            prev + 1 < cards.length ? prev + 1 : 0
-          );
-        }, 5000);
-      }, 300);
+      // No explicit resume needed; changing index (even by scroll) 
+      // resets the progress bar key, which restarts the animation automatically.
     };
 
     container.addEventListener("touchstart", handleTouchStart, {
@@ -292,6 +282,9 @@ export default function About() {
                   animate={{ width: "100%" }}
                   transition={{ duration: 5, ease: "linear" }}
                   style={{ transformOrigin: "left center" }}
+                  onAnimationComplete={() => {
+                     setMobileActiveIndex((prev) => (prev + 1) % cards.length);
+                  }}
                 />
               )}
 

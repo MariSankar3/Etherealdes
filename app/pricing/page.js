@@ -127,7 +127,7 @@ export default function PricingPage() {
 
             <div className="w-full h-full flex flex-col items-center">
                 <div
-                    className="relative w-full flex flex-col items-center mt-5 overflow-hidden"
+                    className="relative w-full flex flex-col items-center mt-12 overflow-hidden"
                     role="region"
                     aria-label="Pricing plans carousel"
                 >
@@ -150,7 +150,7 @@ export default function PricingPage() {
                                             : 'z-[1] opacity-40 pointer-events-none'
                                     }`}
                                     style={{
-                                        transform: `translateX(-50%) translateX(${(i - activeIdx) * 80}%)`
+                                        transform: `translateX(-50%)  translateX(${(i - activeIdx) * 108}%)`
                                     }}
                                     aria-current={i === activeIdx}
                                 >
