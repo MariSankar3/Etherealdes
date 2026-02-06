@@ -45,7 +45,7 @@ function Home() {
   // Mobile Embla with customized speed
   const [mobileEmblaRef, mobileEmblaApi] = useEmblaCarousel({
     loop: true,
-    duration: 50, // Slower/Smoother transition (default is ~25ish or based on spring physics)
+    // duration removed to use native spring physics for smoothness
   });
 
   const isAnimatingRef = useRef(false);
@@ -56,8 +56,8 @@ function Home() {
   useEffect(() => {
     const el = containerRef.current || window;
     let startY = 0;
-    const threshold = 50; // Increased threshold to avoid accidental triggers
-    const cooldownMs = 300; // Cooldown to define "one swipe"
+    const threshold = 20; // Lower threshold for responsiveness
+    const cooldownMs = 150; // Faster cooldown for snappier feel
 
     const onTouchStart = (e) => {
       if (!e.changedTouches || e.changedTouches.length === 0) return;
