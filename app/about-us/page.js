@@ -1,31 +1,31 @@
 "use client";
-import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback, useMemo } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import { Arrow, Indicator } from "../components/icons/icons";
 import Link from "next/link";
 import { ROUTE } from "../../app/constants/constants";
 
-const CARD_WIDTH = 320;
 const CARD_GAP = 16;
-
-function debounce(func, delay) {
-  let timer;
-  return function (...args) {
-    clearTimeout(timer);
-    timer = setTimeout(() => func(...args), delay);
-  };
-}
+const SLIDE_DURATION = 5; // 5 seconds per slide as per previous logic
 
 export default function About() {
-  const isProgressRunningRef = useRef(false);
-  const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
-  const [isPopupOpen, setIsPopupOpen] = useState(false);
-  const [popupCardIndex, setPopupCardIndex] = useState(null);
-
-  const progressKey = mobileActiveIndex;
-
-  const autoScrollInterval = useRef(null);
   const containerRef = useRef(null);
+  const [cardWidth, setCardWidth] = useState(320);
+
+  // Update card width on resize to match original 85% logic
+  useEffect(() => {
+    const handleResize = () => {
+      // Original logic was w-[85%] container with w-full card.
+      // So card width effectively 85% of screen.
+      // We cap it at 350 to avoid getting too huge on tablets before shifting layout.
+      const newWidth = Math.min(window.innerWidth * 0.85, 350); 
+      setCardWidth(newWidth);
+    };
+    
+    handleResize(); // Initial set
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, []);
 
   const cards = [
     {
@@ -100,123 +100,111 @@ export default function About() {
     },
   ];
 
-  // Clear auto-scroll (helper)
-  const clearAutoScroll = useCallback(() => {
-    if (autoScrollInterval.current) clearInterval(autoScrollInterval.current);
-  }, []);
+  // Triple the cards for the infinite loop effect
+  const extendedCards = useMemo(() => [...cards, ...cards, ...cards], [cards]);
 
-  // Reset auto-scroll whenever index/close changes
-  // Auto-scroll is now driven by the progress bar's onAnimationComplete
-  // to ensure perfect synchronization.
-  useEffect(() => {
-    // Clear any existing intervals if they exist (cleanup)
-    clearAutoScroll();
-  }, [clearAutoScroll]);
+  // Start at the first card of the middle set
+  const [currentIndex, setCurrentIndex] = useState(cards.length);
+  const [isPopupOpen, setIsPopupOpen] = useState(false);
+  const [popupCardIndex, setPopupCardIndex] = useState(null);
 
-  const calculateScrollPosition = useCallback((index) => {
-    const container = containerRef.current;
-    if (!container) return 0;
-    const cardStart = index * (CARD_WIDTH + CARD_GAP);
-    const containerHalf = container.clientWidth / 2;
-    const cardHalf = CARD_WIDTH / 2;
-    let scrollLeft = cardStart + cardHalf - containerHalf;
-    const maxScroll = container.scrollWidth - container.clientWidth;
-    scrollLeft = Math.max(0, Math.min(scrollLeft, maxScroll));
-    return scrollLeft;
-  }, []);
+  // Centering Logic Function
+  const getScrollPosition = useCallback((index) => {
+    if (!containerRef.current) return 0;
+    const containerWidth = containerRef.current.offsetWidth;
+    const cardTotalWidth = cardWidth + CARD_GAP;
 
-  // Scroll to active card smoothly
-  useEffect(() => {
-    const container = containerRef.current;
-    if (container) {
-      const scrollLeft = calculateScrollPosition(mobileActiveIndex);
-      container.scrollTo({
-        left: scrollLeft,
-        behavior: isProgressRunningRef.current ? "auto" : "smooth",
-      });
-    }
-  }, [mobileActiveIndex, calculateScrollPosition]);
+    // Center the card: (Position of card) - (Half of container) + (Half of card)
+    return index * cardTotalWidth - containerWidth / 2 + cardWidth / 2;
+  }, [cardWidth]);
 
-  const updateActiveFromScroll = useCallback(() => {
+  // Handle the "Infinite" Jump (Snap back to middle set without animation)
+  const handleInfiniteLoop = useCallback(() => {
     const container = containerRef.current;
     if (!container) return;
-    const containerHalf = container.clientWidth / 2;
-    const cardHalf = CARD_WIDTH / 2;
-    const center = container.scrollLeft + containerHalf;
-    const adjusted = center - cardHalf;
-    const newIndex = Math.round(adjusted / (CARD_WIDTH + CARD_GAP));
-    const clamped = Math.max(0, Math.min(cards.length - 1, newIndex));
-    if (!isProgressRunningRef.current && clamped !== mobileActiveIndex) {
-      setMobileActiveIndex(clamped);
-    }
-  }, [cards.length, mobileActiveIndex]);
 
+    if (currentIndex >= cards.length * 2) {
+      const jumpIndex = currentIndex - cards.length;
+      container.scrollTo({ left: getScrollPosition(jumpIndex) });
+      setCurrentIndex(jumpIndex);
+    } else if (currentIndex < cards.length) {
+      const jumpIndex = currentIndex + cards.length;
+      container.scrollTo({ left: getScrollPosition(jumpIndex) });
+      setCurrentIndex(jumpIndex);
+    }
+  }, [currentIndex, cards.length, getScrollPosition]);
+
+  // Scroll to active card whenever index changes
   useEffect(() => {
     const container = containerRef.current;
     if (container && !isPopupOpen) {
-      const debouncedUpdate = debounce(updateActiveFromScroll, 50);
-      container.addEventListener("scroll", debouncedUpdate);
-      return () => {
-        container.removeEventListener("scroll", debouncedUpdate);
-      };
+      container.scrollTo({
+        left: getScrollPosition(currentIndex),
+        behavior: "smooth",
+      });
     }
-  }, [updateActiveFromScroll, isPopupOpen]);
+  }, [currentIndex, isPopupOpen, getScrollPosition]);
 
-  // Touch swiping
+  // Handle screen resize to keep card centered
   useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    let startX = 0;
-
-    const handleTouchStart = (e) => {
-      startX = e.touches[0].clientX;
-      clearAutoScroll();
+    const handleResize = () => {
+      if (containerRef.current) {
+        containerRef.current.scrollTo({
+          left: getScrollPosition(currentIndex),
+        });
+      }
     };
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
+  }, [currentIndex, getScrollPosition]);
 
-    const handleTouchEnd = (e) => {
-      if (isPopupOpen) return;
-      // Resume auto-scroll after a delay to allow snap to complete
-      // No explicit resume needed; changing index (even by scroll)
-      // resets the progress bar key, which restarts the animation automatically.
-    };
-
-    container.addEventListener("touchstart", handleTouchStart, {
-      passive: true,
-    });
-    container.addEventListener("touchend", handleTouchEnd, { passive: true });
-    return () => {
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [cards.length, isPopupOpen, clearAutoScroll]);
-
-  // Prevent body scroll during popup
-  const fadeUp = {
-    hidden: { opacity: 0, y: 40 },
-    visible: {
-      opacity: 1,
-      y: 0,
-      transition: {
-        duration: 0.5,
-        ease: "easeIn",
-      },
-    },
+  const openPopup = (index) => {
+    setPopupCardIndex(index % cards.length);
+    setIsPopupOpen(true);
   };
+
+  const touchStartX = useRef(0);
+  const touchEndX = useRef(0);
+
+  const handleTouchStart = (e) => {
+    touchStartX.current = e.changedTouches[0].screenX;
+  };
+
+  const handleTouchEnd = (e) => {
+    touchEndX.current = e.changedTouches[0].screenX;
+    handleSwipe();
+  };
+
+  const handleSwipe = () => {
+    const difference = touchStartX.current - touchEndX.current;
+    if (Math.abs(difference) > 50) {
+      if (difference > 0) {
+        // Swipe Left -> Next
+        setCurrentIndex((prev) => prev + 1);
+      } else {
+        // Swipe Right -> Prev
+        setCurrentIndex((prev) => prev - 1);
+      }
+    }
+  };
+
   useEffect(() => {
     document.body.style.overflow = isPopupOpen ? "hidden" : "";
     return () => (document.body.style.overflow = "");
   }, [isPopupOpen]);
 
-  const openPopup = (index) => {
-    setPopupCardIndex(index);
-    setIsPopupOpen(true);
-    clearAutoScroll();
+  const fadeUp = {
+    hidden: { opacity: 0, y: 40 },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { duration: 0.5, ease: "easeIn" },
+    },
   };
-  const closePopup = () => setIsPopupOpen(false);
 
   return (
     <div className="bg-[#121212] text-white w-full overflow-x-hidden flex flex-col">
-      <div className="bg-[#121212] text-white lg:min-h-screen w-full overflow-x-hidden flex flex-col md:justify-between">
+      <div className="bg-[#121212] text-white lg:min-h-screen w-full overflow-x-hidden flex flex-col md:justify-between relative">
         {/* Mobile Header */}
         <div className="flex sm:hidden h-[103px] border-b border-[#4F4E4E] flex-col font-antonio">
           <motion.div variants={fadeUp} className="w-full flex flex-1">
@@ -254,41 +242,43 @@ export default function About() {
           </div>
         </div>
       </div>
-      {/* Mobile Version - Cards with Popup */}
-      <div className="sm:hidden mobile-cards-container sm:relative h-[400px] px-4 pb-8 absolute bottom-[-60px] w-[85%]">
+
+      {/* Center-Aligned Infinite Carousel */}
+      <div className="sm:hidden mobile-cards-container relative h-[450px] w-full mt-40 overflow-hidden flex flex-col items-center">
         <div
-          className="flex gap-4 overflow-x-auto scrollbar-hide scroll-smooth"
+          className="flex overflow-x-hidden scrollbar-hide w-full "
           ref={containerRef}
-          style={{ scrollSnapType: "x mandatory" }}
+          onTouchStart={handleTouchStart}
+          onTouchEnd={handleTouchEnd}
         >
-          {cards.map((card, index) => (
+          {extendedCards.map((card, index) => (
             <motion.div
-              key={card.id}
-              className={`border flex-shrink-0 w-[100%] h-[275px] relative cursor-pointer overflow-hidden group transition-all duration-300 ${
-                mobileActiveIndex === index
-                  ? "border-[#4E4E4E] border"
-                  : "border-[#4E4E4E] border"
+              key={`${card.id}-${index}`}
+              className={`border flex-shrink-0 relative cursor-pointer overflow-hidden transition-all duration-500 ${
+                currentIndex === index
+                  ? "opacity-100 border-[#4E4E4E]"
+                  : "opacity-40 border-[#4E4E4E]"
               }`}
               style={{
-                width: CARD_WIDTH,
-                marginRight: index !== cards.length - 1 ? CARD_GAP : 0,
-                scrollSnapAlign: "center",
+                width: cardWidth,
+                height: 275, // Fixed height for mobile cards
+                marginRight: CARD_GAP,
               }}
-              onClick={() => openPopup(index)}
+              onClick={() => {
+                if (currentIndex === index) openPopup(index);
+                else setCurrentIndex(index);
+              }}
             >
-              {mobileActiveIndex === index && (
+              {/* Progress Bar */}
+              {currentIndex === index && !isPopupOpen && (
                 <motion.div
-                  key={progressKey}
-                  className="absolute top-0 left-0 h-[5px] bg-white"
+                  className="absolute top-0 left-0 h-[5px] bg-white z-20"
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
-                  transition={{ duration: 2, ease: "linear" }}
-                  onAnimationStart={() => {
-                    isProgressRunningRef.current = true;
-                  }}
+                  transition={{ duration: SLIDE_DURATION, ease: "linear" }}
                   onAnimationComplete={() => {
-                    isProgressRunningRef.current = false;
-                    setMobileActiveIndex((prev) => (prev + 1) % cards.length);
+                    handleInfiniteLoop();
+                    setCurrentIndex((prev) => prev + 1);
                   }}
                 />
               )}
@@ -302,11 +292,11 @@ export default function About() {
 
               {/* Content */}
               <div className="absolute inset-0 flex items-center justify-center z-10">
-                <div className="p-6 text-white">
+                <div className="p-6 text-white text-center">
                   <h2 className="text-xl font-antonio mb-2 uppercase">
                     {card.title}
                   </h2>
-                  <p className="text-gray-400 font-antonio md:w-[85%] w-[94%] text-md">
+                  <p className="text-gray-400 font-antonio text-md">
                     {card.content}
                   </p>
                 </div>
@@ -314,20 +304,22 @@ export default function About() {
             </motion.div>
           ))}
         </div>
+
         {/* Navigation Dots */}
         <div className="lg:hidden absolute bottom-[50px] rotate-270 left-1/2 transform -translate-x-1/2 flex-col flex gap-[30px] z-10">
           {cards.map((_, index) => (
             <Indicator
               key={index}
-              className={`cursor-pointer ${
-                mobileActiveIndex === index
+              className={`cursor-pointer transition-all duration-300 ${
+                currentIndex % cards.length === index
                   ? "text-white w-[30px]"
                   : "text-[#4E4E4E] w-[20px]"
               }`}
-              onClick={() => setMobileActiveIndex(index)}
+              onClick={() => setCurrentIndex(cards.length + index)}
             />
           ))}
         </div>
+
         {/* Popup for Mobile */}
         <AnimatePresence>
           {isPopupOpen && popupCardIndex !== null && (
@@ -426,6 +418,16 @@ export default function About() {
           )}
         </AnimatePresence>
       </div>
+
+      <style jsx global>{`
+        .scrollbar-hide::-webkit-scrollbar {
+          display: none;
+        }
+        .scrollbar-hide {
+          -ms-overflow-style: none;
+          scrollbar-width: none;
+        }
+      `}</style>
     </div>
   );
 }
