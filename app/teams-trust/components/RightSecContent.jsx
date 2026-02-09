@@ -235,11 +235,9 @@ function RightSecContent({ setActiveIndex }) {
                     : "0px 0px 0px 0px rgba(100, 48, 48, 0)",
               }}
               transition={{
-                scale: {
-                  duration: 0.4,
-                  delay: 0.05,
-                  ease: [0.25, 0.8, 0.25, 1],
-                },
+                 height: { duration: 0.5, ease: "easeInOut" },
+                scale: { duration: 0.5, ease: "easeInOut" },
+                boxShadow: { duration: 0, ease: "easeInOut" },
               }}
             >
               {/* Proper heading hierarchy */}
