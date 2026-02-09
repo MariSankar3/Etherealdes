@@ -232,7 +232,7 @@ export default function About() {
 
   return (
     <div className="bg-[#121212] text-white w-full overflow-x-hidden flex flex-col">
-      <div className="bg-[#121212] text-white min-h-screen w-full overflow-x-hidden flex flex-col md:justify-between relative">
+      <div className="bg-[#121212] text-white w-full overflow-x-hidden flex flex-col md:justify-between relative">
         {/* Mobile Header */}
         <div className="flex sm:hidden h-[103px] border-b border-[#4F4E4E] flex-col font-antonio">
           <motion.div variants={fadeUp} className="w-full flex flex-1">
@@ -271,7 +271,7 @@ export default function About() {
         </div>
       
       {/* Center-Aligned Infinite Carousel */}
-      <div className="sm:hidden mobile-cards-container w-full h-[400px] mb-25 overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
+      <div className="sm:hidden mobile-cards-container w-full h-[450px] mb-25 overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
         <div
           className={`flex overflow-x-hidden scrollbar-hide w-full transition-opacity duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
           ref={containerRef}
@@ -289,7 +289,7 @@ export default function About() {
               style={{
                 width: "75vw",
                 maxWidth: "350px",
-                height: 215, // Fixed height for mobile cards
+                height: 225, // Fixed height for mobile cards
                 marginRight: CARD_GAP,
               }}
               onClick={() => {
