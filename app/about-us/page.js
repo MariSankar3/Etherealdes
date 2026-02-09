@@ -158,7 +158,7 @@ export default function About() {
              // Small timeout to ensure paint/layout is 100% stable before revealing
              setTimeout(() => {
                 setIsReady(true);
-             }, 500);
+             }, 550);
           });
       } else {
         // Subsequent navigations: Smooth scroll
@@ -257,7 +257,7 @@ export default function About() {
         </div>
         {/* Header Section */}
         <div className="p-4 md:px-8">
-          <div className="block sm:flex items-end sm:mb-2 mb-8 md:mb-2">
+          <div className="block sm:flex items-end sm:mb-2 mb-16 md:mb-2">
             <div className="sm:w-[50%] w-[90%]">
               <h3 className="font-antonio text-lg lg:block hidden">About Us</h3>
               <h1 className="font-antonio text-2xl md:text-4xl capitalize mb-1 w-[70%] md:w-[100%]">
@@ -274,7 +274,7 @@ export default function About() {
         </div>
       
       {/* Center-Aligned Infinite Carousel */}
-      <div className="sm:hidden mobile-cards-container w-full h-[450px] mb-25 overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
+      <div className="sm:hidden mobile-cards-container w-full h-[450px]  overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
         <div
           className="flex flex-nowrap overflow-x-hidden scrollbar-hide w-full transition-opacity duration-500"
           ref={containerRef}
