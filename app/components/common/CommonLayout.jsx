@@ -68,11 +68,7 @@ export default function CommonLayout({
         </div>
 
         {/* SCROLLABLE CONTENT */}
-        <div
-          className={`flex-1 w-full ${
-            isTeamsTrustPage ? "overflow-hidden" : "overflow-y-auto"
-          }`}
-        >
+        <div className="flex-1 w-full overflow-y-auto overflow-x-hidden">
           <div className="shrink-0">{midsec}</div>
           {children}
         </div>

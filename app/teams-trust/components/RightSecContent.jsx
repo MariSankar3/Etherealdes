@@ -172,7 +172,7 @@ function RightSecContent({ setActiveIndex }) {
     /* ===== Semantic Section ===== */
     <section
       aria-labelledby="teams-trust-heading"
-      className="h-full w-full md:py-[20px] lg:py-[30px] xl:py-[40px] flex flex-col sm:justify-center items-center md:border-l border-[#4E4E4E] gap-[10px] overflow-hidden ml-[20px] sm:ml-[0]"
+      className="md:h-full w-full md:py-[20px] lg:py-[30px] xl:py-[40px] flex flex-col sm:justify-center items-center md:border-l border-[#4E4E4E] gap-[10px] md:overflow-hidden pl-[20px] sm:pl-[0]"
     >
       <meta itemProp="serviceType" content="Design Studio" />
       <meta itemProp="provider" content="Ethereal Design Studio" />
