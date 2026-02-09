@@ -274,7 +274,7 @@ export default function About() {
         </div>
       
       {/* Center-Aligned Infinite Carousel */}
-      <div className="sm:hidden mobile-cards-container w-full h-[450px]  overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
+      <div className="sm:hidden mobile-cards-container w-full h-[450px]  overflow-hidden flex flex-col justify-center items-center z-40 mt-auto mb-10">
         <div
           className="flex flex-nowrap overflow-x-hidden scrollbar-hide w-full transition-opacity duration-500"
           ref={containerRef}
