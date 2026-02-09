@@ -271,7 +271,7 @@ export default function About() {
         </div>
       
       {/* Center-Aligned Infinite Carousel */}
-      <div className="sm:hidden mobile-cards-container w-full h-[400px] overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
+      <div className="sm:hidden mobile-cards-container w-full h-[400px] mb-25 overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
         <div
           className={`flex overflow-x-hidden scrollbar-hide w-full transition-opacity duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
           ref={containerRef}
@@ -289,7 +289,7 @@ export default function About() {
               style={{
                 width: "75vw",
                 maxWidth: "350px",
-                height: 265, // Fixed height for mobile cards
+                height: 215, // Fixed height for mobile cards
                 marginRight: CARD_GAP,
               }}
               onClick={() => {
@@ -334,7 +334,7 @@ export default function About() {
         </div>
 
         {/* Navigation Dots */}
-        <div className="lg:hidden absolute bottom-[-20px] rotate-270 left-1/2 transform -translate-x-1/2 flex-col flex gap-[30px] z-10">
+        <div className="lg:hidden absolute bottom-[50px] rotate-270 left-1/2 transform -translate-x-1/2 flex-col flex gap-[30px] z-10">
           {cards.map((_, index) => (
             <Indicator
               key={index}
