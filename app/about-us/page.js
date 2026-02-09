@@ -155,8 +155,11 @@ export default function About() {
         
         // Show the carousel only after positioning is done
         requestAnimationFrame(() => {
-           setIsReady(true);
-        });
+             // Small timeout to ensure paint/layout is 100% stable before revealing
+             setTimeout(() => {
+                setIsReady(true);
+             }, 500);
+          });
       } else {
         // Subsequent navigations: Smooth scroll
         container.scrollTo({
@@ -273,10 +276,14 @@ export default function About() {
       {/* Center-Aligned Infinite Carousel */}
       <div className="sm:hidden mobile-cards-container w-full h-[450px] mb-25 overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
         <div
-          className={`flex overflow-x-hidden scrollbar-hide w-full transition-opacity duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
+          className="flex flex-nowrap overflow-x-hidden scrollbar-hide w-full transition-opacity duration-500"
           ref={containerRef}
           onTouchStart={handleTouchStart}
           onTouchEnd={handleTouchEnd}
+          style={{ 
+            visibility: isReady ? "visible" : "hidden",
+            opacity: isReady ? 1 : 0 
+          }}
         >
           {extendedCards.map((card, index) => (
             <motion.div
