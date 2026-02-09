@@ -334,7 +334,7 @@ export default function About() {
         </div>
 
         {/* Navigation Dots */}
-        <div className="lg:hidden absolute bottom-[50px] rotate-270 left-1/2 transform -translate-x-1/2 flex-col flex gap-[30px] z-10">
+        <div className="lg:hidden absolute bottom-[20px] rotate-270 left-1/2 transform -translate-x-1/2 flex-col flex gap-[30px] z-10">
           {cards.map((_, index) => (
             <Indicator
               key={index}
