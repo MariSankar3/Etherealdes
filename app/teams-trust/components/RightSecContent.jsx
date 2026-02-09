@@ -66,26 +66,29 @@ function RightSecContent({ setActiveIndex }) {
   }, []);
 
   /* ---------- auto scroll + interactions (unchanged) ---------- */
-  useEffect(() => {
-    function stopAutoScroll() {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current);
-        autoScrollIntervalRef.current = null;
-      }
+  /* ---------- auto scroll + interactions ---------- */
+  const stopAutoScroll = () => {
+    if (autoScrollIntervalRef.current) {
+      clearInterval(autoScrollIntervalRef.current);
+      autoScrollIntervalRef.current = null;
     }
-    function startAutoScroll() {
-      stopAutoScroll();
-      autoScrollIntervalRef.current = setInterval(() => {
-        setActiveIndexState((prev) => prev + 1);
-      }, 8000);
-    }
-    function restartAutoScrollAfterDelay() {
-      stopAutoScroll();
-      if (autoScrollTimeoutRef.current)
-        clearTimeout(autoScrollTimeoutRef.current);
-      autoScrollTimeoutRef.current = setTimeout(startAutoScroll, 8000);
-    }
+  };
 
+  const startAutoScroll = () => {
+    stopAutoScroll();
+    autoScrollIntervalRef.current = setInterval(() => {
+      setActiveIndexState((prev) => prev + 1);
+    }, 8000);
+  };
+
+  const restartAutoScrollAfterDelay = () => {
+    stopAutoScroll();
+    if (autoScrollTimeoutRef.current)
+      clearTimeout(autoScrollTimeoutRef.current);
+    autoScrollTimeoutRef.current = setTimeout(startAutoScroll, 8000);
+  };
+
+  useEffect(() => {
     startAutoScroll();
 
     const wrapper = wrapperRef.current;
@@ -139,6 +142,12 @@ function RightSecContent({ setActiveIndex }) {
       wrapper?.removeEventListener("touchend", handleTouchEnd);
     };
   }, [numCards]);
+
+  const handleCardClick = (index) => {
+    if (index === activeIndex) return;
+    setActiveIndexState(index);
+    restartAutoScrollAfterDelay();
+  };
 
   /* ---------- helpers ---------- */
   const getCardHeight = (isActive) => {
@@ -218,10 +227,11 @@ function RightSecContent({ setActiveIndex }) {
               key={index}
               role="listitem"
               ref={index === 1 ? cardRef : null}
+              onClick={() => handleCardClick(index)}
               itemScope
               itemType="https://schema.org/Review"
               aria-current={index % numCards === activeIndex % numCards}
-              className={`p-[15px] sm:p-[25px] md:p-[30px] lg:p-[40px] border-[1px] border-[#4E4E4E] font-400 min-w-[249px] sm:min-w-[280px] md:min-w-[300px] lg:min-w-[340px] text-[16px] font-antonio flex flex-col justify-center
+              className={`p-[15px] sm:p-[25px] md:p-[30px] lg:p-[40px] border-[1px] border-[#4E4E4E] font-400 min-w-[249px] sm:min-w-[280px] md:min-w-[300px] lg:min-w-[340px] text-[16px] font-antonio flex flex-col justify-center cursor-pointer
               ${index % numCards === activeIndex % numCards ? "bg-[#DBF900] text-black" : "bg-[#121212] text-white"}`}
               initial={false}
               animate={{
@@ -235,7 +245,7 @@ function RightSecContent({ setActiveIndex }) {
                     : "0px 0px 0px 0px rgba(100, 48, 48, 0)",
               }}
               transition={{
-                 height: { duration: 0.5, ease: "easeInOut" },
+                height: { duration: 0.5, ease: "easeInOut" },
                 scale: { duration: 0.5, ease: "easeInOut" },
                 boxShadow: { duration: 0, ease: "easeInOut" },
               }}

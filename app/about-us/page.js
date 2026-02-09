@@ -169,7 +169,7 @@ export default function About() {
         
         const timer = setTimeout(() => {
            handleInfiniteLoop();
-        }, 650); // Wait for smooth scroll to finish
+        }, 700); // Wait for smooth scroll to finish
         return () => clearTimeout(timer);
       }
     }
