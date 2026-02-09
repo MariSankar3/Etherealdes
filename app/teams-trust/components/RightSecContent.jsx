@@ -269,7 +269,7 @@ function RightSecContent({ setActiveIndex }) {
       </div>
 
       {/* ===== Mobile Indicators ===== */}
-      <div className="flex md:hidden flex-row gap-[5px] justify-end items-end mx-auto absolute bottom-10 left-auto">
+      {/* <div className="flex md:hidden flex-row gap-[5px] justify-end items-end mx-auto absolute bottom-10 left-auto">
         {rightSecContentData.map((_, i) => (
           <Indicator
             key={i}
@@ -280,7 +280,7 @@ function RightSecContent({ setActiveIndex }) {
             } rotate-90`}
           />
         ))}
-      </div>
+      </div> */}
     </section>
   );
 }
