@@ -171,10 +171,9 @@ function RightSecContent({ setActiveIndex }) {
   return (
     /* ===== Semantic Section ===== */
     <section
-  aria-labelledby="teams-trust-heading"
-  className="relative h-full w-full py-[20px] md:py-[20px] lg:py-[30px] xl:py-[40px] flex flex-col sm:justify-center sm:items-center md:border-l border-[#4E4E4E] gap-[10px] overflow-hidden ml-[20px] sm:ml-[0]"
->
-
+      aria-labelledby="teams-trust-heading"
+      className="h-full w-full md:py-[20px] lg:py-[30px] xl:py-[40px] flex flex-col sm:justify-center items-center md:border-l border-[#4E4E4E] gap-[10px] overflow-hidden ml-[20px] sm:ml-[0]"
+    >
       <meta itemProp="serviceType" content="Design Studio" />
       <meta itemProp="provider" content="Ethereal Design Studio" />
 
@@ -195,7 +194,7 @@ function RightSecContent({ setActiveIndex }) {
       <div
         ref={wrapperRef}
         role="list"
-        className="relative flex items-center w-full select-none overflow-hidden py-[40px]"
+        className="relative flex items-center w-full select-none py-[40px]"
         style={{ touchAction: "pan-y" }}
       >
         <motion.div
@@ -204,7 +203,7 @@ function RightSecContent({ setActiveIndex }) {
           transition={
             isResetting
               ? { duration: 0 }
-              : { duration: 0.8, ease: [0.32, 0.72, 0, 1] }
+              : { duration: 0.8, ease: [0.32, 0.9, 0, 1] }
           }
           onAnimationComplete={handleAnimationComplete}
           style={{
@@ -214,6 +213,8 @@ function RightSecContent({ setActiveIndex }) {
         >
           {infiniteData.map((item, index) => (
             <motion.article
+              layout
+              layoutId={`card-${index % numCards}`}
               key={index}
               role="listitem"
               ref={index === 1 ? cardRef : null}
@@ -227,11 +228,11 @@ function RightSecContent({ setActiveIndex }) {
                 height: getCardHeight(
                   index % numCards === activeIndex % numCards,
                 ),
-                scale: index % numCards === activeIndex % numCards ? 1.02 : 1,
+                scale: index % numCards === activeIndex % numCards ? 1.01 : 1,
                 boxShadow:
                   index % numCards === activeIndex % numCards
-                    ? "0px 0px 10px 2px rgba(219, 249, 0, 0.4)"
-                    : "0px 0px 0px 0px rgba(0,0,0,0)",
+                    ? "0px 0px 10px 2px rgba(219, 249, 0, 0.35)"
+                    : "0px 0px 0px 0px rgba(100, 48, 48, 0)",
               }}
               transition={{
                 height: { duration: 0.5, ease: "easeInOut" },
@@ -268,17 +269,14 @@ function RightSecContent({ setActiveIndex }) {
       </div>
 
       {/* ===== Mobile Indicators ===== */}
-      <div
-  className="md:hidden absolute bottom-[6px] right-[16px] flex flex-col gap-[6px] items-end z-20"
-  aria-hidden="true"
->
+      <div className="flex md:hidden flex-row gap-[5px] justify-end items-end mx-auto absolute bottom-10 left-auto">
         {rightSecContentData.map((_, i) => (
           <Indicator
             key={i}
-            className={`transition-all duration-300 ${
-              activeIndex % numCards === i
-                ? "text-white w-[30px]"
-                : "text-[#4F4E4E] w-[20px]"
+            className={`transition-all duration-300 border-b-1 ${
+              activeIndex === i
+                ? "text-white w-[30px] border-white"
+                : "text-[#4F4E4E] w-[20px] border-[#4F4E4E]"
             } rotate-90`}
           />
         ))}

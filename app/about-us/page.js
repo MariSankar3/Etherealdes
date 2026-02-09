@@ -1,16 +1,19 @@
 "use client";
 import { useState, useEffect, useRef, useCallback, useMemo } from "react";
+import { createPortal } from "react-dom";
 import { motion, AnimatePresence } from "framer-motion";
 import { Arrow, Indicator } from "../components/icons/icons";
 import Link from "next/link";
 import { ROUTE } from "../../app/constants/constants";
 
-const CARD_GAP = 16;
+const CARD_GAP = 20;
 const SLIDE_DURATION = 5; // 5 seconds per slide as per previous logic
 
 export default function About() {
   const containerRef = useRef(null);
+  const hasUserInteracted = useRef(false);
   
+
   // Ref to track if we've done the initial instant scroll
   const hasInitialized = useRef(false);
 
@@ -95,6 +98,11 @@ export default function About() {
   const [isPopupOpen, setIsPopupOpen] = useState(false);
   const [popupCardIndex, setPopupCardIndex] = useState(null);
   const [isReady, setIsReady] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   // Centering Logic Function
   const getScrollPosition = useCallback((index) => {
@@ -102,12 +110,36 @@ export default function About() {
     const containerWidth = containerRef.current.offsetWidth;
     
     // Calculate card width dynamically (matching CSS: 85vw capped at 350px)
-    const computedCardWidth = Math.min(window.innerWidth * 0.85, 350);
+    const computedCardWidth = Math.min(window.innerWidth * 0.75, 350);
     const cardTotalWidth = computedCardWidth + CARD_GAP;
 
     // Center the card: (Position of card) - (Half of container) + (Half of card)
     return index * cardTotalWidth - containerWidth / 2 + computedCardWidth / 2;
   }, []);
+
+  // Check for infinite loop bounds after scroll animation (approx 500ms)
+  const handleInfiniteLoop = useCallback(() => {
+     const totalCards = cards.length;
+     if (currentIndex >= totalCards * 2) {
+       const newIndex = currentIndex - totalCards;
+       if (containerRef.current) {
+          containerRef.current.scrollTo({
+             left: getScrollPosition(newIndex),
+             behavior: "auto"
+          });
+       }
+       setCurrentIndex(newIndex);
+     } else if (currentIndex < totalCards) {
+       const newIndex = currentIndex + totalCards;
+        if (containerRef.current) {
+          containerRef.current.scrollTo({
+             left: getScrollPosition(newIndex),
+             behavior: "auto"
+          });
+       }
+       setCurrentIndex(newIndex);
+     }
+  }, [currentIndex, cards.length, getScrollPosition]);
 
   // Scroll to active card whenever index changes
   useEffect(() => {
@@ -131,36 +163,14 @@ export default function About() {
           left: getScrollPosition(currentIndex),
           behavior: "smooth",
         });
-
-        // Check for infinite loop bounds after scroll animation (approx 500ms)
-        const totalCards = cards.length; // e.g., 4
-        // Valid main set is from totalCards to 2*totalCards - 1
-        // If we are at 2*totalCards (first of 3rd set), we look like index 0 of main set.
-        // If we are at totalCards - 1 (last of 1st set), we look like last of main set.
         
-        if (currentIndex >= totalCards * 2 || currentIndex < totalCards) {
-          const timer = setTimeout(() => {
-            if (currentIndex >= totalCards * 2) {
-               const newIndex = currentIndex - totalCards;
-               container.scrollTo({
-                 left: getScrollPosition(newIndex),
-                 behavior: "auto"
-               });
-               setCurrentIndex(newIndex);
-            } else if (currentIndex < totalCards) {
-               const newIndex = currentIndex + totalCards;
-               container.scrollTo({
-                 left: getScrollPosition(newIndex),
-                 behavior: "auto"
-               });
-               setCurrentIndex(newIndex);
-            }
-          }, 600); // Wait for smooth scroll to finish
-          return () => clearTimeout(timer);
-        }
+        const timer = setTimeout(() => {
+           handleInfiniteLoop();
+        }, 600); // Wait for smooth scroll to finish
+        return () => clearTimeout(timer);
       }
     }
-  }, [currentIndex, isPopupOpen, getScrollPosition, cards.length]);
+  }, [currentIndex, isPopupOpen, getScrollPosition, handleInfiniteLoop]);
 
   // Handle screen resize to keep card centered
   useEffect(() => {
@@ -222,7 +232,7 @@ export default function About() {
 
   return (
     <div className="bg-[#121212] text-white w-full overflow-x-hidden flex flex-col">
-      <div className="bg-[#121212] text-white lg:min-h-screen w-full overflow-x-hidden flex flex-col md:justify-between relative">
+      <div className="bg-[#121212] text-white min-h-screen w-full overflow-x-hidden flex flex-col md:justify-between relative">
         {/* Mobile Header */}
         <div className="flex sm:hidden h-[103px] border-b border-[#4F4E4E] flex-col font-antonio">
           <motion.div variants={fadeUp} className="w-full flex flex-1">
@@ -259,10 +269,9 @@ export default function About() {
             </div>
           </div>
         </div>
-      </div>
-
+      
       {/* Center-Aligned Infinite Carousel */}
-      <div className="sm:hidden mobile-cards-container relative h-[450px] w-full mt-40 overflow-hidden flex flex-col items-center">
+      <div className="sm:hidden mobile-cards-container w-full h-[400px] overflow-hidden flex flex-col justify-center items-center z-40 mt-auto">
         <div
           className={`flex overflow-x-hidden scrollbar-hide w-full transition-opacity duration-500 ${isReady ? 'opacity-100' : 'opacity-0'}`}
           ref={containerRef}
@@ -278,9 +287,9 @@ export default function About() {
                   : "opacity-40 border-[#4E4E4E]"
               }`}
               style={{
-                width: "85vw",
+                width: "75vw",
                 maxWidth: "350px",
-                height: 275, // Fixed height for mobile cards
+                height: 265, // Fixed height for mobile cards
                 marginRight: CARD_GAP,
               }}
               onClick={() => {
@@ -291,12 +300,12 @@ export default function About() {
               {/* Progress Bar */}
               {currentIndex === index && !isPopupOpen && (
                 <motion.div
+                  key={`progress-${index}`}
                   className="absolute top-0 left-0 h-[5px] bg-white z-20"
                   initial={{ width: "0%" }}
                   animate={{ width: "100%" }}
                   transition={{ duration: SLIDE_DURATION, ease: "linear" }}
                   onAnimationComplete={() => {
-                    handleInfiniteLoop();
                     setCurrentIndex((prev) => prev + 1);
                   }}
                 />
@@ -312,7 +321,7 @@ export default function About() {
               {/* Content */}
               <div className="absolute inset-0 flex items-center justify-center z-10">
                 <div className="p-6 text-white text-center">
-                  <h2 className="text-xl font-antonio mb-2 uppercase">
+                  <h2 className="text-xl text-white font-antonio mb-2 uppercase">
                     {card.title}
                   </h2>
                   <p className="text-gray-400 font-antonio text-md">
@@ -325,7 +334,7 @@ export default function About() {
         </div>
 
         {/* Navigation Dots */}
-        <div className="lg:hidden absolute bottom-[50px] rotate-270 left-1/2 transform -translate-x-1/2 flex-col flex gap-[30px] z-10">
+        <div className="lg:hidden absolute bottom-[-20px] rotate-270 left-1/2 transform -translate-x-1/2 flex-col flex gap-[30px] z-10">
           {cards.map((_, index) => (
             <Indicator
               key={index}
@@ -339,11 +348,13 @@ export default function About() {
           ))}
         </div>
 
-        {/* Popup for Mobile */}
+      </div>
+    </div>
+      {mounted && createPortal(
         <AnimatePresence>
           {isPopupOpen && popupCardIndex !== null && (
             <motion.div
-              className="fixed inset-0 z-[1100] flex items-center justify-center px-4 bg-black/40 backdrop-blur-sm"
+              className="fixed inset-0 z-[99999] flex items-center justify-center px-4 bg-black/40 backdrop-blur-sm"
               initial={{ opacity: 0 }}
               animate={{ opacity: 1, transition: { duration: 0.2 } }}
               exit={{ opacity: 0, transition: { duration: 0.2 } }}
@@ -385,7 +396,7 @@ export default function About() {
                     <div key={idx} className="w-full mb-8 last:mb-0">
                       {section.text && (
                         <div>
-                          <h3 className="text-xl font-bold mb-2 font-antonio">
+                          <h3 className="text-xl text-white font-bold mb-2 font-antonio">
                             {section.subTitle || section.name}
                           </h3>
                           <p className="font-antonio text-sm text-gray-400">
@@ -435,8 +446,9 @@ export default function About() {
               </motion.div>
             </motion.div>
           )}
-        </AnimatePresence>
-      </div>
+        </AnimatePresence>,
+        document.body
+      )}
 
       <style jsx global>{`
         .scrollbar-hide::-webkit-scrollbar {

@@ -98,36 +98,6 @@ export default function About() {
     },
   ];
 
-  // Clear auto-scroll (helper)
-  const clearAutoScroll = useCallback(() => {
-    if (autoScrollInterval.current) clearInterval(autoScrollInterval.current);
-  }, []);
-
-  // Reset auto-scroll whenever index/close changes
-  useEffect(() => {
-    clearAutoScroll();
-    if (!isPopupOpen) {
-      autoScrollInterval.current = setInterval(() => {
-        setMobileActiveIndex((prev) =>
-          prev + 1 < cards.length ? prev + 1 : 0
-        );
-      }, 5000);
-    }
-    return clearAutoScroll;
-  }, [cards.length, isPopupOpen, clearAutoScroll]);
-
-  const calculateScrollPosition = useCallback((index) => {
-    const container = containerRef.current;
-    if (!container) return 0;
-    const cardStart = index * (CARD_WIDTH + CARD_GAP);
-    const containerHalf = container.clientWidth / 2;
-    const cardHalf = CARD_WIDTH / 2;
-    let scrollLeft = cardStart + cardHalf - containerHalf;
-    const maxScroll = container.scrollWidth - container.clientWidth;
-    scrollLeft = Math.max(0, Math.min(scrollLeft, maxScroll));
-    return scrollLeft;
-  }, []);
-
   // Scroll to active card smoothly
   useEffect(() => {
     const container = containerRef.current;
@@ -164,39 +134,6 @@ export default function About() {
       };
     }
   }, [updateActiveFromScroll, isPopupOpen]);
-
-  // Touch swiping
-  useEffect(() => {
-    const container = containerRef.current;
-    if (!container) return;
-    let startX = 0;
-
-    const handleTouchStart = (e) => {
-      startX = e.touches[0].clientX;
-      clearAutoScroll();
-    };
-
-    const handleTouchEnd = (e) => {
-      if (isPopupOpen) return;
-      // Resume auto-scroll after a delay to allow snap to complete
-      setTimeout(() => {
-        autoScrollInterval.current = setInterval(() => {
-          setMobileActiveIndex((prev) =>
-            prev + 1 < cards.length ? prev + 1 : 0
-          );
-        }, 5000);
-      }, 300);
-    };
-
-    container.addEventListener("touchstart", handleTouchStart, {
-      passive: true,
-    });
-    container.addEventListener("touchend", handleTouchEnd, { passive: true });
-    return () => {
-      container.removeEventListener("touchstart", handleTouchStart);
-      container.removeEventListener("touchend", handleTouchEnd);
-    };
-  }, [cards.length, isPopupOpen, clearAutoScroll]);
 
   // Prevent body scroll during popup
   const fadeUp = {

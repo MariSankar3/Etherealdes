@@ -1,11 +1,11 @@
-'use client'
+"use client";
 
 import { ROUTE } from "../../constants/constants";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import React, { useRef } from "react";
 import { Arrow } from "../icons/icons";
 import { gsap } from "gsap";
-import { motion } from 'framer-motion';
+import { motion } from "framer-motion";
 
 // AnimatedNavLabel: On hover, label animates each character crossly (diagonally) with stagger
 const AnimatedNavLabel = ({ label, isActive }) => {
@@ -50,7 +50,7 @@ const AnimatedNavLabel = ({ label, isActive }) => {
           duration: 0.28,
           ease: "power2.inOut",
         },
-        i * 0.035
+        i * 0.035,
       );
       tl.fromTo(
         bottomLabelRefs.current[i],
@@ -61,7 +61,7 @@ const AnimatedNavLabel = ({ label, isActive }) => {
           duration: 0.28,
           ease: "power2.inOut",
         },
-        i * 0.035
+        i * 0.035,
       );
     });
   };
@@ -80,7 +80,7 @@ const AnimatedNavLabel = ({ label, isActive }) => {
           duration: 0.2,
           ease: "power2.inOut",
         },
-        i * 0.01
+        i * 0.01,
       );
       tl.to(
         topLabelRefs.current[i],
@@ -90,7 +90,7 @@ const AnimatedNavLabel = ({ label, isActive }) => {
           duration: 0.2,
           ease: "power2.inOut",
         },
-        i * 0.015
+        i * 0.015,
       );
     });
   };
@@ -106,11 +106,14 @@ const AnimatedNavLabel = ({ label, isActive }) => {
       {mounted && (
         <>
           {/* Top label chars */}
-          <span className="block absolute left-0 w-full text-inherit transition-none" style={{ top: 0 }}>
+          <span
+            className="block absolute left-0 w-full text-inherit transition-none"
+            style={{ top: 0 }}
+          >
             {label.split("").map((char, i) => (
               <span
                 key={"top-" + i}
-                ref={el => (topLabelRefs.current[i] = el)}
+                ref={(el) => (topLabelRefs.current[i] = el)}
                 style={{ display: "inline-block" }}
               >
                 {char === " " ? "\u00A0" : char}
@@ -118,11 +121,14 @@ const AnimatedNavLabel = ({ label, isActive }) => {
             ))}
           </span>
           {/* Bottom label chars */}
-          <span className="block absolute left-0 w-full text-inherit transition-none" style={{ top: 0 }}>
+          <span
+            className="block absolute left-0 w-full text-inherit transition-none"
+            style={{ top: 0 }}
+          >
             {label.split("").map((char, i) => (
               <span
                 key={"bottom-" + i}
-                ref={el => (bottomLabelRefs.current[i] = el)}
+                ref={(el) => (bottomLabelRefs.current[i] = el)}
                 style={{ display: "inline-block", opacity: 0 }}
               >
                 {char === " " ? "\u00A0" : char}
@@ -168,19 +174,23 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
   const currentIndex = PAGES.findIndex((page) => page.label === activePage);
   const prevIndex = currentIndex > 0 ? currentIndex - 1 : PAGES.length - 1;
 
-  const getInTouchPage = PAGES.find((page) => page.label === ROUTE.GET_IN_TOUCH.LABEL);
+  const getInTouchPage = PAGES.find(
+    (page) => page.label === ROUTE.GET_IN_TOUCH.LABEL,
+  );
   const prevPage = PAGES[prevIndex];
   const activePageObj = PAGES[currentIndex];
 
   const fadeUp = {
     hidden: { opacity: 0, y: -40 },
-    visible: { opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.7, ease: 'easeOut' } },
+    visible: {
+      opacity: 1,
+      y: 0,
+      transition: { delay: 0.2, duration: 0.7, ease: "easeOut" },
+    },
   };
 
   return (
-    <motion.div
-      className={`font-antonio w-full ${className}`}
-    >
+    <motion.div className={`font-antonio w-full ${className}`}>
       <motion.div
         className={`w-full h-[73px] text-center text-white hidden sm:flex border-[0_1px_1px_1px] border-[#4F4E4E]`}
       >
@@ -193,21 +203,33 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
                   animate="visible"
                   variants={fadeUp}
                   type="button"
-                  className={`group cursor-pointer flex-1 flex justify-center items-center px-2 transition-colors duration-300 ${activePage === page.label ? "w-full bg-[#FF4E21]" : "hover:bg-[#ffffff0a]"
-                    }`}
+                  className={`group cursor-pointer flex-1 flex justify-center items-center px-2 transition-colors duration-300 ${
+                    activePage === page.label
+                      ? "w-full bg-[#FF4E21]"
+                      : "hover:bg-[#ffffff0a]"
+                  }`}
                   onClick={() => {
-                    if (typeof window !== 'undefined' && window.innerWidth >= 768) {
+                    if (
+                      typeof window !== "undefined" &&
+                      window.innerWidth >= 768
+                    ) {
                       // md and above: open modal
                       onPricingClick && onPricingClick();
                     } else {
                       // mobile: navigate to /pricing
-                      router.push('/pricing');
+                      router.push("/pricing");
                     }
                   }}
-                  style={{ background: activePage === page.label ? "#FF4E21" : undefined }}
+                  style={{
+                    background:
+                      activePage === page.label ? "#FF4E21" : undefined,
+                  }}
                 >
                   <div className="flex-1">
-                    <AnimatedNavLabel label={page.label} isActive={activePage === page.label} />
+                    <AnimatedNavLabel
+                      label={page.label}
+                      isActive={activePage === page.label}
+                    />
                   </div>{" "}
                   {/* {activePage === page.label && (
                     <Arrow className="ml-auto rotate-90 w-6 h-6 p-1" />
@@ -224,11 +246,17 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
                 animate="visible"
                 variants={fadeUp}
                 href={page.route}
-                className={`group flex-1 flex justify-center items-center px-2 transition-colors duration-300 ${activePage === page.label ? "w-full bg-[#FF4E21]" : "hover:bg-[#ffffff0a]"
-                  }`}
+                className={`group flex-1 flex justify-center items-center px-2 transition-colors duration-300 ${
+                  activePage === page.label
+                    ? "w-full bg-[#FF4E21]"
+                    : "hover:bg-[#ffffff0a]"
+                }`}
               >
                 <div className="flex-1">
-                  <AnimatedNavLabel label={page.label} isActive={activePage === page.label} />
+                  <AnimatedNavLabel
+                    label={page.label}
+                    isActive={activePage === page.label}
+                  />
                 </div>{" "}
                 {/* {activePage === page.label && (
                   <Arrow className="ml-auto rotate-90 w-6 h-6 p-1" />
@@ -247,13 +275,20 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
           initial="hidden"
           animate="visible"
           variants={fadeUp}
-          href={getInTouchPage.route}
-          key={getInTouchPage.id + '-mobile'}
+          href={
+            activePageObj.label === ROUTE.GET_IN_TOUCH.LABEL
+              ? ROUTE.HOME.PATH
+              : getInTouchPage.route
+          }
+          key={getInTouchPage.id + "-mobile"}
           className={`flex-1 sm:hidden text-center flex justify-center items-center py-3 transition-colors duration-300 hover:bg-[#ffffff0a] border-b-2 border-[#4F4E4E]`}
         >
           <div className="flex-1">
-            {activePageObj.label === ROUTE.GET_IN_TOUCH.LABEL ? <AnimatedNavLabel label={ROUTE.HOME.LABEL} isActive={false} /> : <AnimatedNavLabel label={getInTouchPage.label} isActive={false} />}
-            {/* <AnimatedNavLabel label={getInTouchPage.label} isActive={false} /> */}
+            {activePageObj.label === ROUTE.GET_IN_TOUCH.LABEL ? (
+              <AnimatedNavLabel label={ROUTE.HOME.LABEL} isActive={false} />
+            ) : (
+              <AnimatedNavLabel label={getInTouchPage.label} isActive={false} />
+            )}
           </div>
         </motion.a>
 
@@ -262,7 +297,7 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
           animate="visible"
           variants={fadeUp}
           href={activePageObj.route}
-          key={activePageObj.id + '-active'}
+          key={activePageObj.id + "-active"}
           className={`flex-1 sm:hidden text-center flex justify-center items-center bg-[#FF4E21] py-3 border-b-2 border-l-1 border-[#4F4E4E]`}
         >
           <div className="flex-1">{activePageObj.label}</div>
