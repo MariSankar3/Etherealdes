@@ -20,7 +20,7 @@ export const CASE_STUDY = [
   {
     id: "CS_003",
     title: "STX",
-    clientIcon: "/clients/stx.svg",
+    clientIcon: "/clients/shopify.svg",
     image: "/clients/hover_img/stx.png",
     component: CaseStudyInfo,
     detailsKey: "shopify",

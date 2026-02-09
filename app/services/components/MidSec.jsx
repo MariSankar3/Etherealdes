@@ -9,7 +9,8 @@ function MidSec({
 }) {
   const imageContainerRef = useRef(null);
   const [previousService, setPreviousService] = useState(activeService);
-  const [isAnimating, setIsAnimating] = useState(false);
+  const isAnimating = useRef(false);
+  const timelineRef = useRef(null);
 
   const serviceImages = [
     {
@@ -51,106 +52,136 @@ function MidSec({
   ];
 
   // Animate when activeService changes
-  useEffect(() => {
-    if (
-      imageContainerRef.current &&
-      previousService !== activeService &&
-      !isAnimating
-    ) {
-      setIsAnimating(true);
+  React.useLayoutEffect(() => {
+    if (!imageContainerRef.current) return;
+    if (previousService === activeService) return;
 
-      const container = imageContainerRef.current;
-      const isMobile = window.innerWidth < 645;
+    const container = imageContainerRef.current;
 
-      const currentImage = container.querySelector(
-        isMobile ? ".current-image-mobile" : ".current-image-desktop",
-      );
-      const newImage = container.querySelector(
-        isMobile ? ".new-image-mobile" : ".new-image-desktop",
-      );
+    // Kill existing animation
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+    isAnimating.current = true;
 
-      if (currentImage && newImage) {
-        const isScrollingDown = scrollDirection === "down";
+    const isMobile = window.innerWidth < 645;
+    const currentImage = container.querySelector(
+      isMobile ? ".current-image-mobile" : ".current-image-desktop",
+    );
+    const newImage = container.querySelector(
+      isMobile ? ".new-image-mobile" : ".new-image-desktop",
+    );
 
-        gsap.set(newImage, {
-          y: isScrollingDown ? "100%" : "-100%",
-          opacity: 1,
-        });
-        gsap.set(currentImage, { y: "0%", opacity: 1 });
+    if (currentImage && newImage) {
+      const isScrollingDown = scrollDirection === "down";
 
-        gsap
-          .timeline()
-          .to(
-            currentImage,
-            {
-              y: isScrollingDown ? "-100%" : "100%",
-              opacity: 0.5,
-              duration: 1.2, // slightly shorter for better feel
-              ease: "power2.inOut",
-            },
-            0,
-          )
-          .to(
-            newImage,
-            {
-              y: "0%",
-              opacity: 1,
-              duration: 1.2,
-              ease: "power2.inOut",
-            },
-            0,
-          )
-          .call(() => {
+      // Set initial state immediately to prevent FOUC
+      gsap.set(newImage, {
+        y: isScrollingDown ? "100%" : "-100%",
+        zIndex: 2,
+        opacity: 1,
+        visibility: "visible",
+        display: "block",
+      });
+      gsap.set(currentImage, {
+        y: "0%",
+        zIndex: 1,
+        opacity: 1,
+        visibility: "visible",
+      });
+
+      timelineRef.current = gsap
+        .timeline({
+          onComplete: () => {
+            // Reset props to clear styles so CSS takes over if needed,
+            // but we must be careful not to flash.
+            // Actually, if we clearProps, we might fallback to CSS which might be different.
+            // But the state update (setPreviousService) will swap the images.
+            // So clearing props is fine as long as we do it AFTER state update?
+            // Or better: update state, THEN clear props?
+            // React state updates are scheduled.
+
+            // Let's safe update:
             gsap.set(currentImage, { clearProps: "all" });
             gsap.set(newImage, { clearProps: "all" });
             setPreviousService(activeService);
-            setIsAnimating(false); // unlock after animation
-          });
-      } else {
-        setPreviousService(activeService);
-        setIsAnimating(false);
-      }
+            isAnimating.current = false;
+          },
+        })
+        .to(
+          currentImage,
+          {
+            y: isScrollingDown ? "-100%" : "100%",
+            opacity: 0.5,
+            duration: 1.2,
+            ease: "power2.inOut",
+          },
+          0,
+        )
+        .to(
+          newImage,
+          {
+            y: "0%",
+            opacity: 1,
+            duration: 1.2,
+            ease: "power2.inOut",
+          },
+          0,
+        );
+    } else {
+      setPreviousService(activeService);
+      isAnimating.current = false;
     }
-  }, [activeService, previousService, isAnimating, scrollDirection]);
+
+    return () => {
+      if (timelineRef.current) timelineRef.current.kill();
+    };
+  }, [activeService, previousService, scrollDirection]);
 
   // Click/scroll handlers with lock
   const handleScrollDown = () => {
-    if (isAnimating) return;
-    setIsAnimating(true);
+    if (isAnimating.current) return;
+    isAnimating.current = true;
 
     const nextService = activeService === 5 ? 0 : activeService + 1;
     setActiveService(nextService);
 
     // Extra lock to cover gap before GSAP starts
-    setTimeout(() => setIsAnimating(false), 0);
+    setTimeout(() => {
+      isAnimating.current = false;
+    }, 0);
   };
 
   // Wheel handler
   useEffect(() => {
     const handleWheel = (event) => {
-      if (isAnimating) return;
+      if (isAnimating.current) return;
 
       // Further increased threshold for more controlled scrolling
       if (event.deltaY > 120) {
-        setIsAnimating(true);
+        isAnimating.current = true;
         const next = activeService === 5 ? 0 : activeService + 1;
         setActiveService(next);
 
-        setTimeout(() => setIsAnimating(false), 1300);
+        setTimeout(() => {
+          isAnimating.current = false;
+        }, 1300);
       } else if (event.deltaY < -120) {
         // Scroll up large enough
-        setIsAnimating(true);
+        isAnimating.current = true;
         const prev = activeService === 0 ? 5 : activeService - 1;
         setActiveService(prev);
 
-        setTimeout(() => setIsAnimating(false), 1300);
+        setTimeout(() => {
+          isAnimating.current = false;
+        }, 1300);
       }
     };
 
     window.addEventListener("wheel", handleWheel, { passive: true });
 
     return () => window.removeEventListener("wheel", handleWheel);
-  }, [activeService, isAnimating, setActiveService]);
+  }, [activeService, setActiveService]);
 
   return (
     <section
