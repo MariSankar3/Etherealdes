@@ -330,7 +330,20 @@ function Home() {
           <h2 id="home-left-heading" className="sr-only">
             About Our Design Studio
           </h2>
-          <MidSecContent index={activeIndex} />
+          <MidSecContent
+            index={activeIndex}
+            onProgressClick={(i) => {
+              setActiveIndex(i);
+              if (emblaApiRef.current) emblaApiRef.current.scrollTo(i);
+              if (mobileEmblaApi) mobileEmblaApi.scrollTo(i);
+
+              userInteractingRef.current = true;
+              clearTimeout(autoScrollTimeoutRef.current);
+              autoScrollTimeoutRef.current = setTimeout(() => {
+                userInteractingRef.current = false;
+              }, 10000);
+            }}
+          />
         </section>
 
         <section

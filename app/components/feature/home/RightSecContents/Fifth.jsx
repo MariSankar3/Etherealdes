@@ -42,7 +42,7 @@ React.useEffect(() => {
       >
         <Link
           href="/work"
-          className="font-antonio text-[24px] bg-[#121212] flex justify-center items-center p-[8px] sm:p-[16px] md:p-[20px] lg:p-[34px] xl:p-[40px] text-[#DBF900]"
+          className="font-antonio text-[24px] bg-[#121212] flex justify-center items-center pt-10 p-[8px] sm:p-[16px] md:p-[20px] lg:p-[34px] xl:p-[40px] text-[#DBF900]"
         >
           Work
           <Redirect />
