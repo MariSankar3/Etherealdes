@@ -227,10 +227,10 @@ function Home() {
     let lock = false;
     let acc = 0;
     let lastTs = 0;
-    const threshold = 0; // quicker initiation
-    const idleResetMs = 0; // reset sooner between bursts
-    const cooldownMs = 0; // slightly shorter lock
+    const threshold = 3; // Balanced for smoothness
+    const idleResetMs = 40;
 
+    // Smooth & Fast Logic
     const onWheel = (e) => {
       const api = emblaApiRef.current;
       if (!api) return;
@@ -238,34 +238,45 @@ function Home() {
         e.preventDefault();
         return;
       }
+
       const now = Date.now();
       if (now - lastTs > idleResetMs) acc = 0;
       lastTs = now;
       acc += e.deltaY;
 
-      // down -> prev (N->N-1), up -> next (N->N+1)
+      // Fixed Cooldown for consistent smoothness
+      const smoothCooldown = 300;
+
+      // Logic: deltaY > 0 (Scroll Down) -> Next Slide
       if (acc > threshold) {
-        api.scrollPrev();
-        acc = 0;
-        lock = true;
-        userInteractingRef.current = true;
-        clearTimeout(autoScrollTimeoutRef.current);
-        autoScrollTimeoutRef.current = setTimeout(() => {
-          userInteractingRef.current = false;
-        }, 500);
-        e.preventDefault();
-        setTimeout(() => (lock = false), cooldownMs);
-      } else if (acc < -threshold) {
         api.scrollNext();
         acc = 0;
         lock = true;
         userInteractingRef.current = true;
+
+        // Disable auto-scroll for 10 seconds while interacting
         clearTimeout(autoScrollTimeoutRef.current);
         autoScrollTimeoutRef.current = setTimeout(() => {
           userInteractingRef.current = false;
-        }, 500);
+        }, 10000);
+
         e.preventDefault();
-        setTimeout(() => (lock = false), cooldownMs);
+        setTimeout(() => (lock = false), smoothCooldown);
+      } else if (acc < -threshold) {
+        // deltaY < 0 (Scroll Up) -> Prev Slide
+        api.scrollPrev();
+        acc = 0;
+        lock = true;
+        userInteractingRef.current = true;
+
+        // Disable auto-scroll for 10 seconds while interacting
+        clearTimeout(autoScrollTimeoutRef.current);
+        autoScrollTimeoutRef.current = setTimeout(() => {
+          userInteractingRef.current = false;
+        }, 10000);
+
+        e.preventDefault();
+        setTimeout(() => (lock = false), smoothCooldown);
       }
     };
 

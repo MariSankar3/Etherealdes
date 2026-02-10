@@ -23,7 +23,7 @@ React.useEffect(() => {
       <motion.img
         src= {isMobile ? "/work-laptop.png" : "/laptop_img.png"}
         alt="Design studio portfolio preview on laptop screen"
-        className="inset-0 w-full h-[80%] px-4 sm:px-0 object-contain sm:object-cover"
+        className="inset-0 w-full h-[85%] px-4 sm:px-0 object-contain sm:object-cover"
         initial={{ opacity: 0, scale: 1.05 }}
         animate={
           isInView ? { opacity: 1, scale: 1 } : { opacity: 0, scale: 1.05 }
