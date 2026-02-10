@@ -27,167 +27,161 @@ function ServicesPage() {
     activeServiceRef.current = activeService;
   }, [activeService]);
 
+  // Keep the ref in sync with state
   useEffect(() => {
-    function stopAutoScroll() {
-      if (autoScrollIntervalRef.current) {
-        clearInterval(autoScrollIntervalRef.current);
-        autoScrollIntervalRef.current = null;
-      }
-    }
+    activeServiceRef.current = activeService;
+  }, [activeService]);
 
-    function startAutoScroll() {
-      stopAutoScroll();
-      // Never start if hovering
+  // Main Auto-Scroll Logic
+  useEffect(() => {
+    const stopTimers = () => {
+      if (autoScrollIntervalRef.current) clearInterval(autoScrollIntervalRef.current);
+      if (autoScrollTimeoutRef.current) clearTimeout(autoScrollTimeoutRef.current);
+    };
+
+    stopTimers();
+
+    if (isHoveringRef.current) return;
+
+    // Schedule next slide
+    autoScrollTimeoutRef.current = setTimeout(() => {
+      setScrollDirection("down");
+      setActiveService((prev) => (prev + 1) % SERVICES_COUNT);
+    }, 5000);
+
+    return stopTimers;
+  }, [activeService]); // Re-run on every slide change (debounces the timer)
+
+  // Event Listeners & Interactions
+  useEffect(() => {
+    const handleInteraction = () => {
+      // Just clearing the timeout here might be enough if we trigger a re-render,
+      // but purely imperative interaction needs to coordinate.
+      // Actually, if we interact, we want to pause for longer (e.g. 8s).
+      // But we can't easily effect the other hook's variable from here without side effects.
+      // Simpler approach: Interaction updates state? No.
+      
+      // Let's just restart the cycle by forcing a "no-op" update or handled via refs.
+      // But the simplest way is to let the component re-render or just manipulate the refs directly.
+      
+      // If we interact, we clear the current timeout, and set a NEW timeout for 8s.
+      // Since the other effect owns the timeout, we must be careful.
+      // BUT if the other effect only runs on `activeService` change, we are free to mess with refs here
+      // as long as we don't cause race conditions.
+      
+      if (autoScrollTimeoutRef.current) clearTimeout(autoScrollTimeoutRef.current);
+      if (autoScrollIntervalRef.current) clearInterval(autoScrollIntervalRef.current); // Just in case
+      
       if (isHoveringRef.current) return;
 
-      autoScrollIntervalRef.current = setInterval(() => {
+      autoScrollTimeoutRef.current = setTimeout(() => {
+        setScrollDirection("down");
         setActiveService((prev) => (prev + 1) % SERVICES_COUNT);
-        setScrollDirection("down");
-      }, 5000); 
-    }
+      }, 8000); // Longer delay after interaction
+    };
 
-    function restartAutoScroll() {
-      // If we are hovering, do nothing. The "leave" event will handle restart.
-      if (isHoveringRef.current) return;
-
-      stopAutoScroll();
-      if (autoScrollTimeoutRef.current) {
-        clearTimeout(autoScrollTimeoutRef.current);
-      }
-      // Resume after 8 seconds of inactivity
-      autoScrollTimeoutRef.current = setTimeout(startAutoScroll, 8000); 
-    }
-
-    // Handlers
     const handleWheel = (event) => {
-      // Restart (or pause) timer on interaction
-      restartAutoScroll();
-
-      event.preventDefault();
-      if (scrollLock.current) return;
-      
-      scrollLock.current = true;
-      setTimeout(() => {
-        scrollLock.current = false;
-      }, 1000);
-      
-      const now = Date.now();
-      const deltaY = event.deltaY;
-      
-      if (deltaY > 120) {
-        const nextService =
-          activeServiceRef.current === SERVICES_COUNT - 1
-            ? 0
-            : activeServiceRef.current + 1;
-        setScrollDirection("down");
-        setActiveService(nextService);
-      } else if (deltaY < -120) {
-        const prevService =
-          activeServiceRef.current === 0
-            ? SERVICES_COUNT - 1
-            : activeServiceRef.current - 1;
-        setScrollDirection("up");
-        setActiveService(prevService);
+      if (scrollLock.current) {
+        event.preventDefault(); // Prevent default even if locked
+        return;
       }
-    };
-
-    const handleTouchStart = (event) => {
-      if (touchCooldownRef.current) return;
-      // Get the *first* touch point
-    };
-
-    const handleTouchEnd = (event) => {
-      restartAutoScroll();
-
-      if (scrollLock.current || touchCooldownRef.current) return;
       
-      scrollLock.current = true;
-      setTimeout(() => {
-        scrollLock.current = false;
-      }, 1000);
+      // event.preventDefault(); // Moved inside checks or just passive: false
+      // Note: passive: false is required to preventDefault
+      
+      const deltaY = event.deltaY;
+      if (Math.abs(deltaY) > 120) {
+        scrollLock.current = true;
+        setTimeout(() => {
+          scrollLock.current = false;
+        }, 1000);
+        
+        handleInteraction(); // Reset timer
 
-      // Simple swipe detection
-      // Note: reusing lastScrollTime logic from original code or variable names
-      // The original code used 'touchStartY' variable in closure.
-      // Let's stick to the closure variables for touch processing.
+        if (deltaY > 0) {
+           const next = activeServiceRef.current === SERVICES_COUNT - 1 ? 0 : activeServiceRef.current + 1;
+           setScrollDirection("down");
+           setActiveService(next);
+        } else {
+           const prev = activeServiceRef.current === 0 ? SERVICES_COUNT - 1 : activeServiceRef.current - 1;
+           setScrollDirection("up");
+           setActiveService(prev);
+        }
+      }
     };
 
     const handleKeyDown = (event) => {
-      restartAutoScroll();
+      handleInteraction();
       switch (event.key) {
         case "ArrowDown":
           event.preventDefault();
-          const nextService =
-            activeServiceRef.current === SERVICES_COUNT - 1
-              ? 0
-              : activeServiceRef.current + 1;
+          const next = activeServiceRef.current === SERVICES_COUNT - 1 ? 0 : activeServiceRef.current + 1;
           setScrollDirection("down");
-          setActiveService(nextService);
+          setActiveService(next);
           break;
         case "ArrowUp":
           event.preventDefault();
-          const prevService =
-            activeServiceRef.current === 0
-              ? SERVICES_COUNT - 1
-              : activeServiceRef.current - 1;
+          const prev = activeServiceRef.current === 0 ? SERVICES_COUNT - 1 : activeServiceRef.current - 1;
           setScrollDirection("up");
-          setActiveService(prevService);
+          setActiveService(prev);
           break;
       }
     };
 
     const handleMouseEnter = () => {
       isHoveringRef.current = true;
-      stopAutoScroll();
       if (autoScrollTimeoutRef.current) clearTimeout(autoScrollTimeoutRef.current);
     };
 
     const handleMouseLeave = () => {
       isHoveringRef.current = false;
-      startAutoScroll();
+      // Restart immediately? or wait?
+      // Let's trigger the 5s loop
+      if (autoScrollTimeoutRef.current) clearTimeout(autoScrollTimeoutRef.current);
+      autoScrollTimeoutRef.current = setTimeout(() => {
+        setScrollDirection("down");
+        setActiveService((prev) => (prev + 1) % SERVICES_COUNT);
+      }, 5000);
     };
-
-    // Initialize
-    startAutoScroll();
-
-    // Event Listeners
-    window.addEventListener("wheel", handleWheel, { passive: false });
-    window.addEventListener("keydown", handleKeyDown);
     
-    // Touch logic variables re-implementation for closure access
+    // Touch logic
     let touchStartY = 0;
     const onTouchStart = (e) => {
       if (touchCooldownRef.current) return;
       touchStartY = e.changedTouches[0].screenY;
     };
     const onTouchEnd = (e) => {
-      restartAutoScroll();
+      handleInteraction();
       if (scrollLock.current || touchCooldownRef.current) return;
       
-      scrollLock.current = true;
-      setTimeout(() => { scrollLock.current = false; }, 1000);
-
       const touchEndY = e.changedTouches[0].screenY;
       const diffY = touchStartY - touchEndY;
-      const minSwipeDistance = 120;
-
-      if (Math.abs(diffY) > minSwipeDistance) {
+      
+      if (Math.abs(diffY) > 120) {
+        scrollLock.current = true;
+        setTimeout(() => { scrollLock.current = false; }, 1000);
         touchCooldownRef.current = true;
         setTimeout(() => { touchCooldownRef.current = false; }, 1000);
 
-        const now = Date.now();
         if (diffY > 0) {
-           const nextService = activeServiceRef.current === SERVICES_COUNT - 1 ? 0 : activeServiceRef.current + 1;
+           const next = activeServiceRef.current === SERVICES_COUNT - 1 ? 0 : activeServiceRef.current + 1;
            setScrollDirection("down");
-           setActiveService(nextService);
+           setActiveService(next);
         } else {
-           const prevService = activeServiceRef.current === 0 ? SERVICES_COUNT - 1 : activeServiceRef.current - 1;
+           const prev = activeServiceRef.current === 0 ? SERVICES_COUNT - 1 : activeServiceRef.current - 1;
            setScrollDirection("up");
-           setActiveService(prevService);
+           setActiveService(prev);
         }
       }
     };
 
+    // Initialize listeners
+    window.addEventListener("wheel", handleWheel, { passive: false }); // passive: false to allow preventDefault? 
+    // Actually, if we don't preventDefault, page scrolls. User probably wants page scroll lock?
+    // Using passive: true for performance unless we explicitly need to block scroll.
+    // The original code used passive: false.
+    
+    window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("touchstart", onTouchStart, { passive: true });
     window.addEventListener("touchend", onTouchEnd, { passive: true });
 
@@ -198,13 +192,10 @@ function ServicesPage() {
     }
 
     return () => {
-      stopAutoScroll();
-      if (autoScrollTimeoutRef.current) clearTimeout(autoScrollTimeoutRef.current);
       window.removeEventListener("wheel", handleWheel);
+      window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("touchstart", onTouchStart);
       window.removeEventListener("touchend", onTouchEnd);
-      window.removeEventListener("keydown", handleKeyDown);
-      
       if (mainEl) {
         mainEl.removeEventListener("mouseenter", handleMouseEnter);
         mainEl.removeEventListener("mouseleave", handleMouseLeave);
@@ -250,6 +241,7 @@ function ServicesPage() {
             activeService={activeService}
             setActiveService={setActiveService}
             scrollDirection={scrollDirection}
+            setScrollDirection={setScrollDirection}
           />
         }
         page={ROUTE.SERVICES.LABEL}

@@ -25,6 +25,17 @@ function RightSecContent({ setActiveIndex }) {
     ...rightSecContentData,
     ...rightSecContentData,
     ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
+    ...rightSecContentData,
   ];
 
   useEffect(() => {
@@ -94,6 +105,8 @@ function RightSecContent({ setActiveIndex }) {
     const wrapper = wrapperRef.current;
     let isThrottled = false;
     let touchStartX = 0;
+    let isDragging = false;
+    let startX = 0;
 
     function handleWheel(e) {
       if (isThrottled) return;
@@ -109,22 +122,50 @@ function RightSecContent({ setActiveIndex }) {
       }
     }
 
-    function handleTouchStart(e) {
-      touchStartX = e.changedTouches[0].screenX;
+    function handleMouseDown(e) {
+      isDragging = true;
+      startX = e.clientX;
+      if (wrapper) wrapper.style.cursor = "grabbing";
     }
 
-    function handleTouchEnd(e) {
+    function handleMouseUp(e) {
+      if (!isDragging) return;
+      isDragging = false;
+      if (wrapper) wrapper.style.cursor = "default";
+
+      const diffX = startX - e.clientX;
+      processSwipe(diffX);
+    }
+
+    function handleMouseLeave() {
+      if (isDragging) {
+        isDragging = false;
+        if (wrapper) wrapper.style.cursor = "default";
+      }
+    }
+
+    function processSwipe(diffX) {
       if (isThrottled) return;
       restartAutoScrollAfterDelay();
-      const diffX = touchStartX - e.changedTouches[0].screenX;
+
       let newIndex = activeIndexRef.current;
       if (diffX > 30) newIndex = newIndex + 1;
       else if (diffX < -30) newIndex = Math.max(0, newIndex - 1);
+
       if (newIndex !== activeIndexRef.current) {
         setActiveIndexState(newIndex);
         isThrottled = true;
         setTimeout(() => (isThrottled = false), 300);
       }
+    }
+
+    function handleTouchStart(e) {
+      touchStartX = e.changedTouches[0].screenX;
+    }
+
+    function handleTouchEnd(e) {
+      const diffX = touchStartX - e.changedTouches[0].screenX;
+      processSwipe(diffX);
     }
 
     wrapper?.addEventListener("wheel", handleWheel, { passive: true });
@@ -133,6 +174,11 @@ function RightSecContent({ setActiveIndex }) {
     });
     wrapper?.addEventListener("touchend", handleTouchEnd, { passive: true });
 
+    // Mouse events
+    wrapper?.addEventListener("mousedown", handleMouseDown);
+    wrapper?.addEventListener("mouseup", handleMouseUp);
+    wrapper?.addEventListener("mouseleave", handleMouseLeave);
+
     return () => {
       stopAutoScroll();
       if (autoScrollTimeoutRef.current)
@@ -140,6 +186,9 @@ function RightSecContent({ setActiveIndex }) {
       wrapper?.removeEventListener("wheel", handleWheel);
       wrapper?.removeEventListener("touchstart", handleTouchStart);
       wrapper?.removeEventListener("touchend", handleTouchEnd);
+      wrapper?.removeEventListener("mousedown", handleMouseDown);
+      wrapper?.removeEventListener("mouseup", handleMouseUp);
+      wrapper?.removeEventListener("mouseleave", handleMouseLeave);
     };
   }, [numCards]);
 

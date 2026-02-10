@@ -6,6 +6,7 @@ function MidSec({
   activeService = 0,
   setActiveService,
   scrollDirection = "up",
+  setScrollDirection,
 }) {
   const imageContainerRef = useRef(null);
   const [previousService, setPreviousService] = useState(activeService);
@@ -54,16 +55,8 @@ function MidSec({
   // Animate when activeService changes
   React.useLayoutEffect(() => {
     if (!imageContainerRef.current) return;
-    if (previousService === activeService) return;
 
     const container = imageContainerRef.current;
-
-    // Kill existing animation
-    if (timelineRef.current) {
-      timelineRef.current.kill();
-    }
-    isAnimating.current = true;
-
     const isMobile = window.innerWidth < 645;
     const currentImage = container.querySelector(
       isMobile ? ".current-image-mobile" : ".current-image-desktop",
@@ -71,6 +64,19 @@ function MidSec({
     const newImage = container.querySelector(
       isMobile ? ".new-image-mobile" : ".new-image-desktop",
     );
+
+    if (previousService === activeService) {
+      // Cleanup after animation and state update
+      if (currentImage) gsap.set(currentImage, { clearProps: "all" });
+      if (newImage) gsap.set(newImage, { clearProps: "all" });
+      return;
+    }
+
+    // Kill existing animation
+    if (timelineRef.current) {
+      timelineRef.current.kill();
+    }
+    isAnimating.current = true;
 
     if (currentImage && newImage) {
       const isScrollingDown = scrollDirection === "down";
@@ -93,17 +99,7 @@ function MidSec({
       timelineRef.current = gsap
         .timeline({
           onComplete: () => {
-            // Reset props to clear styles so CSS takes over if needed,
-            // but we must be careful not to flash.
-            // Actually, if we clearProps, we might fallback to CSS which might be different.
-            // But the state update (setPreviousService) will swap the images.
-            // So clearing props is fine as long as we do it AFTER state update?
-            // Or better: update state, THEN clear props?
-            // React state updates are scheduled.
-
-            // Let's safe update:
-            gsap.set(currentImage, { clearProps: "all" });
-            gsap.set(newImage, { clearProps: "all" });
+            // Only update state; cleanup happens in next render via effect
             setPreviousService(activeService);
             isAnimating.current = false;
           },
@@ -143,13 +139,14 @@ function MidSec({
     if (isAnimating.current) return;
     isAnimating.current = true;
 
+    if (setScrollDirection) setScrollDirection("down");
     const nextService = activeService === 5 ? 0 : activeService + 1;
     setActiveService(nextService);
 
     // Extra lock to cover gap before GSAP starts
     setTimeout(() => {
       isAnimating.current = false;
-    }, 0);
+    }, 1200);
   };
 
   // Wheel handler
@@ -223,14 +220,14 @@ function MidSec({
             src={serviceImages[activeService]?.image}
             alt={serviceImages[activeService]?.title}
             loading="lazy"
-            className="absolute w-full h-full new-image-desktop sm:object-fill sm:h-full sm:block hidden"
+            className="absolute w-full h-full new-image-desktop sm:object-fill sm:h-full hidden"
           />
           {/* New Image - Mobile */}
           <img
             src={serviceImages[activeService]?.mobimage}
             alt={serviceImages[activeService]?.title}
             loading="lazy"
-            className="sm:hidden w-full h-full new-image-mobile object-cover "
+            className="sm:hidden w-full h-full new-image-mobile object-cover hidden"
           />
         </div>
       </div>

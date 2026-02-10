@@ -15,7 +15,6 @@ function MidSec({ activeIndex, numIndicators }) {
     >
       {/* ===== Content ===== */}
       <div className="flex flex-col gap-[16px] lg:w-[350px]">
-        
         {/* Proper heading (was plain <p>) */}
         <h2
           id="teams-trust-mid-heading"
@@ -40,7 +39,7 @@ function MidSec({ activeIndex, numIndicators }) {
             <Indicator
               key={i}
               className={`transition-all duration-300 ${
-                activeIndex === i
+                activeIndex % numIndicators === i
                   ? "text-white w-[30px]"
                   : "text-[#4F4E4E] w-[20px]"
               }`}
