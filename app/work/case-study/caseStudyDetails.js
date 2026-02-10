@@ -544,6 +544,8 @@ export const caseStudyData = {
       },
     ],
   },
+
+
   purple_quarter: {
     id: "CS_002",
     title: "Purple Quarter - Elixir",
@@ -2774,4 +2776,283 @@ Traditional search methods, relying on generic approaches and fragmented communi
       },
     ],
   },
+
+
+  
+  stx: {
+    id: "CS_003",
+    title: "STX Case Study",
+    videoSrc: "/case-study/jugl/jugl_video.mp4",
+    sections: [
+      {
+        id: "goal",
+        label: "Goal",
+        subtitle: "Project Overview",
+        content: [
+          {
+            type: "paragraph",
+            text: "We designed STX, a next-generation online betting platform, to deliver a fast, intuitive, and transparent betting experience across sports and non-traditional markets such as politics and culture. The core objective was to simplify decision-making in a high-pressure, real-time environment while maintaining trust, security, and performance at scale. STX was built as a mobile-first product with full parity across web and iOS, ensuring a seamless experience regardless of how or where users place their bets. Our focus was on reducing friction throughout the betting journey—from discovery to bet placement and portfolio tracking—while supporting both casual and experienced bettors.",
+            className: "font-400 text-[16px] text-white",
+          },
+         
+        ],
+      },
+      {
+        id: "challenges",
+        label: "Challenges",
+        subtitle: "Reducing Complexity in Real-Time Betting",
+        content: [
+         {
+  type: "block",
+  className: "flex flex-col gap-4",
+  items: [
+    {
+      type: "paragraph",
+      text: "Online betting platforms often overwhelm users with dense information, unclear odds presentation, and fragmented workflows. Our research revealed that the biggest challenge for bettors was not a lack of options, but difficulty in understanding and acting on them quickly.",
+      className: "text-[#ffffffb3]"
+    },
+    {
+      type: "list",
+      className: "list-disc pl-5 text-[#ffffffb3]",
+      items: [
+        "Overcrowded interfaces during live events",
+        "Confusing navigation between markets and bet slips",
+        "Low confidence in bet confirmation and wallet transparency",
+        "Friction when switching between sports and non-sports markets"
+      ]
+    },
+    {
+      type: "paragraph",
+      text: "These issues were especially critical during live betting, where delays or mistakes directly impact user trust and engagement.",
+      className: "text-[#ffffffb3]"
+    }
+  ]
+},
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
+              {
+                type: "h3",
+                text: "The data quantified this frustration",
+                className: "font-antonio mt-2",
+              },
+              {
+                type: "list",
+                className: "text-[#ffffffb3]",
+                items: [
+                  "Users frequently abandoned bets during live events due to UI confusion",
+                  "A large portion of support requests were related to bet status and wallet clarity",
+                  "New users struggled to understand odds and market structures",
+                  "CMobile users demanded speed but encountered higher error rates under pressure"
+                ],
+              },
+            ],
+          },
+          
+        ],
+      },
+      {
+        id: "solution",
+        label: "Solution",
+        subtitle: "Key Features to Enhance Teaching and Learning",
+        content: [
+          {
+            type: "image",
+            src: "/case-study/jugl_bee/solution.png",
+            alt: "",
+            className: "w-full h-full pb-[20px]",
+          },
+          {
+            type: "paragraph",
+            text: "The app included features to address these pain points:",
+            className: "text-white font-raleway text-[16px] font-[600]",
+          },
+          {
+            type: "h4",
+            text: "Key Implementation Highlights",
+            className: "font-antonio mt-4",
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
+              {
+                type: "h3",
+                text: "Centralized Lesson Management",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: "Teachers can schedule, edit, and manage lessons in one place, accessible by students on both web & mobile.",
+                className: "text-[#ffffffb3]",
+              },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
+              {
+                type: "h3",
+                text: "Assignment Tracking & Status",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: "Clear status indicators for “On Time,” “Delayed,” and “Query” so both teachers and students know the current progress.",
+                className: "text-[#ffffffb3]",
+              },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
+              {
+                type: "h3",
+                text: "Integrated Communication",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: "Public and private group chats, one-to-one messaging, and class discussions for instant doubt resolution.",
+                className: "text-[#ffffffb3]",
+              },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
+              {
+                type: "h3",
+                text: "Resource Library",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: "Store and share videos, documents, and notes directly in the app for quick access.",
+                className: "text-[#ffffffb3]",
+              },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
+              {
+                type: "h3",
+                text: "Performance Insights",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: "Teachers can track payments, attendance, and student engagement through reports.",
+                className: "text-[#ffffffb3]",
+              },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
+              {
+                type: "h3",
+                text: "Multi-device Access",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: "Consistent experience across desktop and mobile, ensuring accessibility anytime, anywhere.",
+                className: "text-[#ffffffb3]",
+              },
+            ],
+          },
+        ],
+      },
+      {
+        id: "conclusion",
+        label: "Conclusion",
+        subtitle: "Conclusion & Key Takeaways",
+        content: [
+          {
+            type: "image",
+            src: "/case-study/jugl_bee/conclusion.png",
+            alt: "",
+            className: "w-full h-full pb-[20px]",
+          },
+          {
+            type: "paragraph",
+            text: "In the end, our approach proved that powerful analytics don’t have to feel overwhelming. By combining simplicity, tailored experiences, and trust-focused design with fast performance and continuous refinement, we turned a complex data platform into an intuitive, engaging tool. This balance between depth and usability ensured users could focus on insights—not on figuring out the interface.",
+            className: "font-400 font-semibold text-[16px] text-white",
+          },
+          {
+            type: "paragraph",
+            text: "What We Learned:",
+            className: "font-400 font-semibold text-[16px] text-white py-4",
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2 mt-4",
+            items: [
+              {
+                type: "h3",
+                text: "Consistency Builds Trust",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: `A shared design system should guide typography, colours, and spacing for both web and mobile.`,
+                className: "text-[#ffffffb3]",
+              },
+              {
+                type: "h3",
+                text: "Prioritize Through Visual Hierarchy:",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: `Highlight urgent tasks like upcoming classes or pending assignments over secondary modules.`,
+                className: "text-[#ffffffb3]",
+              },
+              {
+                type: "h3",
+                text: "Chunk Information",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: `Use tabs or collapsible sections to reduce vertical scrolling.`,
+                className: "text-[#ffffffb3]",
+              },
+              {
+                type: "h3",
+                text: "Accessible by Design",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: `Ensure proper contrast, always pair icons with text, and avoid unnecessary text truncation.`,
+                className: "text-[#ffffffb3]",
+              },
+              {
+                type: "h3",
+                text: "Mobile-first Thinking",
+                className: "font-antonio",
+              },
+              {
+                type: "paragraph",
+                text: `Start with mobile constraints to ensure a smoother experience for the primary user group.`,
+                className: "text-[#ffffffb3]",
+              },
+            ],
+          },
+        ],
+      },
+    ],
+  },
 };
+
+
+

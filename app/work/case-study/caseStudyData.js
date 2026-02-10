@@ -23,7 +23,7 @@ export const CASE_STUDY = [
     clientIcon: "/clients/stx.svg",
     image: "/clients/hover_img/stx.png",
     component: CaseStudyInfo,
-    detailsKey: "shopify",
+    detailsKey: "stx",
   },
   {
     id: "CS_004",
@@ -50,11 +50,12 @@ export const CASE_STUDY = [
     detailsKey: "kalagato",
   },
   {
-    title: "STX",
+    id: "CS_007",
+    title: "Shopify",
     clientIcon: "/clients/shopify.svg",
      image: "/clients/hover_img/stx.png",
     component: CaseStudyInfo,
-    detailsKey: "more_projects",
+    detailsKey: "shopify",
   },
   {
     id: "CS_008",

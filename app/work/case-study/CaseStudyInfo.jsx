@@ -1,160 +1,150 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
+import Link from "next/link";
 import { ROUTE } from "../../constants/constants";
 import { Android, Arrow, Chrome, IOS } from "../../components/icons/icons";
-import Link from "next/link";
 import { caseStudyData } from "./caseStudyDetails";
 
 function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
-  const [isScrolled, setIsScrolled] = useState(false);
-  const [activeSection, setActiveSection] = useState("goal");
-  const scrollContainerRef = useRef(null);
-  const sectionElementsRef = useRef(new Map());
-  const tickingRef = useRef(false);
-
-  // Use provided caseStudyDetails or fallback to default
   const details = caseStudyDetails || caseStudyData.jugl;
   const sections = details.sections;
 
-  const getOpacityClass = (sectionId) => {
-    const activeIndex = sections.findIndex(
-      (section) => section.id === activeSection
-    );
-    const currentIndex = sections.findIndex(
-      (section) => section.id === sectionId
-    );
-    const distance = Math.abs(currentIndex - activeIndex);
-    switch (distance) {
-      case 0:
-        return "opacity-100";
-      case 1:
-        return "opacity-60";
-      case 2:
-        return "opacity-40";
-      case 3:
-        return "opacity-30";
-      case 4:
-        return "opacity-20";
-      default:
-        return "opacity-10";
-    }
-  };
+  const scrollRef = useRef(null);
+  const sectionRefs = useRef(new Map());
 
+  const [activeSection, setActiveSection] = useState(sections[0]?.id);
+  const [isScrolled, setIsScrolled] = useState(false);
+  const headerStateRef = useRef(false);
+
+  /* ---------------------------------
+     CACHE SECTION ELEMENTS
+  ----------------------------------*/
   useEffect(() => {
-    const scrollContainer = scrollContainerRef.current;
-    if (scrollContainer) {
-      sections.forEach((section) => {
-        const element = scrollContainer.querySelector(`#${section.id}`);
-        if (element) {
-          sectionElementsRef.current.set(section.id, element);
-        }
-      });
-    }
+    const container = scrollRef.current;
+    if (!container) return;
 
-    let ticking = false;
-    const handleScroll = () => {
-      if (!ticking) {
-        requestAnimationFrame(() => {
-          const scrollPosition = scrollContainerRef.current?.scrollTop || 0;
-          setIsScrolled(scrollPosition > 80);
-          const targetPosition = 250 + 20;
-          let newActiveSection = "goal";
-          let minDistance = Infinity;
+    sections.forEach((s) => {
+      const el = container.querySelector(`#${s.id}`);
+      if (el) sectionRefs.current.set(s.id, el);
+    });
 
-          sectionElementsRef.current.forEach((element, id) => {
-            const elementTop = element.offsetTop;
-            const distance = Math.abs(
-              elementTop - scrollPosition - targetPosition
-            );
-            if (distance < minDistance) {
-              minDistance = distance;
-              newActiveSection = id;
-            }
-          });
-
-          setActiveSection((prev) =>
-            prev !== newActiveSection ? newActiveSection : prev
-          );
-          ticking = false;
-        });
-        ticking = true;
-      }
-    };
-
-    if (scrollContainer) {
-      scrollContainer.addEventListener("scroll", handleScroll, {
-        passive: true,
-      });
-      return () => {
-        scrollContainer.removeEventListener("scroll", handleScroll);
-        sectionElementsRef.current.clear();
-      };
-    }
+    return () => sectionRefs.current.clear();
   }, [sections]);
 
-  // Handle smooth scrolling to sections with proper offset
-  const handleSectionClick = (e, sectionId) => {
-    e.preventDefault();
-    const element = sectionElementsRef.current.get(sectionId);
-    if (element) {
-      const scrollContainer = scrollContainerRef.current;
-      const elementTop = element.offsetTop;
-      const topBarHeight = 260;
-      const offset = 20;
-      scrollContainer.scrollTo({
-        top: elementTop - topBarHeight - offset,
-        behavior: "smooth",
+  /* ---------------------------------
+     SCROLL HANDLER (STABLE)
+  ----------------------------------*/
+  useEffect(() => {
+    const container = scrollRef.current;
+    if (!container) return;
+
+    let raf = null;
+
+    const onScroll = () => {
+      if (raf) return;
+
+      raf = requestAnimationFrame(() => {
+        const top = container.scrollTop;
+
+        // header shrink (one-time toggle)
+        if (!headerStateRef.current && top > 120) {
+          headerStateRef.current = true;
+          setIsScrolled(true);
+        }
+        if (headerStateRef.current && top < 40) {
+          headerStateRef.current = false;
+          setIsScrolled(false);
+        }
+
+        // active section detection
+        let closest = activeSection;
+        let min = Infinity;
+
+        sectionRefs.current.forEach((el, id) => {
+          const d = Math.abs(el.offsetTop - top - 20);
+          if (d < min - 25) {
+            min = d;
+            closest = id;
+          }
+        });
+
+        setActiveSection((p) => (p === closest ? p : closest));
+        raf = null;
       });
-    }
+    };
+
+    container.addEventListener("scroll", onScroll, { passive: true });
+    return () => container.removeEventListener("scroll", onScroll);
+  }, [activeSection]);
+
+  /* ---------------------------------
+     SIDEBAR OPACITY
+  ----------------------------------*/
+  const getOpacity = (id) => {
+    const ai = sections.findIndex((s) => s.id === activeSection);
+    const ci = sections.findIndex((s) => s.id === id);
+    const d = Math.abs(ai - ci);
+
+    return (
+      ["opacity-100", "opacity-60", "opacity-40", "opacity-30", "opacity-20"][
+        d
+      ] || "opacity-10"
+    );
   };
 
-  const renderContentItem = (item, index) => {
+  /* ---------------------------------
+     SCROLL TO SECTION
+  ----------------------------------*/
+  const goToSection = (e, id) => {
+    e.preventDefault();
+    const el = sectionRefs.current.get(id);
+    if (!el) return;
+
+    scrollRef.current.scrollTo({
+      top: el.offsetTop - 20,
+      behavior: "smooth",
+    });
+  };
+
+  /* ---------------------------------
+     CONTENT RENDERER
+  ----------------------------------*/
+  const renderItem = (item, i) => {
     switch (item.type) {
       case "block":
         return (
-          <div key={index} className={item.className || "flex flex-col gap-2"}>
-            {item.items.map((child, childIndex) =>
-              renderContentItem(child, childIndex)
-            )}
+          <div key={i} className={item.className || "flex flex-col gap-4"}>
+            {item.items.map(renderItem)}
           </div>
         );
+
       case "span":
         return (
-          <span key={index} className={item.className || undefined}>
+          <span key={i} className={item.className}>
             {item.text}
           </span>
         );
+
       case "paragraph":
         return (
-          <p key={index} className={item.className || undefined}>
+          <p key={i} className={item.className}>
             {item.text}
           </p>
         );
+
       case "list":
         return (
-          <div key={index} className={item.className || undefined}>
-            <ul>
-              {item.items.map((li, liIndex) => {
-                // If li is an array of nodes, render accordingly
-                if (Array.isArray(li)) {
-                  return (
-                    <li key={liIndex}>
-                      {li.map((spanItem, spanIndex) =>
-                        renderContentItem(spanItem, spanIndex)
-                      )}
-                    </li>
-                  );
-                }
-                // If li is a string, render plain text
-                return <li key={liIndex}>{li}</li>;
-              })}
-            </ul>
-          </div>
+          <ul key={i} className={item.className}>
+            {item.items.map((li, j) => (
+              <li key={j}>{Array.isArray(li) ? li.map(renderItem) : li}</li>
+            ))}
+          </ul>
         );
+
       case "cards":
         return (
-          <div key={index}>
+          <div key={i}>
             <div className={item.layout}>
               {item.cards.map((card, cardIdx) => (
                 <div
@@ -182,69 +172,67 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
             </div>
           </div>
         );
+
       case "h3":
         return (
-          <h3 key={index} className={item.className || undefined}>
+          <h3 key={i} className={item.className}>
             {item.text}
           </h3>
         );
+
       case "image":
         return (
-          <div key={index} className={item.wrapperClassName || ""}>
+          <div key={i} className={item.wrapperClassName || "w-full my-6"}>
             <img
               src={item.src}
-              alt={item.alt}
-              className={item.className || ""}
+              alt={item.alt || ""}
+              className={item.className || "w-full rounded-xl"}
+              loading="lazy"
             />
           </div>
         );
+
       default:
         return null;
     }
   };
 
   return (
-    <div
-      ref={scrollContainerRef}
-      className="flex-1 flex flex-col overflow-auto w-full"
-    >
-      {/* Top bar */}
+    <div className="flex flex-col h-screen w-full overflow-hidden bg-[#121212]">
+      {/* ================= HEADER ================= */}
       <div
-        className={`flex flex-col sm:flex-row border-b border-[#4F4E4E] md:sticky top-0 z-10 transition-all duration-900 ease-in-out ${
-          isScrolled ? "md:h-[250px]" : "md:h-[400px]"
-        }`}
+        className={`sticky top-0 z-20 transition-[height] duration-500 ease-out
+        ${isScrolled ? "h-[250px]" : "h-[400px]"}
+        flex border-b border-[#4F4E4E]`}
       >
-        <div className="flex-1 sm:flex flex-col justify-center bg-[#121212]">
-          <div className="flex flex-col p-[30px] gap-4 justify-center">
-            <Link href={"/work"} className="cursor-pointer md:hidden">
-              <Arrow className="p-1 w-6 h-6 -rotate-180 text-white" />
-            </Link>
-            <div className="text-[16px] text-[#FFFFFF99] font-antonio ">
-              {caseStudyId || "Case Study"}
-            </div>
-            <div className="uppercase text-[26px] text-white font-anton">
-              {details.title}
-            </div>
-            <div className="flex">
-              <div className="flex gap-2">
-                <IOS className="w-6 h-6 text-white" />
-                <Chrome className="w-6 h-6 text-white" />
-                <Android className="w-6 h-6 text-white" />
-              </div>
-            </div>
-            <div>
-              <Link
-                href={ROUTE.GET_IN_TOUCH.PATH}
-                className="w-fit flex items-center gap-2.5 font-antonio text-[16px] bg-[#FF4E21] p-[10px] text-white"
-              >
-                Contact us
-                <Arrow className="w-3.5 h-3.5 text-white" />
-              </Link>
-            </div>
+        <div className="flex-1 flex flex-col justify-center gap-4 p-8 text-white">
+          <Link href="/work" className="md:hidden">
+            <Arrow className="w-6 h-6 -rotate-180" />
+          </Link>
+
+          <div className="text-[#ffffff99] font-antonio text-[16px]">
+            {caseStudyId || "Case Study"}
           </div>
+
+          <div className="text-[26px] uppercase font-anton">
+            {details.title}
+          </div>
+
+          <div className="flex gap-2">
+            <IOS className="w-6 h-6" />
+            <Chrome className="w-6 h-6" />
+            <Android className="w-6 h-6" />
+          </div>
+
+          <Link
+            href={ROUTE.GET_IN_TOUCH.PATH}
+            className="w-fit flex items-center gap-2 bg-[#FF4E21] px-4 py-2 font-antonio"
+          >
+            Contact us <Arrow className="w-3.5 h-3.5" />
+          </Link>
         </div>
-        <div className="w-full h-px sm:w-px sm:h-full bg-[#4E4E4E]"></div>
-        <div className="flex-1 sm:block w-full border-[#4F4E4E] border-b">
+
+        <div className="hidden md:block w-1/2 border-l border-[#4F4E4E] border-b">
           <video
             className="w-full h-full object-cover"
             autoPlay
@@ -253,50 +241,47 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
             playsInline
           >
             <source src={details.videoSrc} type="video/mp4" />
-            Your browser does not support the video tag.
           </video>
         </div>
       </div>
-      <div className="h-[2px] bg-[#4F4E4E] w-full"></div>
-      <div className="case-study font-raleway flex justify-center flex-1 pt-[24px] md:pt-[40px] sm:px-[80px]">
-        <div className="grid md:grid-cols-[auto_1fr] gap-1 md:gap-4 justify-between max-w-[1100px] ">
-          <div className="hidden md:flex w-full xl:min-w-[283px] 2xl:min-w-[323px] md:sticky top-[250px] h-fit text-white px-[16px] md:p-[10px] xl:p-[20px] 2xl:p-[40px] gap-4 flex-col text-[21px] font-400 font-anton">
-            {sections.map((section) => (
+
+      {/* ================= MAIN AREA ================= */}
+      <div className="flex flex-1 overflow-hidden font-raleway">
+        <div className="max-w-[1100px] mx-auto w-full flex">
+          {/* LEFT (STABLE) */}
+          <div className="hidden md:flex w-[260px] shrink-0 flex-col gap-4 p-6 text-white font-anton">
+            {sections.map((s) => (
               <button
-                key={section.id}
-                onClick={(e) => handleSectionClick(e, section.id)}
-                className={`transition-all duration-500 ease-in-out transform hover:scale-105 text-left ${getOpacityClass(
-                  section.id
+                key={s.id}
+                onClick={(e) => goToSection(e, s.id)}
+                className={`text-left text-[24px] transition-opacity duration-300 ${getOpacity(
+                  s.id,
                 )}`}
               >
-                {section.label}
+                {s.label}
               </button>
             ))}
           </div>
-          <div className="flex flex-col text-white justify-center px-[16px] md:px-0">
-            {sections.map((section) => (
-              <div
-                key={section.id}
-                className="p-[40px_0px] flex flex-col gap-4"
-              >
-                <div className="flex flex-col">
-                  <h1
-                    id={section.id}
-                    className="font-antonio text-[#DBF900] font-[400] text-[16px]"
-                  >
-                    {section.label}
+
+          {/* RIGHT (SCROLLS) */}
+          <div
+            ref={scrollRef}
+            className="flex-1 overflow-auto px-6 py-10 text-white"
+          >
+            <div className="flex flex-col gap-16">
+              {sections.map((s) => (
+                <section key={s.id} id={s.id}>
+                  <h1 className="text-[#DBF900] text-[16px] font-antonio">
+                    {s.label}
                   </h1>
-                  <h2 className="font-anton font-400 text-[26px] text-white upper">
-                    {section.subtitle}
-                  </h2>
-                </div>
-                <div className="flex flex-col gap-2">
-                  {section.content.map((item, index) =>
-                    renderContentItem(item, index)
-                  )}
-                </div>
-              </div>
-            ))}
+                  <h2 className="text-[26px] font-anton mb-4">{s.subtitle}</h2>
+
+                  <div className="flex flex-col gap-4">
+                    {s.content.map(renderItem)}
+                  </div>
+                </section>
+              ))}
+            </div>
           </div>
         </div>
       </div>
