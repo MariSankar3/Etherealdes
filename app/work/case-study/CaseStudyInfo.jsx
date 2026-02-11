@@ -198,24 +198,27 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
   };
 
   return (
-    <div className="flex flex-col h-screen w-full overflow-hidden bg-[#121212]">
+    <div className="flex flex-col md:h-screen w-full md:overflow-hidden bg-[#121212] overflow-auto h-auto">
       {/* ================= HEADER ================= */}
       <div
-        className={`sticky top-0 z-20 transition-[height] duration-500 ease-out
-        ${isScrolled ? "h-[250px]" : "h-[400px]"}
-        flex border-b border-[#4F4E4E]`}
+        className={`md:sticky md:top-0 z-20 transition-[height] duration-500 ease-out
+        ${isScrolled ? "md:h-[250px] h-auto" : "md:h-[400px] h-auto"}
+        flex flex-col md:flex-row border-b border-[#4F4E4E]`}
       >
-        <div className="flex-1 flex flex-col justify-center gap-4 p-8 text-white">
-          <Link href="/work" className="md:hidden">
+        <div className="flex-1 flex flex-col justify-center gap-4 p-8 text-white relative">
+          <Link href="/work" className="md:hidden absolute top-8 left-8">
             <Arrow className="w-6 h-6 -rotate-180" />
           </Link>
 
-          <div className="text-[#ffffff99] font-antonio text-[16px]">
-            {caseStudyId || "Case Study"}
-          </div>
+          {/* Add spacing for back arrow on mobile */}
+          <div className="mt-8 md:mt-0">
+            <div className="text-[#ffffff99] font-antonio text-[16px]">
+              {details.id || caseStudyId || "Case Study"}
+            </div>
 
-          <div className="text-[26px] uppercase font-anton">
-            {details.title}
+            <div className="text-[26px] uppercase font-anton">
+              {details.title}
+            </div>
           </div>
 
           <div className="flex gap-2">
@@ -230,6 +233,15 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
           >
             Contact us <Arrow className="w-3.5 h-3.5" />
           </Link>
+
+          {/* Mobile Hero Image */}
+          <div className="block md:hidden w-full mt-4">
+            <img
+              src={details.mobileImage || "/clients/hover_img/jugl.png"}
+              alt={details.title}
+              className="w-full object-cover rounded-lg"
+            />
+          </div>
         </div>
 
         <div className="hidden md:block w-1/2 border-l border-[#4F4E4E] border-b">
@@ -246,7 +258,7 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
       </div>
 
       {/* ================= MAIN AREA ================= */}
-      <div className="flex flex-1 overflow-hidden font-raleway">
+      <div className="flex flex-1 md:overflow-hidden font-raleway">
         <div className="max-w-[1100px] mx-auto w-full flex">
           {/* LEFT (STABLE) */}
           <div className="hidden md:flex w-[260px] shrink-0 flex-col gap-4 p-6 text-white font-anton">
@@ -266,7 +278,7 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
           {/* RIGHT (SCROLLS) */}
           <div
             ref={scrollRef}
-            className="flex-1 overflow-auto px-6 py-10 text-white"
+            className="flex-1 md:overflow-auto px-6 py-10 text-white"
           >
             <div className="flex flex-col gap-16">
               {sections.map((s) => (

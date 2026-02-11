@@ -2,6 +2,7 @@ export const caseStudyData = {
   jugl: {
     id: "CS_001",
     title: "Jugl mobile crm",
+    mobileImage: "/clients/hover_img/jugl.png",
     videoSrc: "/case-study/jugl/jugl_video.mp4",
     sections: [
       {
@@ -549,6 +550,7 @@ export const caseStudyData = {
   purple_quarter: {
     id: "CS_002",
     title: "Purple Quarter - Elixir",
+    mobileImage: "/clients/hover_img/purple_quarter.png",
     videoSrc: "/client-work.mp4",
     sections: [
       {
