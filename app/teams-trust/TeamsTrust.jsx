@@ -16,10 +16,19 @@ function TeamsTrustComponent() {
 
   return (
     <CommonLayout
-      midsec={<MidSec activeIndex={activeIndex} numIndicators={numCards} />}
+      midsec={
+        <MidSec
+          activeIndex={activeIndex}
+          numIndicators={numCards}
+          setActiveIndex={setActiveIndex}
+        />
+      }
       page={ROUTE.TEAMS_TRUST.LABEL}
     >
-      <RightSecContent setActiveIndex={setActiveIndex} />
+      <RightSecContent
+        setActiveIndex={setActiveIndex}
+        parentActiveIndex={activeIndex}
+      />
     </CommonLayout>
   );
 }

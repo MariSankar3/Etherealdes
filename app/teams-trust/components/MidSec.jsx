@@ -2,7 +2,7 @@ import React from "react";
 import Data from "../../Config/UserConfiguration.json";
 import { Indicator } from "../../components/icons/icons";
 
-function MidSec({ activeIndex, numIndicators }) {
+function MidSec({ activeIndex, numIndicators, setActiveIndex }) {
   const { TeamsTrust } = Data;
   const { MidSection } = TeamsTrust;
   const { Title, Para } = MidSection;
@@ -32,18 +32,27 @@ function MidSec({ activeIndex, numIndicators }) {
       {/* ===== Indicators (decorative) ===== */}
       {typeof activeIndex === "number" && numIndicators > 0 && (
         <div
-          className="hidden md:flex flex-col gap-[30px] items-end absolute right-[30px] bottom-[30px] z-10"
+          className="hidden md:flex flex-col gap-[0px] items-end absolute right-[30px] bottom-[10px] z-50"
           aria-hidden="true"
         >
           {[...Array(numIndicators)].map((_, i) => (
-            <Indicator
+            <div
               key={i}
-              className={`transition-all duration-300 ${
-                activeIndex % numIndicators === i
-                  ? "text-white w-[30px]"
-                  : "text-[#4F4E4E] w-[20px]"
-              }`}
-            />
+              onClick={() => {
+                const currentBlock = Math.floor(activeIndex / numIndicators);
+                const target = currentBlock * numIndicators + i;
+                if (setActiveIndex) setActiveIndex(target);
+              }}
+              className="cursor-pointer py-4 pl-4 -mr-2" // Increased hit area, negative margin to offset padding
+            >
+              <Indicator
+                className={`transition-all duration-300 pointer-events-none ${
+                  activeIndex % numIndicators === i
+                    ? "text-white w-[30px]"
+                    : "text-[#4F4E4E] w-[20px]"
+                }`}
+              />
+            </div>
           ))}
         </div>
       )}

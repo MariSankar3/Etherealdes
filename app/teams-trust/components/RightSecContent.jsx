@@ -3,7 +3,7 @@ import UserConfiguration from "../../Config/UserConfiguration.json";
 import { motion } from "framer-motion";
 import { Indicator } from "../../components/icons/icons";
 
-function RightSecContent({ setActiveIndex }) {
+function RightSecContent({ setActiveIndex, parentActiveIndex }) {
   const { TeamsTrust } = UserConfiguration;
   const { RightSecContent: rightSecContentData } = TeamsTrust;
 
@@ -98,6 +98,17 @@ function RightSecContent({ setActiveIndex }) {
       clearTimeout(autoScrollTimeoutRef.current);
     autoScrollTimeoutRef.current = setTimeout(startAutoScroll, 8000);
   };
+
+  useEffect(() => {
+    if (
+      typeof parentActiveIndex === "number" &&
+      parentActiveIndex !== activeIndexRef.current
+    ) {
+      setActiveIndexState(parentActiveIndex);
+      restartAutoScrollAfterDelay();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [parentActiveIndex]);
 
   useEffect(() => {
     startAutoScroll();
