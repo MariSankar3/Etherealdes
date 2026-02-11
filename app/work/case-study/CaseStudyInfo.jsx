@@ -205,23 +205,23 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
         ${isScrolled ? "md:h-[250px] h-auto" : "md:h-[400px] h-auto"}
         flex flex-col md:flex-row border-b border-[#4F4E4E]`}
       >
-        <div className="flex-1 flex flex-col justify-center gap-4 p-8 text-white relative">
+        <div className="flex-1 flex flex-col justify-center gap-4  text-white relative">
           <Link href="/work" className="md:hidden absolute top-8 left-8">
-            <Arrow className="w-6 h-6 -rotate-180" />
+            <Arrow className="w-4 h-4 -rotate-180" />
           </Link>
 
           {/* Add spacing for back arrow on mobile */}
-          <div className="mt-8 md:mt-0">
+          <div className="mt-8 md:mt-0 p-8 pb-1">
             <div className="text-[#ffffff99] font-antonio text-[16px]">
               {details.id || caseStudyId || "Case Study"}
             </div>
 
-            <div className="text-[26px] uppercase font-anton">
+            <div className="text-[26px] uppercase font-anton pt-2">
               {details.title}
             </div>
           </div>
 
-          <div className="flex gap-2">
+          <div className="flex gap-2 pl-8">
             <IOS className="w-6 h-6" />
             <Chrome className="w-6 h-6" />
             <Android className="w-6 h-6" />
@@ -229,18 +229,22 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
 
           <Link
             href={ROUTE.GET_IN_TOUCH.PATH}
-            className="w-fit flex items-center gap-2 bg-[#FF4E21] px-4 py-2 font-antonio"
+            className="w-fit flex items-center gap-2 bg-[#FF4E21] px-4 py-2 font-antonio ml-8"
           >
             Contact us <Arrow className="w-3.5 h-3.5" />
           </Link>
 
           {/* Mobile Hero Image */}
           <div className="block md:hidden w-full mt-4">
-            <img
-              src={details.mobileImage || "/clients/hover_img/jugl.png"}
-              alt={details.title}
-              className="w-full object-cover rounded-lg"
-            />
+           <video
+            className="w-full h-full object-cover border-[#4F4E4E] border-t border-b"
+            autoPlay
+            loop
+            muted
+            playsInline
+          >
+            <source src={details.videoSrc} type="video/mp4" />
+          </video>
           </div>
         </div>
 
