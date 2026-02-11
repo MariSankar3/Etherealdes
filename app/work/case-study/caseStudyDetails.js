@@ -983,7 +983,7 @@ Traditional search methods, relying on generic approaches and fragmented communi
     ],
   },
   saltbox: {
-    id: "CS_003",
+    id: "CS_004",
     title: "Saltbox",
     videoSrc: "/case-study/saltbox/saltbox-video.mp4",
     sections: [
@@ -1382,7 +1382,7 @@ Traditional search methods, relying on generic approaches and fragmented communi
     ],
   },
   saltbox_healthcare: {
-    id: "CS_004",
+    id: "CS_005",
     title: "Saltbox Healthcare",
     videoSrc: "/case-study/saltbox/saltbox-video.mp4",
     sections: [
@@ -1783,7 +1783,7 @@ Traditional search methods, relying on generic approaches and fragmented communi
     ],
   },
   kalagato: {
-    id: "CS_005",
+    id: "CS_006",
     title: "Kalagato",
     videoSrc: "/case-study/saltbox/saltbox-video.mp4",
     sections: [
@@ -2121,7 +2121,7 @@ Traditional search methods, relying on generic approaches and fragmented communi
     ],
   },
   shopify: {
-    id: "CS_006",
+    id: "CS_007",
     title: "Shopify - Sports",
     videoSrc: "/case-study/saltbox/saltbox-video.mp4",
     sections: [
@@ -2440,8 +2440,8 @@ Traditional search methods, relying on generic approaches and fragmented communi
       },
     ],
   },
-  jugl_bee: {
-    id: "CS_007",
+    jugl_bee: {
+    id: "CS_008",
     title: "jugl bee",
     videoSrc: "/case-study/jugl/jugl_video.mp4",
     sections: [
