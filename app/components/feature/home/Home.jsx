@@ -52,16 +52,18 @@ function Home() {
   const touchLockRef = useRef(false);
   const [activeIndex, setActiveIndex] = useState(0);
 
-  // Mobile touch handling: vertical swipe maps to slide change
+  // Mobile touch handling: vertical swipe maps to slide change, horizontal handled by Embla
   useEffect(() => {
     const el = containerRef.current || window;
     let startY = 0;
+    let startX = 0;
     const threshold = 20; // Lower threshold for responsiveness
     const cooldownMs = 150; // Faster cooldown for snappier feel
 
     const onTouchStart = (e) => {
       if (!e.changedTouches || e.changedTouches.length === 0) return;
       startY = e.changedTouches[0].clientY;
+      startX = e.changedTouches[0].clientX;
     };
 
     const onTouchEnd = (e) => {
@@ -69,25 +71,25 @@ function Home() {
       if (!e.changedTouches || e.changedTouches.length === 0) return;
 
       const endY = e.changedTouches[0].clientY;
-      const diff = startY - endY;
+      const endX = e.changedTouches[0].clientX;
+      const diffY = startY - endY;
+      const diffX = startX - endX;
 
       // Ignore small swipes
-      if (Math.abs(diff) < threshold) return;
+      if (Math.abs(diffY) < threshold && Math.abs(diffX) < threshold) return;
 
+      // Determine dominant axis
+      const isVertical = Math.abs(diffY) > Math.abs(diffX);
+
+      // If horizontal, let Embla handle it (native scroll)
+      if (!isVertical) return;
+
+      // Vertical Swipe Logic
       const isMob = window.innerWidth < 640;
       const count = isMob ? 6 : 5;
 
-      // Logic:
-      // Diff > 0 means StartY > EndY (Finger moved UP). Content should move UP.
-      // This corresponds to scrolling DOWN to the NEXT item.
-      // So Swipe UP = Next Slide.
-
-      // Diff < 0 means StartY < EndY (Finger moved DOWN). Content should move DOWN.
-      // This corresponds to scrolling UP to the PREVIOUS item.
-      // So Swipe DOWN = Prev Slide.
-
       if (isMob && mobileEmblaApi) {
-        if (diff > 0) {
+        if (diffY > 0) {
           // Swipe Up -> Next
           mobileEmblaApi.scrollNext();
         } else {
@@ -97,7 +99,7 @@ function Home() {
       } else {
         // Fallback logic
         const api = emblaApiRef.current;
-        if (diff > 0) {
+        if (diffY > 0) {
           // Swipe Up -> Next
           if (api) api.scrollNext();
           else setActiveIndex((prev) => (prev + 1) % count);
@@ -399,7 +401,7 @@ function Home() {
         {/* Mobile Content with touch-action fixed */}
         <section className="flex-1 sm:hidden relative h-[calc(100vh-103px)] overflow-hidden">
           <div className="w-full h-full" ref={mobileEmblaRef}>
-            <div className="flex w-full h-full touch-pan-x">
+            <div className="flex w-full h-full touch-pan-y">
               {/* Slides 1-5: RightSecContent Components */}
               {mobComponents.map((Component, i) => (
                 <div
