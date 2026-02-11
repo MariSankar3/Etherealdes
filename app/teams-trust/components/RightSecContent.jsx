@@ -28,14 +28,6 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
     ...rightSecContentData,
     ...rightSecContentData,
     ...rightSecContentData,
-    ...rightSecContentData,
-    ...rightSecContentData,
-    ...rightSecContentData,
-    ...rightSecContentData,
-    ...rightSecContentData,
-    ...rightSecContentData,
-    ...rightSecContentData,
-    ...rightSecContentData,
   ];
 
   useEffect(() => {
@@ -283,7 +275,7 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
           {infiniteData.map((item, index) => (
             <motion.article
               layout
-              layoutId={`card-${index % numCards}`}
+              // layoutId removed for performance optimization
               key={index}
               role="listitem"
               ref={index === 1 ? cardRef : null}
