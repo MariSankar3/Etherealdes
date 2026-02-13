@@ -334,7 +334,7 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
       </div>
 
       {/* ===== Mobile Indicators ===== */}
-      <div className="flex md:hidden flex-row gap-[5px] justify-center items-center mx-auto absolute bottom-[100px] left-5 right-0">
+      <div className="flex md:hidden flex-row gap-[5px] justify-center items-center mx-auto absolute bottom-[30px] left-5 right-0">
         {rightSecContentData.map((_, i) => (
           <Indicator
             key={i}
