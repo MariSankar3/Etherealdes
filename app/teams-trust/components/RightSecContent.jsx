@@ -255,8 +255,11 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
       <div
         ref={wrapperRef}
         role="list"
-        className="relative flex items-center w-full select-none py-[40px]"
-        style={{ touchAction: "pan-y" }}
+        className="relative flex items-center w-full select-none py-[40px] transition-[height] duration-300 ease-in-out"
+        style={{
+          touchAction: "pan-y",
+          height: getCardHeight(true) + 80 + "px", // Max card height + vertical padding
+        }}
       >
         <motion.div
           className="flex items-center gap-[20px] sm:gap-[30px] md:gap-[40px] xl:gap-[50px] px-[30px] md:px-[50px]"
@@ -331,18 +334,18 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
       </div>
 
       {/* ===== Mobile Indicators ===== */}
-      {/* <div className="flex md:hidden flex-row gap-[5px] justify-end items-end mx-auto absolute bottom-10 left-auto">
+      <div className="flex md:hidden flex-row gap-[5px] justify-center items-center mx-auto absolute bottom-[100px] left-5 right-0">
         {rightSecContentData.map((_, i) => (
           <Indicator
             key={i}
-            className={`transition-all duration-300 border-b-1 ${
-              activeIndex === i
+            className={`transition-all duration-300 border-b-[1px] ${
+              activeIndex % numCards === i
                 ? "text-white w-[30px] border-white"
                 : "text-[#4F4E4E] w-[20px] border-[#4F4E4E]"
             } rotate-90`}
           />
         ))}
-      </div> */}
+      </div>
     </section>
   );
 }
