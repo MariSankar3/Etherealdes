@@ -158,7 +158,7 @@ export default function About() {
              // Small timeout to ensure paint/layout is 100% stable before revealing
              setTimeout(() => {
                 setIsReady(true);
-             }, 550);
+             }, 650);
           });
       } else {
         // Subsequent navigations: Smooth scroll
