@@ -121,21 +121,27 @@ export default function About() {
   const handleInfiniteLoop = useCallback(() => {
      const totalCards = cards.length;
      if (currentIndex >= totalCards * 2) {
+       // Reached the start of the 3rd set -> Jump to start of 2nd set
        const newIndex = currentIndex - totalCards;
        if (containerRef.current) {
+          containerRef.current.style.scrollBehavior = 'auto'; // Ensure instant jump
           containerRef.current.scrollTo({
              left: getScrollPosition(newIndex),
              behavior: "auto"
           });
+          containerRef.current.style.scrollBehavior = ''; // Restore default
        }
        setCurrentIndex(newIndex);
      } else if (currentIndex < totalCards) {
+       // Reached the end of the 1st set -> Jump to end of 2nd set
        const newIndex = currentIndex + totalCards;
         if (containerRef.current) {
+          containerRef.current.style.scrollBehavior = 'auto'; // Ensure instant jump
           containerRef.current.scrollTo({
              left: getScrollPosition(newIndex),
              behavior: "auto"
           });
+          containerRef.current.style.scrollBehavior = ''; // Restore default
        }
        setCurrentIndex(newIndex);
      }
@@ -158,7 +164,7 @@ export default function About() {
              // Small timeout to ensure paint/layout is 100% stable before revealing
              setTimeout(() => {
                 setIsReady(true);
-             }, 650);
+             }, 620);
           });
       } else {
         // Subsequent navigations: Smooth scroll
