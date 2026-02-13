@@ -282,7 +282,7 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
           {/* RIGHT (SCROLLS) */}
           <div
             ref={scrollRef}
-            className="flex-1 md:overflow-auto px-6 pt-10 pb-40 md:py-10 text-white"
+            className="flex-1 md:overflow-auto px-6 pt-10 pb-10 md:py-10 text-white"
           >
             <div className="flex flex-col gap-16">
               {sections.map((s) => (
