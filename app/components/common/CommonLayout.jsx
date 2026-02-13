@@ -27,7 +27,7 @@ export default function CommonLayout({
 
   return (
     <div
-      className={`bg-[#121212] text-white w-full h-screen flex flex-col md:flex-row overflow-hidden ${className}`}
+      className={`bg-[#121212] text-white w-full h-[100dvh] flex flex-col md:flex-row overflow-hidden ${className}`}
     >
       <PricingModal open={pricingOpen} onClose={() => setPricingOpen(false)} />
 

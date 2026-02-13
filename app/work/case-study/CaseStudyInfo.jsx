@@ -198,7 +198,7 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
   };
 
   return (
-    <div className="flex flex-col md:h-screen w-full md:overflow-hidden bg-[#121212] overflow-auto h-auto">
+    <div className="flex flex-col md:h-screen w-full md:overflow-hidden bg-[#121212] h-auto">
       {/* ================= HEADER ================= */}
       <div
         className={`md:sticky md:top-0 z-20 transition-[height] duration-500 ease-out
@@ -236,15 +236,15 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
 
           {/* Mobile Hero Image */}
           <div className="block md:hidden w-full mt-4">
-           <video
-            className="w-full h-full object-cover border-[#4F4E4E] border-t border-b"
-            autoPlay
-            loop
-            muted
-            playsInline
-          >
-            <source src={details.videoSrc} type="video/mp4" />
-          </video>
+            <video
+              className="w-full h-full object-cover border-[#4F4E4E] border-t border-b"
+              autoPlay
+              loop
+              muted
+              playsInline
+            >
+              <source src={details.videoSrc} type="video/mp4" />
+            </video>
           </div>
         </div>
 
@@ -282,7 +282,7 @@ function CaseStudyInfo({ caseStudyId, caseStudyDetails }) {
           {/* RIGHT (SCROLLS) */}
           <div
             ref={scrollRef}
-            className="flex-1 md:overflow-auto px-6 py-10 text-white"
+            className="flex-1 md:overflow-auto px-6 pt-10 pb-40 md:py-10 text-white"
           >
             <div className="flex flex-col gap-16">
               {sections.map((s) => (
