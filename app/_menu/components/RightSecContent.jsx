@@ -9,6 +9,7 @@ import { useFormValidation } from "../../hooks/useFormValidation";
 import { contactFormSchema } from "../../utils/validation";
 import FormInput from "../../components/common/FormInput";
 import PhoneInput from "../../components/common/PhoneInput";
+import { useLanguage } from "../../context/LanguageContext";
 
 /* Animations */
 const container = {
@@ -41,6 +42,7 @@ const formColors = {
 };
 
 function RightSecContent() {
+  const { t } = useLanguage();
   const {
     register,
     handleSubmit,
@@ -70,7 +72,7 @@ function RightSecContent() {
         "service_4cn6arm",
         "template_0owxl3h",
         templateParams,
-        { publicKey: "lMaCjBmij1WCF-sA2" }
+        { publicKey: "lMaCjBmij1WCF-sA2" },
       );
 
       return Promise.resolve();
@@ -89,11 +91,8 @@ function RightSecContent() {
       variants={container}
     >
       {/* Heading */}
-      <motion.p
-        className="uppercase text-[20px] font-anton"
-        variants={item}
-      >
-        Lets HAVE COFFEE!
+      <motion.p className="uppercase text-[20px] font-anton" variants={item}>
+        {t("menu_lets_have_coffee", "Lets HAVE COFFEE!")}
       </motion.p>
 
       {/* Success */}
@@ -103,7 +102,7 @@ function RightSecContent() {
           animate={{ opacity: 1, y: 0 }}
           className="bg-white text-[#ff4e21] p-3 rounded-md mb-3 border border-white"
         >
-          Your email has been sent successfully!
+          {t("menu_form_success", "Your email has been sent successfully!")}
         </motion.div>
       )}
 
@@ -126,7 +125,7 @@ function RightSecContent() {
         <FormInput
           variants={item}
           type="text"
-          placeholder="Full name"
+          placeholder={t("menu_form_name", "Full name")}
           {...register("name")}
           error={errors.name?.message}
           required
@@ -136,7 +135,7 @@ function RightSecContent() {
         <FormInput
           variants={item}
           type="email"
-          placeholder="Contact mail ID"
+          placeholder={t("menu_form_email", "Contact mail ID")}
           {...register("email")}
           error={errors.email?.message}
           required
@@ -161,7 +160,7 @@ function RightSecContent() {
         <FormInput
           variants={item}
           type="textarea"
-          placeholder="Message"
+          placeholder={t("menu_form_message", "Message")}
           {...register("message")}
           error={errors.message?.message}
           required

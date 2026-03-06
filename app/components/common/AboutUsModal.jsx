@@ -4,6 +4,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import Link from "next/link";
 import gsap from "gsap";
 import { Close } from "../icons/icons";
+import { useLanguage } from "../../context/LanguageContext";
 
 const modalVariants = {
   hidden: { opacity: 0, scale: 0.95, y: 40 },
@@ -22,6 +23,7 @@ const modalVariants = {
 };
 
 export default function Home({ open, onClose }) {
+  const { t } = useLanguage();
   const [selectedCard, setSelectedCard] = useState("ourStory");
   const [activeDesktopIndex, setActiveDesktopIndex] = useState(0);
   const [mobileActiveIndex, setMobileActiveIndex] = useState(0);
@@ -38,71 +40,68 @@ export default function Home({ open, onClose }) {
   const cards = [
     {
       id: "ourStory",
-      title: "Our Story",
-      content:
-        "Ethereal Design was founded on a simple principle: technology should be powerful, not complicated. We are a collective of designers, strategists, and innovators passionate about creating digital products that feel intuitive and look exceptional.",
+      title: t("about_story"),
+      content: t("about_storydes"),
       MainContent: [
         {
-          subTitle: "Our Story",
-          text: "We partner with ambitious founders and enterprises to navigate the entire product lifecycle— from a spark of an idea to a market-ready solution. Our strength lies in aligning business vision with seamless usability, ensuring every pixel serves a purpose.",
+          subTitle: t("about_story"),
+          text: t("about_storytext"),
         },
       ],
     },
     {
       id: "theDifference",
-      title: "The Ethereal Difference",
-      content:
-        "Why partner with us? It's our unique blend of technology, talent, and technique",
+      title: t("about_dif"),
+      content: t("about_difdes"),
       MainContent: [
         {
-          subTitle: "AI-Powered Velocity",
-          text: "We leverage AI to amplify our creativity and accelerate our process, delivering high-quality design work at unprecedented speed.",
+          subTitle: t("about_ai_velocity_subtitle"),
+          text: t("about_ai_velocity_text"),
         },
         {
-          subTitle: "A Blend of Minds",
-          text: "Our team pairs fresh, innovative minds with seasoned strategists, ensuring your product is both cutting-edge and reliable.",
+          subTitle: t("about_blend_minds_subtitle"),
+          text: t("about_blend_minds_text"),
         },
         {
-          subTitle: "Unmatched Value",
-          text: "Get the quality of a veteran studio with the speed of a modern tech startup. Great results, delivered efficiently.",
+          subTitle: t("about_unmatched_value_subtitle"),
+          text: t("about_unmatched_value_text"),
         },
       ],
     },
     {
       id: "meetTeam",
-      title: "Meet the Core Team",
-      content: "The strategists and visionaries leading our studio.",
-      shortContent: "Strategists and visionaries leading the studio.",
+      title: t("about_meet"),
+      content: t("about_meetdes"),
+      shortContent: t("about_meet_team_short"),
       MainContent: [
         {
           name: "Suganth Alagesan",
-          role: "UX/UI Product Strategist",
+          role: t("about_role_ux_ui"),
           teamImg: "/images/about-us/UXUI_strategist.svg",
-          teamInfo: "Co-Founder",
+          teamInfo: t("about_info_co_founder"),
         },
         {
           name: "Suresh Balaraman",
-          role: "Product Delivery Head",
+          role: t("about_role_delivery"),
           teamImg: "/images/about-us/product_head.svg",
-          teamInfo: "Co-Founder",
+          teamInfo: t("about_info_co_founder"),
         },
         {
           name: "Praveen",
-          role: "Technical Lead",
+          role: t("about_role_tech_lead"),
           teamImg: "/images/about-us/technical_lead.svg",
         },
       ],
     },
     {
       id: "buildNext",
-      title: "Let's Build What's Next!",
-      content:
-        "Have a project in mind? We are ready to listen and partner with you to create something amazing.",
+      title: t("about_build"),
+      content: t("about_builddes"),
       MainContent: [
         {
-          subTitle: "Let's Build What's Next!",
-          text: "Have a project in mind? We are ready to listen and partner with you to create something amazing.",
-          contactus: "Get In Touch",
+          subTitle: t("about_build"),
+          text: t("about_builddes"),
+          contactus: t("about_contact_get_in_touch"),
         },
       ],
     },
@@ -334,18 +333,14 @@ export default function Home({ open, onClose }) {
                   <div className="block sm:flex items-end sm:mb-2 mb-8 md:mb-2">
                     <div className="sm:w-[50%] w-[90%]">
                       <h3 className="font-antonio text-lg lg:block hidden">
-                        About Us
+                        {t("nav_about")}
                       </h3>
                       <h1 className="font-antonio text-2xl md:text-4xl capitalize mb-1 w-[70%] md:w-[100%]">
-                        Vision To Reality. Our Human Touch.
+                        {t("about_vision")}
                       </h1>
                     </div>
                     <div className="sm:w-[40%] md:mb-2 mb-12 mt-8 md:mt-[0] w-[70%] ml-[auto]">
-                      <p className="font-antonio text-md">
-                        We are a digital product studio that transforms complex
-                        ideas into beautiful, user-friendly experiences that
-                        drive results
-                      </p>
+                      <p className="font-antonio text-md">{t("about_exp")}</p>
                     </div>
                     {/* Header */}
                     <div className="w-max relative left-[45px] bottom-[40px]">
@@ -651,7 +646,7 @@ export default function Home({ open, onClose }) {
                             onClick={() => setIsPopupOpen(false)}
                             className="absolute -top-10 right-0 text-white cursor-pointer font-antonio text-sm tracking-[0.05em] bg-[#181818] border border-[#4E4E4E] px-4 py-1 rounded-lg"
                           >
-                            ESC
+                            {t("about_esc")}
                           </button>
                           {/* Popup Content */}
                           <div className="max-h-[440px] w-full overflow-auto">

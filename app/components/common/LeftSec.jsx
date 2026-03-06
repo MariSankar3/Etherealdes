@@ -1,15 +1,16 @@
 "use client";
 
-import React, { useState } from 'react';
-import { Hamburger, Linkedin, Close } from '../icons/icons';
-import Link from 'next/link';
-import { usePathname, useRouter } from 'next/navigation';
+import React, { useState } from "react";
+import { Hamburger, Linkedin, Close } from "../icons/icons";
+import Link from "next/link";
+import { usePathname, useRouter } from "next/navigation";
 import UserConfiguration from "../../Config/UserConfiguration";
 const SOCIAL_LINKS = UserConfiguration.SOCIAL_LINKS;
 import { motion } from "framer-motion";
-import MenuSidebar from '../feature/MenuSidebar';
-import AnimatedHamburger from './AnimatedHamburger';
-import EtherealDesign from '../common/EtherealDesign';
+import MenuSidebar from "../feature/MenuSidebar";
+import AnimatedHamburger from "./AnimatedHamburger";
+import EtherealDesign from "../common/EtherealDesign";
+import { useLanguage } from "../../context/LanguageContext";
 
 const itemVariants = {
   hidden: { opacity: 0, y: 50 },
@@ -28,14 +29,26 @@ function LeftSec() {
   const router = useRouter();
   const isAllInOne = pathname === "/menu/";
   const [menuOpen, setMenuOpen] = useState(false);
+  const { t, targetLang, detectedLang, setTargetLang } = useLanguage();
+
+  const handleLanguageToggle = () => {
+    const secondaryLang = detectedLang !== "en" ? detectedLang : "de";
+    const newLang = targetLang === "en" ? secondaryLang : "en";
+    setTargetLang(newLang);
+    localStorage.setItem("ethereal_explicit_lang", newLang);
+  };
 
   const CURRENT_COLOR = menuOpen
     ? "text-[#121212]"
-    : (isAllInOne ? "text-[#121212]" : "text-white");
+    : isAllInOne
+      ? "text-[#121212]"
+      : "text-white";
 
   const CURRENT_BG_COLOR = menuOpen
     ? "bg-[#FF4E21]"
-    : (isAllInOne ? "bg-[#FF4E21]" : "bg-[#121212]");
+    : isAllInOne
+      ? "bg-[#FF4E21]"
+      : "bg-[#121212]";
 
   const BORDER = menuOpen
     ? "border-r border-black"
@@ -43,38 +56,37 @@ function LeftSec() {
 
   return (
     /* ===== Semantic Navigation Wrapper ===== */
-    <nav
-      aria-label="Primary sidebar navigation"
-      className="relative"
-    >
+    <nav aria-label="Primary sidebar navigation" className="relative">
       <motion.div
         className={`relative flex flex-col w-[60px] sm:w-[80px] flex-shrink-0 justify-center h-dvh items-center z-[200] ${CURRENT_COLOR} ${CURRENT_BG_COLOR} ${BORDER}`}
         initial="hidden"
         animate="visible"
       >
-
         {/* ===== SEO Brand Heading (Invisible) ===== */}
         <p className="sr-only">
-          Ethereal Designs – Creative UI UX Design Studio
+          {t(
+            "leftsec_seo_heading",
+            "Ethereal Designs – Creative UI UX Design Studio",
+          )}
         </p>
 
         {/* ===== Top: Logo + Menu Toggle ===== */}
         <motion.div
           style={{
-            position: 'absolute',
+            position: "absolute",
             top: 0,
             left: 0,
             right: 0,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
-            width: '100%',
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            width: "100%",
           }}
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 0.6, ease: "easeIn" }}
         >
-          <div className={`h-[103px] ${menuOpen ? 'hidden' : 'flex flex-col'}`}>
+          <div className={`h-[103px] ${menuOpen ? "hidden" : "flex flex-col"}`}>
             <div className="my-auto" aria-hidden="true">
               <EtherealDesign />
             </div>
@@ -83,9 +95,13 @@ function LeftSec() {
 
           <button
             onClick={() => setMenuOpen(!menuOpen)}
-            aria-label={menuOpen ? "Close navigation menu" : "Open navigation menu"}
+            aria-label={
+              menuOpen
+                ? t("leftsec_close_menu", "Close navigation menu")
+                : t("leftsec_open_menu", "Open navigation menu")
+            }
             aria-expanded={menuOpen}
-            className={`cursor-pointer ${menuOpen ? 'mt-5' : 'mt-2'}`}
+            className={`cursor-pointer ${menuOpen ? "mt-5" : "mt-2"}`}
           >
             <AnimatedHamburger open={menuOpen} />
           </button>
@@ -95,37 +111,74 @@ function LeftSec() {
         <motion.div
           variants={itemVariants}
           className="text-[11px] flex font-antonio"
-          style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: '100%' }}
+          style={{
+            flex: 1,
+            justifyContent: "center",
+            alignItems: "center",
+            height: "100%",
+          }}
         >
           <p
             style={{ writingMode: "sideways-lr" }}
-            className={`tracking-[2px] ${menuOpen ? 'font-bold' : ''}`}
+            className={`tracking-[2px] ${menuOpen ? "font-bold" : ""}`}
           >
-            © 2025 . Ethereal Designs . All rights Reserved
+            {t(
+              "leftsec_copyright",
+              "© 2025 . Ethereal Designs . All rights Reserved",
+            )}
           </p>
+        </motion.div>
+
+        {/* ===== Language Switcher ===== */}
+        <motion.div
+          variants={itemVariants}
+          className="text-[12px] font-antonio tracking-[2px] cursor-pointer hover:opacity-70 transition-opacity"
+          style={{
+            position: "absolute",
+            bottom: 80,
+            display: "flex",
+            justifyContent: "center",
+            width: "100%",
+          }}
+          onClick={handleLanguageToggle}
+          aria-label="Toggle language"
+        >
+          <span className={targetLang === "en" ? "font-bold" : "opacity-60"}>
+            EN
+          </span>
+          <span className="mx-1">/</span>
+          <span className={targetLang !== "en" ? "font-bold" : "opacity-60"}>
+            {(detectedLang && detectedLang !== "en"
+              ? detectedLang
+              : "de"
+            ).toUpperCase()}
+          </span>
         </motion.div>
 
         {/* ===== Bottom: Social Link ===== */}
         <motion.div
           variants={itemVariants}
           style={{
-            position: 'absolute',
+            position: "absolute",
             bottom: 0,
             left: 0,
             right: 0,
-            width: '100%',
-            display: 'flex',
-            justifyContent: 'center',
+            width: "100%",
+            display: "flex",
+            justifyContent: "center",
             marginBottom: -24,
           }}
         >
           <Link
             href={SOCIAL_LINKS.LINKEDIN.PATH}
-            aria-label="Ethereal Designs LinkedIn profile"
+            aria-label={t(
+              "leftsec_linkedin_aria",
+              "Ethereal Designs LinkedIn profile",
+            )}
             rel="noopener noreferrer"
             target="_blank"
             className="pb-[50px]"
-            alt="Ethereal Designs LinkedIn"
+            title={t("leftsec_linkedin_alt", "Ethereal Designs LinkedIn")}
           >
             <Linkedin className={CURRENT_COLOR} />
           </Link>

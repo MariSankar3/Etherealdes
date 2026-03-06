@@ -5,6 +5,7 @@ import { gsap } from "gsap";
 import CaseStudyModal from "./CaseStudyModal";
 import { useRouter } from "next/navigation";
 import { CASE_STUDY } from "../case-study/caseStudyData";
+import { useLanguage } from "../../context/LanguageContext";
 
 function RightSecContent() {
   const [hoveredImage, setHoveredImage] = useState(null);
@@ -13,6 +14,7 @@ function RightSecContent() {
   const tooltipRef = useRef(null);
   const exitTimeoutRef = useRef(null);
   const router = useRouter();
+  const { t } = useLanguage();
 
   useEffect(() => {
     if (hoveredImage && tooltipRef.current) {
@@ -97,7 +99,10 @@ function RightSecContent() {
     >
       {/* ===== SEO ONLY ===== */}
       <h2 id="case-studies-heading" className="sr-only">
-        Selected Client Case Studies and Work Portfolio
+        {t(
+          "work_rightsec_seo_heading",
+          "Selected Client Case Studies and Work Portfolio",
+        )}
       </h2>
 
       {/* Tooltip preview (visual only) */}
@@ -142,9 +147,7 @@ function RightSecContent() {
               }
               onMouseMove={handleMouseMove}
               onMouseLeave={handleMouseLeave}
-              onClick={() =>
-                isDisabled ? null : handleCardClick(case_study)
-              }
+              onClick={() => (isDisabled ? null : handleCardClick(case_study))}
             >
               {/* Crawlable title */}
               <span className="sr-only">{case_study.title}</span>

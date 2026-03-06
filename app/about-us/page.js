@@ -5,11 +5,13 @@ import { motion, AnimatePresence } from "framer-motion";
 import { Arrow, Indicator } from "../components/icons/icons";
 import Link from "next/link";
 import { ROUTE } from "../../app/constants/constants";
+import { useLanguage } from "../context/LanguageContext";
 
 const CARD_GAP = 20;
 const SLIDE_DURATION = 5; // 5 seconds per slide as per previous logic
 
 export default function About() {
+  const { t } = useLanguage();
   const containerRef = useRef(null);
   const hasUserInteracted = useRef(false);
   
@@ -20,71 +22,68 @@ export default function About() {
   const cards = [
     {
       id: "ourStory",
-      title: "Our Story",
-      content:
-        "Ethereal Design was founded on a simple principle: technology should be powerful, not complicated. We are a collective of designers, strategists, and innovators passionate about creating digital products that feel intuitive and look exceptional.",
+      title: t("about_story_title", "Our Story"),
+      content: t("about_story_desc", "Ethereal Design was founded on a simple principle: technology should be powerful, not complicated. We are a collective of designers, strategists, and innovators passionate about creating digital products that feel intuitive and look exceptional."),
       MainContent: [
         {
-          subTitle: "Our Story",
-          text: "We partner with ambitious founders and enterprises to navigate the entire product lifecycle— from a spark of an idea to a market-ready solution. Our strength lies in aligning business vision with seamless usability, ensuring every pixel serves a purpose.",
+          subTitle: t("about_story_sub", "Our Story"),
+          text: t("about_story_text", "We partner with ambitious founders and enterprises to navigate the entire product lifecycle— from a spark of an idea to a market-ready solution. Our strength lies in aligning business vision with seamless usability, ensuring every pixel serves a purpose."),
         },
       ],
     },
     {
       id: "theDifference",
-      title: "The Ethereal Difference",
-      content:
-        "Why partner with us? It's our unique blend of technology, talent, and technique",
+      title: t("about_diff_title", "The Ethereal Difference"),
+      content: t("about_diff_desc", "Why partner with us? It's our unique blend of technology, talent, and technique"),
       MainContent: [
         {
-          subTitle: "AI-Powered Velocity",
-          text: "We leverage AI to amplify our creativity and accelerate our process, delivering high-quality design work at unprecedented speed.",
+          subTitle: t("about_diff_ai_sub", "AI-Powered Velocity"),
+          text: t("about_diff_ai_text", "We leverage AI to amplify our creativity and accelerate our process, delivering high-quality design work at unprecedented speed."),
         },
         {
-          subTitle: "A Blend of Minds",
-          text: "Our team pairs fresh, innovative minds with seasoned strategists, ensuring your product is both cutting-edge and reliable.",
+          subTitle: t("about_diff_blend_sub", "A Blend of Minds"),
+          text: t("about_diff_blend_text", "Our team pairs fresh, innovative minds with seasoned strategists, ensuring your product is both cutting-edge and reliable."),
         },
         {
-          subTitle: "Unmatched Value",
-          text: "Get the quality of a veteran studio with the speed of a modern tech startup. Great results, delivered efficiently.",
+          subTitle: t("about_diff_value_sub", "Unmatched Value"),
+          text: t("about_diff_value_text", "Get the quality of a veteran studio with the speed of a modern tech startup. Great results, delivered efficiently."),
         },
       ],
     },
     {
       id: "meetTeam",
-      title: "Meet the Core Team",
-      content: "The strategists and visionaries leading our studio.",
-      shortContent: "Strategists and visionaries leading the studio.",
+      title: t("about_team_title", "Meet the Core Team"),
+      content: t("about_team_desc", "The strategists and visionaries leading our studio."),
+      shortContent: t("about_team_short_desc", "Strategists and visionaries leading the studio."),
       MainContent: [
         {
           name: "Suganth Alagesan",
-          role: "UX/UI Product Strategist",
+          role: t("about_team_role_ux", "UX/UI Product Strategist"),
           teamImg: "/images/about-us/UXUI_strategist.svg",
-          teamInfo: "Co-Founder",
+          teamInfo: t("about_team_cofounder", "Co-Founder"),
         },
         {
           name: "Suresh Balaraman",
-          role: "Product Delivery Head",
+          role: t("about_team_role_delivery", "Product Delivery Head"),
           teamImg: "/images/about-us/product_head.svg",
-          teamInfo: "Co-Founder",
+          teamInfo: t("about_team_cofounder", "Co-Founder"),
         },
         {
           name: "Praveen",
-          role: "Technical Lead",
+          role: t("about_team_role_tech", "Technical Lead"),
           teamImg: "/images/about-us/technical_lead.svg",
         },
       ],
     },
     {
       id: "buildNext",
-      title: "Let's Build What's Next!",
-      content:
-        "Have a project in mind? We are ready to listen and partner with you to create something amazing.",
+      title: t("about_build_title", "Let's Build What's Next!"),
+      content: t("about_build_desc", "Have a project in mind? We are ready to listen and partner with you to create something amazing."),
       MainContent: [
         {
-          subTitle: "Let's Build What's Next!",
-          text: "Have a project in mind? We are ready to listen and partner with you to create something amazing.",
-          contactus: "Get In Touch",
+          subTitle: t("about_build_title", "Let's Build What's Next!"),
+          text: t("about_build_desc", "Have a project in mind? We are ready to listen and partner with you to create something amazing."),
+          contactus: t("about_btn_get_touch", "Get In Touch"),
         },
       ],
     },
@@ -257,7 +256,7 @@ export default function About() {
               href={ROUTE.WORK.PATH}
               className="flex-1 sm:hidden text-center flex justify-center items-center bg-[#FF4E21] py-3 border-b-2 border-l-1 border-[#4F4E4E]"
             >
-              About Us
+              {t("about_heading", "About Us")}
             </Link>
           </motion.div>
         </div>
@@ -265,15 +264,14 @@ export default function About() {
         <div className="p-4 md:px-8">
           <div className="block sm:flex items-end sm:mb-2 mb-16 md:mb-2">
             <div className="sm:w-[50%] w-[90%]">
-              <h3 className="font-antonio text-lg lg:block hidden">About Us</h3>
+              <h3 className="font-antonio text-lg lg:block hidden">{t("about_heading", "About Us")}</h3>
               <h1 className="font-antonio text-2xl md:text-4xl capitalize mb-1 w-[70%] md:w-[100%]">
-                Vision To Reality. Our Human Touch.
+                {t("about_hero_title", "Vision To Reality. Our Human Touch.")}
               </h1>
             </div>
             <div className="sm:w-[40%] md:mb-2 mb-8 mt-4 md:mt-[0] w-[80%] ml-[auto]">
               <p className="font-antonio text-md">
-                We are a digital product studio that transforms complex ideas
-                into beautiful, user-friendly experiences that drive results
+                {t("about_hero_desc", "We are a digital product studio that transforms complex ideas into beautiful, user-friendly experiences that drive results")}
               </p>
             </div>
           </div>

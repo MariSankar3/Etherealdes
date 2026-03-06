@@ -6,6 +6,7 @@ import UserConfiguration from "../../Config/UserConfiguration";
 const SOCIAL_LINKS = UserConfiguration.SOCIAL_LINKS;
 import { motion } from "framer-motion";
 import { useRouter } from "next/navigation";
+import { useLanguage } from "../../context/LanguageContext";
 
 const PAGES = [
   {
@@ -53,6 +54,7 @@ const MODAL_PAGES = {
 
 function MidSecContent({ onClose }) {
   const router = useRouter();
+  const { t } = useLanguage();
 
   return (
     <motion.div
@@ -99,14 +101,20 @@ function MidSecContent({ onClose }) {
                     className="uppercase font-light transition-all duration-300 absolute top-1/2 -translate-y-1/2 z-10
           group-hover:-translate-y-full group-hover:opacity-0"
                   >
-                    {page.label}
+                    {t(
+                      `menu_${page.label.toLowerCase().replace(/\s+/g, "_")}`,
+                      page.label,
+                    )}
                   </p>
                   {/* Bold text */}
                   <p
                     className="uppercase font-bold text-black transition-all duration-300 absolute top-full z-10
           opacity-0 group-hover:top-1/2 group-hover:-translate-y-1/2 group-hover:opacity-100 group-hover:delay-200"
                   >
-                    {page.label}
+                    {t(
+                      `menu_${page.label.toLowerCase().replace(/\s+/g, "_")}`,
+                      page.label,
+                    )}
                   </p>
                 </button>
               );
@@ -115,6 +123,7 @@ function MidSecContent({ onClose }) {
               <Link
                 key={page.id}
                 href={page.route}
+                prefetch={false}
                 className={`relative overflow-hidden flex flex-col justify-center border-black px-[20px] lg:px-[54px] md:first:border-b-0 ${
                   index === 0
                     ? "border-b border-px md:border-y md:border-[2px]"
@@ -128,14 +137,20 @@ function MidSecContent({ onClose }) {
                   className="uppercase font-light transition-all duration-300 absolute top-1/2 -translate-y-1/2 z-10
                     group-hover:-translate-y-full group-hover:opacity-0"
                 >
-                  {page.label}
+                  {t(
+                    `menu_${page.label.toLowerCase().replace(/\s+/g, "_")}`,
+                    page.label,
+                  )}
                 </p>
                 {/* Bold text (on hover) */}
                 <p
                   className="uppercase  font-bold text-black transition-all duration-300 absolute top-full z-10
                     opacity-0 group-hover:top-1/2 group-hover:-translate-y-1/2 group-hover:opacity-100 group-hover:delay-200"
                 >
-                  {page.label}
+                  {t(
+                    `menu_${page.label.toLowerCase().replace(/\s+/g, "_")}`,
+                    page.label,
+                  )}
                 </p>
               </Link>
             );
@@ -153,18 +168,24 @@ function MidSecContent({ onClose }) {
             <Link href={ROUTE.GET_IN_TOUCH.PATH}>Contact</Link>
           </div> */}
           <div className="font-antonio  font-[400] flex flex-col gap-2 md:gap-[16px] text-[16px] w-max md:w-full">
-            <h2 className="uppercase tracking-[5px]">Socials</h2>
-            <Link href={SOCIAL_LINKS.LINKEDIN.PATH}>Linkedin</Link>
+            <h2 className="uppercase tracking-[5px]">
+              {t("menu_socials", "Socials")}
+            </h2>
+            <Link href={SOCIAL_LINKS.LINKEDIN.PATH}>
+              {t("menu_linkedin", "Linkedin")}
+            </Link>
             {/* <Link href={SOCIAL_LINKS.INSTAGRAM.PATH}>instagram</Link>
             <Link href={SOCIAL_LINKS.BEHANCE.PATH}>Behance</Link> */}
           </div>
           <div className="font-antonio  font-[400] flex flex-col gap-2 md:gap-[16px] text-[16px]  w-max md:w-full">
-            <h2 className="uppercase tracking-[5px]">contact details</h2>
+            <h2 className="uppercase tracking-[5px]">
+              {t("menu_contact_details", "contact details")}
+            </h2>
             <Link href={`tel:${SOCIAL_LINKS.MOBILE.PATH}`}>
-              Mobile: {SOCIAL_LINKS.MOBILE.LABEL}
+              {t("menu_mobile", "Mobile")}: {SOCIAL_LINKS.MOBILE.LABEL}
             </Link>
             <Link href={`mailto:${SOCIAL_LINKS.EMAIL.PATH}`}>
-              Email: {SOCIAL_LINKS.EMAIL.LABEL}
+              {t("menu_email", "Email")}: {SOCIAL_LINKS.EMAIL.LABEL}
             </Link>
           </div>
         </div>

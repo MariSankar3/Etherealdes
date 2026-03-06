@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { ChevronRight } from "../../components/icons/icons";
 import { motion, useAnimationControls, useInView } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
 
 function MidSec() {
   const works = UserConfiguration.Work;
@@ -12,6 +13,7 @@ function MidSec() {
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.5 });
   const laptopAnimationControls = useAnimationControls();
+  const { t } = useLanguage();
 
   const [isMobile, setIsMobile] = useState(false);
   useEffect(() => {
@@ -44,12 +46,16 @@ function MidSec() {
           id="solution-heading"
           className="font-anton text-[20px] uppercase 2xl:text-[24px]"
         >
-          Our solution to your digital product experience
+          {t(
+            "work_midsec_heading",
+            "Our solution to your digital product experience",
+          )}
         </h2>
         <p className="sr-only">
-          Our design studio helps startups and businesses design, build, and
-          improve digital products through user-centered design, UI UX, and
-          branding.
+          {t(
+            "work_midsec_seo",
+            "Our design studio helps startups and businesses design, build, and improve digital products through user-centered design, UI UX, and branding.",
+          )}
         </p>
       </div>
       <div

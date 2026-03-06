@@ -1,7 +1,9 @@
 "use client";
 import React, { useEffect, useRef } from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
 function RightSecContent({ activeService, onActiveServiceChange }) {
+  const { t } = useLanguage();
   const [openIndex, setOpenIndex] = React.useState(activeService ?? 0);
   const [isMobile, setIsMobile] = React.useState(false);
   const [showScrollIndicator, setShowScrollIndicator] = React.useState(false);
@@ -10,39 +12,51 @@ function RightSecContent({ activeService, onActiveServiceChange }) {
   const services = [
     {
       id: 0,
-      title: "UI/UX Design",
-      description:
+      title: t("services_ui_ux", "UI/UX Design"),
+      description: t(
+        "services_ui_ux_desc",
         "We rapidly turn ideas into testable MVPs, validating your vision early. Our intuitive, beautifully designed apps feature smooth animations that engage users. Backed by deep research and journey mapping, we uncover true user needs. AI-driven optimization enhances user flows, delivering seamless, intelligent experiences that evolve with your audience.",
+      ),
     },
     {
       id: 1,
-      title: "API & Backend",
-      description:
+      title: t("services_api_backend", "API & Backend"),
+      description: t(
+        "services_api_backend_desc",
         "We build scalable backends using Node.js and modern databases to support your app's growth. Our secure data flow is powered by RESTful and GraphQL APIs with strong authentication. We implement custom business logic, including tailored middleware and role-based permissions, ensuring your system aligns perfectly with your operations.",
+      ),
     },
     {
       id: 2,
-      title: "Mobile Apps",
-      description:
+      title: t("services_mobile_apps", "Mobile Apps"),
+      description: t(
+        "services_mobile_apps_desc",
         "We use Flutter to craft stunning, high-performance iOS and Android apps from a single codebase, ensuring broad reach and fast development. By integrating Firebase, we enable real-time data, secure authentication, and analytics. Our expert UI/UX design delivers seamless, intuitive experiences that keep users engaged and coming back.",
+      ),
     },
     {
       id: 3,
-      title: "AI & Chatbots",
-      description:
+      title: t("services_ai_chatbots", "AI & Chatbots"),
+      description: t(
+        "services_ai_chatbots_desc",
         "We build intelligent AI chatbots tailored to your services, integrating smoothly across platforms. Our WhatsApp and Instagram bots engage users 24/7, handling inquiries and capturing leads automatically. With smart CRM integration, we streamline your sales funnel by connecting bots directly to your systems, boosting efficiency and conversions.",
+      ),
     },
     {
       id: 4,
-      title: "Frontend Develop",
-      description:
+      title: t("services_frontend", "Frontend Develop"),
+      description: t(
+        "services_frontend_desc",
         "We build modern, high-performance web apps using React.js, Next.js, and TypeScript. With Tailwind CSS, we ensure pixel-perfect responsiveness across all devices. Our development process includes automated CI/CD pipelines via GitHub, delivering seamless updates, improved efficiency, and reliable, scalable applications tailored to meet your business goals with precision.",
+      ),
     },
     {
       id: 5,
-      title: "Digital Marketing",
-      description:
+      title: t("services_digital_marketing", "Digital Marketing"),
+      description: t(
+        "services_digital_marketing_desc",
         "We help grow your brand through strategic community building on platforms like Meta and Google. Our SEO strategies boost your visibility, while targeted ad campaigns reach ideal customers for maximum ROI. With content tailored to attract, engage, and convert, we turn your audience into loyal customers and leads.",
+      ),
     },
   ];
 
@@ -180,13 +194,13 @@ function RightSecContent({ activeService, onActiveServiceChange }) {
       <meta itemProp="itemListOrder" content="Unordered" />
 
       <h2 id="services-list-heading" className="sr-only">
-        Design Studio Services — What We Offer
+        {t("services_list_heading", "Design Studio Services — What We Offer")}
       </h2>
 
       {/* Scroll indicator for mobile */}
       {isMobile && showScrollIndicator && (
         <div className="absolute top-2 right-2 z-10 bg-black bg-opacity-50 text-white px-2 py-1 rounded text-xs animate-pulse">
-          Scroll to see more
+          {t("services_scroll_more", "Scroll to see more")}
         </div>
       )}
 

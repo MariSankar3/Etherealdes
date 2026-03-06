@@ -1,11 +1,13 @@
 import React from "react";
 import Data from "../../Config/UserConfiguration.json";
 import { Indicator } from "../../components/icons/icons";
+import { useLanguage } from "../../context/LanguageContext";
 
 function MidSec({ activeIndex, numIndicators, setActiveIndex }) {
   const { TeamsTrust } = Data;
   const { MidSection } = TeamsTrust;
   const { Title, Para } = MidSection;
+  const { t } = useLanguage();
 
   return (
     /* ===== Semantic Section ===== */
@@ -20,12 +22,12 @@ function MidSec({ activeIndex, numIndicators, setActiveIndex }) {
           id="teams-trust-mid-heading"
           className="text-[40px] font-[400] md:p-[40px_0_0_20px] lg:p-[40px_0_0_40px] font-[Anton] text-[#DBF900] tracking-wider max-w-[100px]"
         >
-          {Title}
+          {t("teams_trust_title", Title)}
         </h2>
 
         {/* Descriptive paragraph */}
         <p className="sm:pl-[40px] font-antonio tracking-[0.2em] sm:tracking-normal">
-          {Para}
+          {t("teams_trust_para", Para)}
         </p>
       </div>
 

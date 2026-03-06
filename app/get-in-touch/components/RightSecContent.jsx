@@ -10,8 +10,10 @@ import { useFormValidation } from "../../hooks/useFormValidation";
 import { contactFormSchema } from "../../utils/validation";
 import FormInput from "../../components/common/FormInput";
 import PhoneInput from "../../components/common/PhoneInput";
+import { useLanguage } from "../../context/LanguageContext";
 
 function RightSecContent() {
+  const { t } = useLanguage();
   const {
     register,
     handleSubmit,
@@ -139,7 +141,7 @@ function RightSecContent() {
             className="uppercase text-[26px] font-anton"
             variants={fadeUp}
           >
-            Lets HAVE COFFEE!
+            {t("menu_lets_have_coffee", "Lets HAVE COFFEE!")}
           </motion.p>
           <motion.div
             className="relative flex flex-col gap-[10px] text-[32px] font-antonio font-[100] text-[#ffffff80]"
@@ -148,7 +150,7 @@ function RightSecContent() {
             {/* Name Input */}
             <FormInput
               name="name"
-              placeholder="Full name"
+              placeholder={t("menu_form_name", "Full name")}
               {...register("name")}
               error={errors.name?.message}
               required
@@ -161,7 +163,7 @@ function RightSecContent() {
             <FormInput
               name="email"
               type="email"
-              placeholder="Contact mail ID"
+              placeholder={t("menu_form_email", "Contact mail ID")}
               {...register("email")}
               error={errors.email?.message}
               required
@@ -191,7 +193,7 @@ function RightSecContent() {
             <FormInput
               name="message"
               type="textarea"
-              placeholder="Message"
+              placeholder={t("menu_form_message", "Message")}
               {...register("message")}
               error={errors.message?.message}
               required

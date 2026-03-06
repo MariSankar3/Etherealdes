@@ -1,6 +1,8 @@
 import React from "react";
+import { useLanguage } from "../../context/LanguageContext";
 
 export const PricingSection = () => {
+  const { t } = useLanguage();
   return (
     /* ===== Semantic Section ===== */
     <section
@@ -17,7 +19,7 @@ export const PricingSection = () => {
           aria-label="View work"
           className="flex-1 shrink gap-2.5 self-stretch px-4 py-6 my-auto whitespace-nowrap border-r-2 basis-0 border-neutral-600 min-w-60"
         >
-          Work
+          {t("menu_work", "Work")}
         </button>
 
         <button
@@ -25,25 +27,23 @@ export const PricingSection = () => {
           aria-label="Get in touch"
           className="flex-1 shrink gap-2.5 self-stretch px-4 py-6 my-auto basis-0 min-w-60"
         >
-          Get in Touch
+          {t("nav_get_in_touch", "Get in Touch")}
         </button>
       </nav>
 
       {/* ===== Content ===== */}
       <article className="flex flex-col px-14 mt-14 text-white max-md:px-5 max-md:mt-10 max-md:max-w-full">
-        
         {/* SEO Heading */}
-        <h2
-          id="pricing-heading"
-          className="self-start text-4xl leading-none"
-        >
-          Simple Pricing
+        <h2 id="pricing-heading" className="self-start text-4xl leading-none">
+          {t("second_title", "Simple Pricing")}
         </h2>
 
         {/* SEO Description */}
         <p className="mt-56 text-xl font-light leading-6 max-md:mt-10">
-          You'll always know what you're paying — no surprises, no hidden
-          costs, and complete pricing transparency.
+          {t(
+            "second_subtext_1",
+            "You'll always know what you're paying — no surprises, no hidden costs, and complete pricing transparency.",
+          )}
         </p>
       </article>
 

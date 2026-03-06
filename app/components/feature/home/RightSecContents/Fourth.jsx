@@ -1,20 +1,25 @@
 import { motion, useInView, useAnimation } from "framer-motion";
 import React, { useRef, useEffect } from "react";
 import gsap from "gsap";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 function Fourth() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.5 });
   const subtextRef = useRef(null);
 
   // Title split into words
   const titleWords = [
-    "Not happy yet? No worries — ",
-    "we'll make changes until you're fully satisfied.",
+    t("fourth_title_1", "Not happy yet? No worries — "),
+    t("fourth_title_2", "we'll make changes until you're fully satisfied."),
   ];
   // Subtext split into lines
   const subtextLines = [
-    "You can keep sending design requests — we'll work on them one by one",
+    t(
+      "fourth_subtext_1",
+      "You can keep sending design requests — we'll work on them one by one",
+    ),
   ];
 
   useEffect(() => {
@@ -92,12 +97,17 @@ function Fourth() {
       className="flex flex-col justify-between md:gap-[25px] pt-[20px] font-antonio font-300 w-full h-[100%] md:min-h-[400px] md:mb-10"
     >
       <meta itemProp="name" content="YourBrand Design Studio" />
-<meta itemProp="serviceType" content="Design Studio" />
+      <meta itemProp="serviceType" content="Design Studio" />
 
-     <h2 className="sr-only">Modern Design Studio for Startups and Growing Brands</h2>
-     <p className="text-[12px] uppercase tracking-widest text-gray-500 pl-[15px] md:pl-[24px] sr-only">
-  Unlimited revisions by our design studio
-</p>
+      <h2 className="sr-only">
+        {t(
+          "fourth_seo_h2",
+          "Modern Design Studio for Startups and Growing Brands",
+        )}
+      </h2>
+      <p className="text-[12px] uppercase tracking-widest text-gray-500 pl-[15px] md:pl-[24px] sr-only">
+        {t("fourth_seo_p1", "Unlimited revisions by our design studio")}
+      </p>
       {/* Animated Title Words: Slide-up, fade-in, scale/skew, synchronized */}
       <motion.div
         initial="hidden"
@@ -108,8 +118,6 @@ function Fourth() {
         }}
         className="flex flex-wrap items-baseline pl-[15px] md:p-[24px] mb-4"
       >
-
-
         {titleWords.map((word, idx) => (
           <motion.span
             key={idx}
@@ -131,11 +139,11 @@ function Fourth() {
         ))}
       </motion.div>
       <p className="sr-only">
-  Our design studio offers unlimited design revisions for startups and growing brands.
-  You can send design requests anytime and our team will work on them until you are fully satisfied.
-</p>
-
-
+        {t(
+          "fourth_seo_p2",
+          "Our design studio offers unlimited design revisions for startups and growing brands. You can send design requests anytime and our team will work on them until you are fully satisfied.",
+        )}
+      </p>
 
       {/* Subtext Animation: Each line slides up with GSAP, in sync */}
       <div className="w-full flex justify-end items-end md:pr-[20px] px-[15px] sm:pr-[20px] mt-4 sm:mt-0">
@@ -164,7 +172,7 @@ function Fourth() {
             className="absolute top-0 left-0 w-[70%] xl:w-[90%] block"
             // animate={smileyBgControls}
             aria-hidden="true"
-             loading="lazy"
+            loading="lazy"
             initial={{ rotate: 0, scale: 1 }}
           />
 
@@ -175,7 +183,7 @@ function Fourth() {
             animate={smileyFaceControls}
             initial={{ y: 0, rotate: 0 }}
             aria-hidden="true"
-             loading="lazy"
+            loading="lazy"
           />
 
           {/* <motion.img

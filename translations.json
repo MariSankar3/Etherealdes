@@ -1,0 +1,38 @@
+{
+  "en": {
+    "sample_heading": "Ravi opened a small coffee shop on a quiet street. He didn’t just sell coffee — he sold comfort. Every morning, he remembered his customers’ names and their favorite drinks.",
+    "midsec_heading": "Design that speaks connects & converts",
+    "nav_home": "Home",
+    "nav_about": "About Us"
+  },
+  "de": {
+    "sample_heading": "Ravi eröffnete ein kleines Café in einer ruhigen Straße. Er verkaufte nicht nur Kaffee – er verkaufte Trost. Jeden Morgen erinnerte er sich an die Namen seiner Kunden und deren Lieblingsgetränke.",
+    "midsec_heading": "Design, das spricht, verbindet und verwandelt",
+    "nav_home": "Heim",
+    "nav_about": "Über uns"
+  },
+  "it": {
+    "sample_heading": "Ravi ha aperto una piccola caffetteria in una strada tranquilla. Non vendeva solo caffè, vendeva conforto. Ogni mattina ricordava i nomi dei suoi clienti e le loro bevande preferite.",
+    "midsec_heading": "Il design che parla, connette e converte",
+    "nav_home": "Casa",
+    "nav_about": "Chi siamo"
+  },
+  "es": {
+    "sample_heading": "Ravi abrió una pequeña cafetería en una calle tranquila. No sólo vendía café: vendía comodidad. Cada mañana recordaba los nombres de sus clientes y sus bebidas favoritas.",
+    "midsec_heading": "El diseño que habla conecta y convierte",
+    "nav_home": "Hogar",
+    "nav_about": "Sobre nosotros"
+  },
+  "ta": {
+    "sample_heading": "அமைதியான தெருவில் ஒரு சிறிய காபி கடையைத் திறந்தான் ரவி. அவர் காபியை மட்டும் விற்கவில்லை - அவர் வசதியை விற்றார். ஒவ்வொரு காலையிலும், அவர் தனது வாடிக்கையாளர்களின் பெயர்களையும் அவர்களுக்குப் பிடித்த பானங்களையும் நினைவு கூர்ந்தார்.",
+    "midsec_heading": "இணைக்கும் & மாற்றும் பேசும் வடிவமைப்பு",
+    "nav_home": "வீடு",
+    "nav_about": "எங்களைப் பற்றி"
+  },
+  "fr": {
+    "sample_heading": "Ravi a ouvert un petit café dans une rue calme. Il ne vendait pas seulement du café, il vendait du confort. Chaque matin, il se souvenait des noms de ses clients et de leurs boissons préférées.",
+    "midsec_heading": "Un design qui parle, connecte et convertit",
+    "nav_home": "Maison",
+    "nav_about": "À propos de nous"
+  }
+}

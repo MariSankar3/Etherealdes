@@ -3,21 +3,20 @@
 import React, { useState } from 'react';
 import CommonLayout from '../components/common/CommonLayout';
 import PricingDetailModel from '../components/feature/PricingDetailModel';
-import pricingData from '../data/pricingData';
-import { motion } from 'framer-motion';
+import pricingData, { oneTimeProjects, monthlyPods } from '../data/pricingData';
+import { motion, AnimatePresence } from 'framer-motion';
 import Link from 'next/link';
+import { useRouter } from 'next/navigation';
+import { useLanguage } from '../context/LanguageContext';
 
-
-
-const PRICING_KEYS = ['launchpad', 'momentum', 'velocity'];
-
-function PricingCard({ card, isFeatured, onLearnMore, muted, style, className }) {
+function PricingCard({ card, isFeatured, onLearnMore, muted, style, className, isMonthly, categoryKey }) {
+    const { t } = useLanguage();
     return (
         <motion.div
             className={
                 (isFeatured
-                    ? 'mx-auto relative flex flex-col items-center justify-between w-full max-w-[340px] z-10 bg-gradient-to-b from-[#DBF900] to-transparent px-1 pt-1 rounded-3xl '
-                    : 'relative mx-auto flex flex-col items-center justify-between w-full max-w-[340px] bg-[#181818] rounded-3xl px-4 md:px-6 py-6 border border-[#4F4E4E]') +
+                    ? 'mx-auto relative flex flex-col items-center justify-between w-full max-w-[340px] z-10 transition-all duration-300 rounded-[34px] p-[3px] bg-gradient-to-b from-[#D9FF00] via-[#D9FF00]/10 to-[#121212] mt-8 md:mt-10'
+                    : 'relative mx-auto flex flex-col items-center justify-between w-full max-w-[340px] bg-[#121212] rounded-[31px] px-4 md:px-6 py-6 border border-[#4F4E4E]') +
                 (muted ? ' opacity-50' : ' opacity-100') +
                 (className || '')
             }
@@ -26,57 +25,60 @@ function PricingCard({ card, isFeatured, onLearnMore, muted, style, className })
             aria-label={`${card.title} pricing plan`}
         >
             {isFeatured && (
-                <span
-                    className="block w-full text-center text-black text-xs font-antonio font-bold py-1"
-                    style={{ letterSpacing: 1 }}
-                    aria-label="Popular pricing plan"
-                >
-                    Popular Choice
-                </span>
+                <div className="absolute -top-[36px] w-full right-[0px] h-[100px] bg-[#D9FF00] rounded-t-[33.5px] flex items-start justify-center pt-2.5 z-0">
+                    <span className="text-black text-[12px] md:text-xs uppercase font-bold tracking-widest font-antonio">
+                        {t("pricing_popular_choice", "Popular Choice")}
+                    </span>
+                </div>
             )}
 
-            <div
-                className={
-                    isFeatured
-                        ? "flex-1 flex flex-col items-center justify-between w-full px-4 md:px-6 py-4 rounded-3xl bg-[#181818] border border-[#4F4E4E] mt-auto"
-                        : "w-full mt-auto"
-                }
-            >
-                <div className="flex flex-col w-full items-center justify-center mb-2 gap-2">
-                    <div className="text-center text-white font-antonio">
-                        <h3 className="text-xl font-bold">
-                            {card.title}
+            <div className={`flex-1 flex flex-col items-center justify-between w-full h-full px-4 md:px-4 py-4 rounded-[31px] bg-[#121212] mt-auto relative z-10]`}>
+                <div className="flex flex-col w-full items-center justify-center mb-2">
+                    <div className="text-center text-white font-antonio mb-3">
+                        <h3 className="text-[24px] leading-tight font-bold mb-1">
+                            {t(`pricing_${categoryKey}_title`, card.title)}
                         </h3>
-                        <p className="text-xs font-light">
-                            ({card.features[2]})
+                        <p className="text-[12px] text-white/80 font-light">
+                            ({t(`pricing_${categoryKey}_desc`, card.description)})
                         </p>
                     </div>
 
-                    <div className="font-antonio" aria-label={`Price ${card.price} per month`}>
-                        <span className="text-[#DBF900] text-2xl font-bold">
+                    <div className="font-antonio flex items-baseline justify-center" aria-label={`Price ${card.price}`}>
+                        {!isMonthly && (
+                            <span className="text-white/90 text-[14px] font-light mr-2">
+                                {t("pricing_starting_at", "Starting at")}
+                            </span>
+                        )}
+                        <span className="text-[#D9FF00] text-[28px] font-bold">
                             {card.price}
                         </span>
-                        <span className="text-white text-sm font-light ml-1">
-                            /mo
-                        </span>
+                        {isMonthly && (
+                            <span className="text-white text-[12px] font-light opacity-60 ml-1">
+                                {t("pricing_per_mo", "/mo")}
+                            </span>
+                        )}
                     </div>
                 </div>
 
-                <img
-                    src={card.image}
-                    alt={`${card.title} pricing illustration`}
-                    className="w-40 h-40 object-contain mx-auto my-4"
-                />
+                <div className="flex justify-center items-center py-4 h-[180px] w-full">
+                    {card.image && (
+                        <img
+                            src={card.image}
+                            alt={`${card.title} pricing illustration`}
+                            className="max-h-full max-w-[140px] object-contain mx-auto"
+                        />
+                    )}
+                </div>
 
-                <div className="flex flex-col items-center justify-center w-full">
-                    <div className="w-full border-t border-[#4F4E4E] mb-4" />
+                <div className="flex flex-col items-center justify-center w-full mt-auto">
+                    <div className="w-full border-t border-[#ffffff1a] mb-4" />
                     <span
-                        className="text-white text-base font-antonio cursor-pointer"
+                        className="text-white text-base font-antonio cursor-pointer opacity-80"
                         onClick={onLearnMore}
                         role="button"
                         aria-label={`Learn more about ${card.title} plan`}
                     >
-                        Learn more
+                        {t("pricing_learn_more", "Learn more")}
                     </span>
                 </div>
             </div>
@@ -85,13 +87,35 @@ function PricingCard({ card, isFeatured, onLearnMore, muted, style, className })
 }
 
 export default function PricingPage() {
+    const { t } = useLanguage();
+    const router = useRouter();
     const [modalOpen, setModalOpen] = useState(false);
     const [selectedKey, setSelectedKey] = useState(null);
-    const [activeIdx, setActiveIdx] = useState(1);
+    const [activeTab, setActiveTab] = useState("one-time"); // 'one-time' or 'monthly'
+    const [activeIdx, setActiveIdx] = useState(0);
+
+    const currentData = activeTab === "one-time" ? oneTimeProjects : monthlyPods;
+    const PRICING_KEYS = Object.keys(currentData);
 
     const handleLearnMore = (key) => {
-        setSelectedKey(key);
-        setModalOpen(true);
+        if (typeof window !== "undefined" && window.innerWidth >= 768) {
+            setSelectedKey(currentData[key]);
+            setModalOpen(true);
+        } else {
+            if (activeTab === "monthly") {
+                setSelectedKey(currentData[key]);
+                setModalOpen(true);
+            } else {
+                localStorage.setItem("selectedPricingKey", key);
+                localStorage.setItem("selectedPricingTab", activeTab);
+                router.push("/pricing/price-details");
+            }
+        }
+    };
+
+    const handleTabSwitch = (tab) => {
+        setActiveTab(tab);
+        setActiveIdx(0); // Reset index
     };
 
     const goLeft = () => setActiveIdx((idx) => Math.max(0, idx - 1));
@@ -122,43 +146,62 @@ export default function PricingPage() {
             <PricingDetailModel
                 open={modalOpen}
                 onClose={() => setModalOpen(false)}
-                pricingKey={selectedKey}
+                itemData={selectedKey}
             />
 
-            <div className="w-full h-full flex flex-col items-center">
+            <div className="w-full h-full flex flex-col items-center pt-8">
+                {/* Toggle Group */}
+                <div className="flex bg-[#1A1A1] p-1 rounded-full border border-[#ffffff1a] mb-12">
+                    <button
+                        onClick={() => handleTabSwitch("one-time")}
+                        className={`px-4 py-2 rounded-full text-[10px] md:text-xs font-antonio font-bold transition-all ${activeTab === "one-time" ? "bg-[#D9FF00] text-black shadow-lg shadow-[#D9FF00]/20" : "text-white opacity-40 hover:opacity-100"}`}
+                    >
+                        {t("pricing_one_time_projects", "ONE-TIME PROJECTS")}
+                    </button>
+                    <button
+                        onClick={() => handleTabSwitch("monthly")}
+                        className={`px-4 py-2 rounded-full text-[10px] md:text-xs font-antonio font-bold transition-all ${activeTab === "monthly" ? "bg-[#D9FF00] text-black shadow-lg shadow-[#D9FF00]/20" : "text-white opacity-40 hover:opacity-100"}`}
+                    >
+                        {t("pricing_monthly_pods", "MONTHLY PODS")}
+                    </button>
+                </div>
+
                 <div
-                    className="relative w-full flex flex-col items-center mt-12 overflow-hidden"
+                    className="relative w-full flex flex-col items-center overflow-hidden min-h-[480px]"
                     role="region"
                     aria-label="Pricing plans carousel"
                 >
                     <div
-                        className="flex w-full h-100 items-center relative"
+                        className="flex w-full h-[400px] items-center relative"
                         onTouchStart={handleTouchStart}
                         onTouchEnd={handleTouchEnd}
                     >
                         {PRICING_KEYS.map((key, i) => {
-                            const card = pricingData[key];
-                            const isFeatured = key === 'momentum';
-                            if (Math.abs(i - activeIdx) > 1) return null;
+                            const card = currentData[key];
+                            const isFeatured = card.isPopular;
+                            const diff = i - activeIdx;
+                            if (Math.abs(diff) > 1) return null;
 
                             return (
                                 <div
                                     key={key}
-                                    className={`absolute left-1/2 bottom-0 w-[230px] max-w-[85vw] transition-all duration-300 ease-in-out ${
+                                    className={`absolute left-1/2 top-4 w-[280px] h-[400px] max-w-[85vw] transition-all duration-300 ease-out ${
                                         i === activeIdx
                                             ? 'z-[2] opacity-100 pointer-events-auto'
                                             : 'z-[1] opacity-40 pointer-events-none'
                                     }`}
                                     style={{
-                                        transform: `translateX(-50%)  translateX(${(i - activeIdx) * 108}%)`
+                                        transform: `translateX(calc(-50% + ${diff * 110}%)) scale(${i === activeIdx ? 1 : 0.95})`
                                     }}
                                     aria-current={i === activeIdx}
                                 >
                                     <PricingCard
                                         card={card}
+                                        categoryKey={key}
                                         isFeatured={isFeatured}
                                         onLearnMore={() => handleLearnMore(key)}
                                         muted={i !== activeIdx}
+                                        isMonthly={activeTab === 'monthly'}
                                     />
                                 </div>
                             );
@@ -167,7 +210,7 @@ export default function PricingPage() {
 
                     {/* Indicators (decorative) */}
                     <div
-                        className="flex justify-center gap-2 mt-4"
+                        className="flex justify-center gap-2 mt-18"
                         aria-hidden="true"
                     >
                         {PRICING_KEYS.map((_, i) => (
@@ -175,8 +218,8 @@ export default function PricingPage() {
                                 key={i}
                                 className={`rounded-full transition-all duration-300 ${
                                     i === activeIdx
-                                        ? 'bg-white w-6 h-2'
-                                        : 'bg-[#4F4E4E] w-2 h-2'
+                                        ? 'bg-white w-8 h-2'
+                                        : 'bg-[#4F4E4E] w-2 h-2 opacity-50'
                                 }`}
                             />
                         ))}
@@ -185,18 +228,18 @@ export default function PricingPage() {
 
                 {/* Contact CTA */}
                 <div
-                    className="w-full flex flex-col items-center mt-10 font-antonio"
+                    className="w-full flex flex-col items-center mt-9 font-antonio"
                     role="contentinfo"
                 >
-                    <span className="text-white text-[16px] mb-3 tracking-[0.08em]">
-                        Need a personalized Pod solution?
+                    <span className="text-[white]/90 text-[18px] mb-4 tracking-[0.05em] font-light">
+                        {t("pricing_need_personalized", "Need a personalized Pod solution?")}
                     </span>
                     <Link
                         href="/get-in-touch"
-                        className="text-black text-[12px] font-[600] bg-[#DBF900] px-4 py-2 rounded-md cursor-pointer block"
+                        className="bg-[#D9FF00] text-black px-6 py-3 rounded-xl font-bold hover:scale-105 transition-transform"
                         aria-label="Contact us for a personalized pricing solution"
                     >
-                        Contact Us Now!
+                        {t("pricing_contact_us_now", "Contact Us Now!")}
                     </Link>
                 </div>
             </div>

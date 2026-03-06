@@ -2,17 +2,19 @@ import React, { useRef, useEffect } from "react";
 import { motion, useInView, useAnimation } from "framer-motion";
 import gsap from "gsap";
 import CubeImg from "../../../common/CubeImg";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 function Third() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.5 });
   const subtextRef = useRef(null);
 
   /* ===== SEO TEXT (single source of truth) ===== */
-  const headingText = "Unlimited Revisions";
+  const headingText = t("third_heading", "Unlimited Revisions");
   const subtextLines = [
-    "Not happy yet? No worries —",
-    "we'll make changes until you're fully satisfied.",
+    t("third_subtext_1", "Not happy yet? No worries —"),
+    t("third_subtext_2", "we'll make changes until you're fully satisfied."),
   ];
 
   // Animation-only title split
@@ -60,8 +62,10 @@ function Third() {
       </h2>
 
       <p className="sr-only">
-        Not happy yet? No worries — we’ll make changes until you’re fully satisfied.
-        Our unlimited revision policy ensures complete client satisfaction.
+        {t(
+          "third_seo_p",
+          "Not happy yet? No worries — we’ll make changes until you’re fully satisfied. Our unlimited revision policy ensures complete client satisfaction.",
+        )}
       </p>
 
       {/* ===== Animated Title (Visual Only) ===== */}

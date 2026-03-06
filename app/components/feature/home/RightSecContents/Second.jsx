@@ -3,24 +3,27 @@
 import React, { useRef, useEffect } from "react";
 import CubeImg from "../../../common/CubeImg";
 import { motion, useInView, useAnimation } from "framer-motion";
-
 import gsap from "gsap";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 function Second() {
+  const { t } = useLanguage();
   const ref = useRef(null);
   const isInView = useInView(ref, { once: false, amount: 0.5 });
   const subtextRef = useRef(null);
 
   // Split subtext into lines (for this example, 2 lines)
   const subtextLines = [
-    "You'll always know what you're paying — no surprises or hidden costs. ",
+    t(
+      "second_subtext_1",
+      "You'll always know what you're paying — no surprises or hidden costs. ",
+    ),
     "",
   ];
-   const metadata = {
-  title: "Simple Pricing – Transparent Plans with No Hidden Costs",
-  description: "Understand our simple pricing. No hidden fees. No surprises.",
-};
-
+  const metadata = {
+    title: "Simple Pricing – Transparent Plans with No Hidden Costs",
+    description: "Understand our simple pricing. No hidden fees. No surprises.",
+  };
 
   useEffect(() => {
     if (isInView && subtextRef.current) {
@@ -63,8 +66,8 @@ function Second() {
     >
       {/* Animated Title Words: Slide-up, fade-in, scale/skew, synchronized */}
       <h2 id="pricing-title" className="sr-only">
-  Simple Pricing
-</h2>
+        {t("second_title", "Simple Pricing")}
+      </h2>
       <motion.div
         initial="hidden"
         animate={isInView ? "visible" : "hidden"}
@@ -74,33 +77,37 @@ function Second() {
         }}
         className="flex flex-wrap items-baseline pl-[15px] md:p-[24px] mb-4 sm:mb-0"
       >
-        
-        {"Simple Pricing".split(" ").map((word, idx) => (
-          <motion.span
-            key={idx}
-            variants={{
-              hidden: { opacity: 0, y: 32, scale: 0.98, skewY: 0 },
-              visible: {
-                opacity: 1,
-                y: 0,
-                scale: 1,
-                skewY: 0,
-                transition: { duration: 0.5, ease: "easeOut" },
-              },
-            }}
-            className="mr-2 mb-1 capitalize text-[300] md:text-400 text-[26px] md:text-[34px]"
-            aria-label={word}
-          >
-            {word}
-          </motion.span>
-        ))}
+        {t("second_title", "Simple Pricing")
+          .split(" ")
+          .map((word, idx) => (
+            <motion.span
+              key={idx}
+              variants={{
+                hidden: { opacity: 0, y: 32, scale: 0.98, skewY: 0 },
+                visible: {
+                  opacity: 1,
+                  y: 0,
+                  scale: 1,
+                  skewY: 0,
+                  transition: { duration: 0.5, ease: "easeOut" },
+                },
+              }}
+              className="mr-2 mb-1 capitalize text-[300] md:text-400 text-[26px] md:text-[34px]"
+              aria-label={word}
+            >
+              {word}
+            </motion.span>
+          ))}
       </motion.div>
 
       {/* Subtext Animation: Each line slides up with GSAP, in sync */}
       <div className="w-full flex justify-end items-end md:pr-[20px] px-[15px] sm:pr-[20px] mt-4 sm:mt-0">
         <p className="sr-only">
-  You'll always know what you're paying — no surprises or hidden costs.
-</p>
+          {t(
+            "second_subtext_1",
+            "You'll always know what you're paying — no surprises or hidden costs. ",
+          )}
+        </p>
 
         <div
           ref={subtextRef}
@@ -128,12 +135,12 @@ function Second() {
           />
         </div>
 
-          <img
-            src="./home/slide_1/yellow-bg.svg"
-            alt="Simple Pricing"
-            className="h-auto md:h-[90%] lg:h-[85%] object-contain hidden sm:block absolute bottom-0 right-0"
-            loading="lazy"
-          />
+        <img
+          src="./home/slide_1/yellow-bg.svg"
+          alt="Simple Pricing"
+          className="h-auto md:h-[90%] lg:h-[85%] object-contain hidden sm:block absolute bottom-0 right-0"
+          loading="lazy"
+        />
 
         <img
           src="./home/slide_1/dots.svg"
@@ -172,22 +179,20 @@ function Second() {
         </div>
       </div>
     </section>
-    
   );
   <script type="application/ld+json">
-{JSON.stringify({
-  "@context": "https://schema.org",
-  "@type": "Product",
-  "name": "Simple Pricing",
-  "description": "Transparent pricing with no hidden costs",
-  "offers": {
-    "@type": "Offer",
-    "priceCurrency": "USD",
-    "availability": "https://schema.org/InStock"
-  }
-})}
-</script>
-
+    {JSON.stringify({
+      "@context": "https://schema.org",
+      "@type": "Product",
+      name: "Simple Pricing",
+      description: "Transparent pricing with no hidden costs",
+      offers: {
+        "@type": "Offer",
+        priceCurrency: "USD",
+        availability: "https://schema.org/InStock",
+      },
+    })}
+  </script>;
 }
 
 export default Second;

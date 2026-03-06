@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useRef, useState } from "react";
 import { gsap } from "gsap";
+import { useLanguage } from "../../context/LanguageContext";
 
 function MidSec({
   activeService = 0,
@@ -12,42 +13,43 @@ function MidSec({
   const [previousService, setPreviousService] = useState(activeService);
   const isAnimating = useRef(false);
   const timelineRef = useRef(null);
+  const { t } = useLanguage();
 
   const serviceImages = [
     {
       id: 0,
       image: "/images/services/ui_ux.png",
-      title: "UI/UX Design",
+      title: t("services_ui_ux", "UI/UX Design"),
       mobimage: "/images/services/mobile/ui_ux.png",
     },
     {
       id: 1,
       image: "/images/services/api_backend.png",
-      title: "API & Backend",
+      title: t("services_api_backend", "API & Backend"),
       mobimage: "/images/services/mobile/api_backend.png",
     },
     {
       id: 2,
       image: "/images/services/mobile_app.png",
-      title: "Mobile Apps",
+      title: t("services_mobile_apps", "Mobile Apps"),
       mobimage: "/images/services/mobile/mobile_app.png",
     },
     {
       id: 3,
       image: "/images/services/chatbot.png",
-      title: "AI & Chatbots",
+      title: t("services_ai_chatbots", "AI & Chatbots"),
       mobimage: "/images/services/mobile/chatbot.png",
     },
     {
       id: 4,
       image: "/images/services/frontend.png",
-      title: "Frontend Develop",
+      title: t("services_frontend", "Frontend Develop"),
       mobimage: "/images/services/mobile/frontend.png",
     },
     {
       id: 5,
       image: "/images/services/marketing.png",
-      title: "Digital Marketing",
+      title: t("services_digital_marketing", "Digital Marketing"),
       mobimage: "/images/services/mobile/marketing.png",
     },
   ];
@@ -188,11 +190,18 @@ function MidSec({
       className="relative flex flex-col md:min-h-screen lg:border-l-0 border-r-0 border-b-[1px] lg:border-b-none border-[#4E4E4E] overflow-hidden h-[270px] md:h-full flex-shrink-0"
     >
       <h2 id="services-visual-heading" className="sr-only">
-        Design Studio Services — Visual Overview
+        {t(
+          "services_visual_overview",
+          "Design Studio Services — Visual Overview",
+        )}
       </h2>
       <ul className="sr-only">
         {serviceImages.map((s) => (
-          <li key={s.id}>{s.title} service by our design studio</li>
+          <li key={s.id}>
+            {t("services_list_item", "{title} service by our design studio", {
+              title: s.title,
+            })}
+          </li>
         ))}
       </ul>
 

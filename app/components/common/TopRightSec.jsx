@@ -6,6 +6,7 @@ import React, { useRef } from "react";
 import { Arrow } from "../icons/icons";
 import { gsap } from "gsap";
 import { motion } from "framer-motion";
+import { useLanguage } from "../../context/LanguageContext";
 
 // AnimatedNavLabel: On hover, label animates each character crossly (diagonally) with stagger
 const AnimatedNavLabel = ({ label, isActive }) => {
@@ -112,7 +113,7 @@ const AnimatedNavLabel = ({ label, isActive }) => {
           >
             {label.split("").map((char, i) => (
               <span
-                key={"top-" + i}
+                key={"top-" + char + "-" + i}
                 ref={(el) => (topLabelRefs.current[i] = el)}
                 style={{ display: "inline-block" }}
               >
@@ -127,7 +128,7 @@ const AnimatedNavLabel = ({ label, isActive }) => {
           >
             {label.split("").map((char, i) => (
               <span
-                key={"bottom-" + i}
+                key={"bottom-" + char + "-" + i}
                 ref={(el) => (bottomLabelRefs.current[i] = el)}
                 style={{ display: "inline-block", opacity: 0 }}
               >
@@ -171,6 +172,31 @@ const PAGES = [
 
 function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
   const router = useRouter();
+  const { t, targetLang } = useLanguage();
+
+  const getLabelTranslation = (label) => {
+    switch (label) {
+      case "Home":
+        return t("nav_home", "Home");
+      case "Clients & Works":
+        return t("nav_works", "Clients & Works");
+      case "Teams Trust":
+        return t("nav_teams_trust", "Teams Trust");
+      case "Services":
+        return t("nav_services", "Services");
+      case "Pricing":
+        return t("nav_pricing", "Pricing");
+      case "Get in Touch":
+        return t("nav_get_in_touch", "Get in Touch");
+      case "Menu":
+        return t("nav_menu", "Menu");
+      case "About Us":
+        return t("nav_about", "About Us");
+      default:
+        return label;
+    }
+  };
+
   const currentIndex = PAGES.findIndex((page) => page.label === activePage);
   const prevIndex = currentIndex > 0 ? currentIndex - 1 : PAGES.length - 1;
 
@@ -178,7 +204,12 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
     (page) => page.label === ROUTE.GET_IN_TOUCH.LABEL,
   );
   const prevPage = PAGES[prevIndex];
-  const activePageObj = PAGES[currentIndex];
+
+  // Handled undefined activePageObj when a page (like translation tools) is not in the predefined PAGES array
+  const activePageObj =
+    currentIndex !== -1
+      ? PAGES[currentIndex]
+      : { label: activePage, route: "#" };
 
   const fadeUp = {
     hidden: { opacity: 0, y: -40 },
@@ -227,7 +258,7 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
                 >
                   <div className="flex-1">
                     <AnimatedNavLabel
-                      label={page.label}
+                      label={getLabelTranslation(page.label)}
                       isActive={activePage === page.label}
                     />
                   </div>{" "}
@@ -254,7 +285,7 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
               >
                 <div className="flex-1">
                   <AnimatedNavLabel
-                    label={page.label}
+                    label={getLabelTranslation(page.label)}
                     isActive={activePage === page.label}
                   />
                 </div>{" "}
@@ -285,9 +316,15 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
         >
           <div className="flex-1">
             {activePageObj.label === ROUTE.GET_IN_TOUCH.LABEL ? (
-              <AnimatedNavLabel label={ROUTE.HOME.LABEL} isActive={false} />
+              <AnimatedNavLabel
+                label={getLabelTranslation(ROUTE.HOME.LABEL)}
+                isActive={false}
+              />
             ) : (
-              <AnimatedNavLabel label={getInTouchPage.label} isActive={false} />
+              <AnimatedNavLabel
+                label={getLabelTranslation(getInTouchPage.label)}
+                isActive={false}
+              />
             )}
           </div>
         </motion.a>
@@ -300,7 +337,9 @@ function TopRightSec({ activePage = "Work", className = "", onPricingClick }) {
           key={activePageObj.id + "-active"}
           className={`flex-1 sm:hidden text-center flex justify-center items-center bg-[#FF4E21] py-3 border-b-2 border-l-1 border-[#4F4E4E]`}
         >
-          <div className="flex-1">{activePageObj.label}</div>
+          <div className="flex-1">
+            {getLabelTranslation(activePageObj.label)}
+          </div>
           {/* <Arrow className="ml-auto rotate-90 w-6 h-6 p-1 absolute right-4" /> */}
         </motion.a>
       </div>

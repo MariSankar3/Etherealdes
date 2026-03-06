@@ -1,5 +1,6 @@
 import React from "react";
 import { motion } from "framer-motion";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 const staggerContainer = {
   hidden: {},
@@ -24,6 +25,7 @@ const fadeUp = {
 };
 
 function MidSecContent({ index }) {
+  const { t } = useLanguage();
   return (
     <motion.div
       initial="hidden"
@@ -47,7 +49,7 @@ function MidSecContent({ index }) {
           }}
           className="flex flex-wrap items-baseline"
         >
-          {"Design that speaks connects & converts"
+          {t("midsec_heading", "Design that speaks connects & converts")
             .split(" ")
             .map((word, idx) => (
               <motion.span
@@ -73,8 +75,10 @@ function MidSecContent({ index }) {
 
       <motion.div variants={fadeUp} className="flex justify-end">
         <p className="max-w-[180px] md:max-w-[300px] xl:max-w-[360px] leading-[20px] xs:leading-[24px] sm:leading-[30px] xl:leading-[36px] tracking-[0.16em] text-white font-300 text-[13px] xs:text-[15px] sm:text-[20px] xl:text-[24px]">
-          We bring clarity to your product through smart UX and impactful
-          visuals
+          {t(
+            "midsec_supporting_text",
+            "We bring clarity to your product through smart UX and impactful visuals",
+          )}
         </p>
       </motion.div>
     </motion.div>

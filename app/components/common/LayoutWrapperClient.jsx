@@ -4,6 +4,7 @@ import SplashTransition from "./SplashTransition";
 import { usePathname } from "next/navigation";
 import { AnimatePresence, motion } from "framer-motion";
 import AboutUsModal from "../../components/common/AboutUsModal";
+import { LanguageProvider } from "../../context/LanguageContext";
 
 function LayoutWrapperClient({ children }) {
   const pathname = usePathname();
@@ -49,11 +50,11 @@ function LayoutWrapperClient({ children }) {
   }, []);
 
   return (
-    <>
+    <LanguageProvider>
       <AboutUsModal open={aboutUsOpen} onClose={() => setAboutUsOpen(false)} />
       {showSplash && <SplashTransition isAnimating={isAnimating} />}
       {showContent && children}
-    </>
+    </LanguageProvider>
   );
 }
 

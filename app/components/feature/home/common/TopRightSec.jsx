@@ -2,8 +2,9 @@ import { ROUTE } from "../../../../constants/constants";
 import Link from "next/link";
 import React, { useRef } from "react";
 import { motion } from "framer-motion";
-import { useRouter } from 'next/navigation';
+import { useRouter } from "next/navigation";
 import { gsap } from "gsap";
+import { useLanguage } from "../../../../context/LanguageContext";
 
 /* ===== Animated label (visual only) ===== */
 const AnimatedNavLabel = ({ label, isActive }) => {
@@ -19,12 +20,16 @@ const AnimatedNavLabel = ({ label, isActive }) => {
     if (isActive) return;
     const tl = gsap.timeline();
     label.split("").forEach((_, i) => {
-      tl.to(topLabelRefs.current[i], { y: -24, opacity: 0, duration: 0.28, ease: "power2.inOut" }, i * 0.035);
+      tl.to(
+        topLabelRefs.current[i],
+        { y: -24, opacity: 0, duration: 0.28, ease: "power2.inOut" },
+        i * 0.035,
+      );
       tl.fromTo(
         bottomLabelRefs.current[i],
         { y: 24, opacity: 0 },
         { y: 0, opacity: 1, duration: 0.28, ease: "power2.inOut" },
-        i * 0.035
+        i * 0.035,
       );
     });
   };
@@ -33,8 +38,16 @@ const AnimatedNavLabel = ({ label, isActive }) => {
     if (isActive) return;
     const tl = gsap.timeline();
     label.split("").forEach((_, i) => {
-      tl.to(bottomLabelRefs.current[i], { y: 24, opacity: 0, duration: 0.2, ease: "power2.inOut" }, i * 0.01);
-      tl.to(topLabelRefs.current[i], { y: 0, opacity: 1, duration: 0.2, ease: "power2.inOut" }, i * 0.015);
+      tl.to(
+        bottomLabelRefs.current[i],
+        { y: 24, opacity: 0, duration: 0.2, ease: "power2.inOut" },
+        i * 0.01,
+      );
+      tl.to(
+        topLabelRefs.current[i],
+        { y: 0, opacity: 1, duration: 0.2, ease: "power2.inOut" },
+        i * 0.015,
+      );
     });
   };
 
@@ -44,13 +57,13 @@ const AnimatedNavLabel = ({ label, isActive }) => {
       onMouseEnter={handleMouseEnter}
       onMouseLeave={handleMouseLeave}
       style={{ lineHeight: "24px" }}
-      aria-hidden="true"   // 👈 visual only
+      aria-hidden="true" // 👈 visual only
     >
       <span className="block absolute left-0 w-full" style={{ top: 0 }}>
         {label.split("").map((char, i) => (
           <span
-            key={"top-" + i}
-            ref={el => (topLabelRefs.current[i] = el)}
+            key={"top-" + char + "-" + i}
+            ref={(el) => (topLabelRefs.current[i] = el)}
             style={{ display: "inline-block" }}
           >
             {char === " " ? "\u00A0" : char}
@@ -61,8 +74,8 @@ const AnimatedNavLabel = ({ label, isActive }) => {
       <span className="block absolute left-0 w-full" style={{ top: 0 }}>
         {label.split("").map((char, i) => (
           <span
-            key={"bottom-" + i}
-            ref={el => (bottomLabelRefs.current[i] = el)}
+            key={"bottom-" + char + "-" + i}
+            ref={(el) => (bottomLabelRefs.current[i] = el)}
             style={{ display: "inline-block", opacity: 0 }}
           >
             {char === " " ? "\u00A0" : char}
@@ -75,26 +88,59 @@ const AnimatedNavLabel = ({ label, isActive }) => {
 
 const fadeUp = {
   hidden: { opacity: 0, y: -40, scale: 0.98 },
-  visible: { opacity: 1, y: 0, transition: { delay: 0.2, duration: 0.7, ease: "easeOut" } },
+  visible: {
+    opacity: 1,
+    y: 0,
+    transition: { delay: 0.2, duration: 0.7, ease: "easeOut" },
+  },
 };
 
 const navItems = [
   { label: ROUTE.WORK.LABEL, path: ROUTE.WORK.PATH, isButton: false },
-  { label: ROUTE.TEAMS_TRUST.LABEL, path: ROUTE.TEAMS_TRUST.PATH, isButton: false },
+  {
+    label: ROUTE.TEAMS_TRUST.LABEL,
+    path: ROUTE.TEAMS_TRUST.PATH,
+    isButton: false,
+  },
   { label: ROUTE.SERVICES.LABEL, path: ROUTE.SERVICES.PATH, isButton: false },
   { label: ROUTE.PRICING.LABEL, path: ROUTE.PRICING.PATH, isButton: true },
-  { label: ROUTE.GET_IN_TOUCH.LABEL, path: ROUTE.GET_IN_TOUCH.PATH, isButton: false },
+  {
+    label: ROUTE.GET_IN_TOUCH.LABEL,
+    path: ROUTE.GET_IN_TOUCH.PATH,
+    isButton: false,
+  },
 ];
 
 function TopRightSec() {
   const router = useRouter();
+  const { t } = useLanguage();
+
+  const getLabelTranslation = (label) => {
+    switch (label) {
+      case ROUTE.HOME.LABEL:
+        return t("nav_home", "Home");
+      case ROUTE.WORK.LABEL:
+        return t("nav_works", "Clients & Works");
+      case ROUTE.TEAMS_TRUST.LABEL:
+        return t("nav_teams_trust", "Teams Trust");
+      case ROUTE.SERVICES.LABEL:
+        return t("nav_services", "Services");
+      case ROUTE.PRICING.LABEL:
+        return t("nav_pricing", "Pricing");
+      case ROUTE.GET_IN_TOUCH.LABEL:
+        return t("nav_get_in_touch", "Get in Touch");
+      case ROUTE.MENU.LABEL:
+        return t("nav_menu", "Menu");
+      case ROUTE.ABOUT_US.LABEL:
+        return t("nav_about", "About Us");
+      default:
+        return label;
+    }
+  };
 
   return (
     /* ===== Semantic Navigation ===== */
-    <nav
-      aria-label="Primary navigation"
-      className="w-full"
-    >
+    <nav aria-label="Primary navigation" className="w-full">
       <motion.div
         variants={{ hidden: {}, visible: {} }}
         initial="hidden"
@@ -113,7 +159,10 @@ function TopRightSec() {
                   aria-label={`Open ${item.label} pricing`}
                   className="flex-1 w-full flex items-center justify-center h-full hover:bg-[#FF4E21] bg-transparent outline-none cursor-pointer"
                   onClick={() => {
-                    if (typeof window !== "undefined" && window.innerWidth >= 768) {
+                    if (
+                      typeof window !== "undefined" &&
+                      window.innerWidth >= 768
+                    ) {
                       if (window.openPricingModal) window.openPricingModal();
                     } else {
                       router.push(item.path);
@@ -121,8 +170,13 @@ function TopRightSec() {
                   }}
                 >
                   {/* Crawlable label */}
-                  <span className="sr-only">{item.label}</span>
-                  <AnimatedNavLabel label={item.label} isActive={false} />
+                  <span className="sr-only">
+                    {getLabelTranslation(item.label)}
+                  </span>
+                  <AnimatedNavLabel
+                    label={getLabelTranslation(item.label)}
+                    isActive={false}
+                  />
                 </button>
               ) : (
                 <Link
@@ -132,8 +186,13 @@ function TopRightSec() {
                   style={{ minHeight: 0 }}
                 >
                   {/* Crawlable label */}
-                  <span className="sr-only">{item.label}</span>
-                  <AnimatedNavLabel label={item.label} isActive={false} />
+                  <span className="sr-only">
+                    {getLabelTranslation(item.label)}
+                  </span>
+                  <AnimatedNavLabel
+                    label={getLabelTranslation(item.label)}
+                    isActive={false}
+                  />
                 </Link>
               )}
             </motion.div>

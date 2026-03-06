@@ -605,7 +605,7 @@ Traditional search methods, relying on generic approaches and fragmented communi
         content: [
           {
             type: "paragraph",
-            text: `This challenge was best understood through our user interviews:`,
+            text: `This challenge was best understood through our user interviews :`,
             className: "font-600 text-[16px] text-white",
           },
           {
@@ -3008,6 +3008,12 @@ Traditional search methods, relying on generic approaches and fragmented communi
                 text: `A shared design system should guide typography, colours, and spacing for both web and mobile.`,
                 className: "text-[#ffffffb3]",
               },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
               {
                 type: "h3",
                 text: "Prioritize Through Visual Hierarchy:",
@@ -3018,6 +3024,12 @@ Traditional search methods, relying on generic approaches and fragmented communi
                 text: `Highlight urgent tasks like upcoming classes or pending assignments over secondary modules.`,
                 className: "text-[#ffffffb3]",
               },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
               {
                 type: "h3",
                 text: "Chunk Information",
@@ -3028,6 +3040,12 @@ Traditional search methods, relying on generic approaches and fragmented communi
                 text: `Use tabs or collapsible sections to reduce vertical scrolling.`,
                 className: "text-[#ffffffb3]",
               },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
               {
                 type: "h3",
                 text: "Accessible by Design",
@@ -3038,6 +3056,12 @@ Traditional search methods, relying on generic approaches and fragmented communi
                 text: `Ensure proper contrast, always pair icons with text, and avoid unnecessary text truncation.`,
                 className: "text-[#ffffffb3]",
               },
+            ],
+          },
+          {
+            type: "block",
+            className: "flex flex-col gap-2",
+            items: [
               {
                 type: "h3",
                 text: "Mobile-first Thinking",

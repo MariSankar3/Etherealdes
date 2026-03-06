@@ -10,6 +10,7 @@ import { motion, AnimatePresence } from "framer-motion";
 import { ROUTE } from "../../../constants/constants";
 import Link from "next/link";
 import PricingModal from "../../feature/PricingModal";
+import { useLanguage } from "../../../context/LanguageContext";
 
 const fadeUp = {
   hidden: { y: 40 },
@@ -39,6 +40,7 @@ const slideVariants = {
 gsap.registerPlugin(ScrollTrigger);
 
 function Home() {
+  const { t } = useLanguage();
   const containerRef = useRef(null);
   const rightSecRef = useRef(null);
   const emblaApiRef = useRef(null); // Desktop Embla API
@@ -314,14 +316,17 @@ function Home() {
         className="ethereal-container bg-[#121212] flex-1 flex flex-col sm:flex-row text-white box-border h-dvh overflow-hidden"
       >
         <h2 id="home-heading" className="sr-only">
-          Ethereal Design Studio — UI UX, Web & Digital Product Design for
-          Startups
+          {t(
+            "home_seo_heading",
+            "Ethereal Design Studio — UI UX, Web & Digital Product Design for Startups",
+          )}
         </h2>
 
         <p className="sr-only">
-          Ethereal Design Studio helps startups and growing companies build
-          beautiful, intuitive digital products through expert UI UX design, web
-          development, mobile apps, and AI-powered experiences.
+          {t(
+            "home_seo_desc",
+            "Ethereal Design Studio helps startups and growing companies build beautiful, intuitive digital products through expert UI UX design, web development, mobile apps, and AI-powered experiences.",
+          )}
         </p>
 
         {/* Desktop Layout */}
@@ -330,7 +335,7 @@ function Home() {
           aria-labelledby="home-left-heading"
         >
           <h2 id="home-left-heading" className="sr-only">
-            About Our Design Studio
+            {t("home_left_heading", "About Our Design Studio")}
           </h2>
           <MidSecContent
             index={activeIndex}
@@ -353,9 +358,23 @@ function Home() {
           aria-labelledby="home-right-heading"
         >
           <h2 id="home-right-heading" className="sr-only">
-            Featured Work and Services
+            {t("home_right_heading", "Featured Work and Services")}
           </h2>
-          <TopRightSec />
+          <TopRightSec
+            activePage={
+              activeIndex === 0
+                ? ROUTE.PRICING.LABEL
+                : activeIndex === 1
+                  ? ROUTE.PRICING.LABEL
+                  : activeIndex === 2
+                    ? ROUTE.PRICING.LABEL
+                    : activeIndex === 3
+                      ? ROUTE.WORK.LABEL
+                      : activeIndex === 4
+                        ? ROUTE.TEAMS_TRUST.LABEL
+                        : ROUTE.WORK.LABEL
+            }
+          />
           <RightSecContent
             ref={rightSecRef}
             index={activeIndex}
@@ -383,17 +402,19 @@ function Home() {
           <motion.div variants={fadeUp} className="w-full flex flex-1">
             <Link
               href={ROUTE.GET_IN_TOUCH.PATH}
+              prefetch={false}
               className="flex-1 w-full flex flex-col justify-center items-center border-r-0 border-b border-[#4F4E4E] py-[13px] hover:bg-[#FF4E21]"
             >
-              Get in Touch
+              {t("nav_get_in_touch", "Get in Touch")}
             </Link>
           </motion.div>
           <motion.div variants={fadeUp} className="w-full flex flex-1">
             <Link
               href={ROUTE.WORK.PATH}
+              prefetch={false}
               className="flex-1 w-full flex flex-col justify-center items-center border-r-0 border-b border-[#4F4E4E] py-[13px] hover:bg-[#FF4E21]"
             >
-              Clients & Works
+              {t("nav_components_work", "Clients & Works")}
             </Link>
           </motion.div>
         </nav>
@@ -419,54 +440,57 @@ function Home() {
       <section aria-labelledby="seo-content-heading">
         <details open className="sr-only">
           <summary id="seo-content-heading">
-            Ethereal Design Studio – UI UX & Digital Product Design
+            {t(
+              "home_seo_content_heading",
+              "Ethereal Design Studio – UI UX & Digital Product Design",
+            )}
           </summary>
 
           <p>
-            Ethereal Design Studio is a creative digital agency specializing in
-            UI UX design, modern web development, and scalable digital product
-            experiences for startups and growing businesses.
+            {t(
+              "home_seo_p1",
+              "Ethereal Design Studio is a creative digital agency specializing in UI UX design, modern web development, and scalable digital product experiences for startups and growing businesses.",
+            )}
           </p>
 
           <p>
-            We help founders and product teams transform complex ideas into
-            intuitive, high-performance digital interfaces. Our services include
-            user experience research, interface design, responsive web
-            development, and digital product strategy.
+            {t(
+              "home_seo_p2",
+              "We help founders and product teams transform complex ideas into intuitive, high-performance digital interfaces. Our services include user experience research, interface design, responsive web development, and digital product strategy.",
+            )}
           </p>
 
           <p>
-            Our team focuses on usability, accessibility, performance, and
-            scalability to ensure long-term success for digital products. We
-            work with SaaS platforms, mobile applications, dashboards, and
-            AI-powered systems.
+            {t(
+              "home_seo_p3",
+              "Our team focuses on usability, accessibility, performance, and scalability to ensure long-term success for digital products. We work with SaaS platforms, mobile applications, dashboards, and AI-powered systems.",
+            )}
           </p>
 
           <p>
-            Ethereal Design Studio partners with startups and enterprises to
-            deliver meaningful, user-centered digital solutions that drive
-            engagement, conversion, and growth.
+            {t(
+              "home_seo_p4",
+              "Ethereal Design Studio partners with startups and enterprises to deliver meaningful, user-centered digital solutions that drive engagement, conversion, and growth.",
+            )}
           </p>
           <p>
-            Our design process combines research-driven insights with modern
-            design systems and cutting-edge frontend technologies. By aligning
-            business goals with user needs, we create digital products that are
-            intuitive, reliable, and scalable across platforms and devices.
+            {t(
+              "home_seo_p5",
+              "Our design process combines research-driven insights with modern design systems and cutting-edge frontend technologies. By aligning business goals with user needs, we create digital products that are intuitive, reliable, and scalable across platforms and devices.",
+            )}
           </p>
 
           <p>
-            With experience across fintech, SaaS, e-commerce, and AI-driven
-            platforms, Ethereal Design Studio helps teams launch faster, reduce
-            development friction, and deliver consistent user experiences that
-            adapt as products grow.
+            {t(
+              "home_seo_p6",
+              "With experience across fintech, SaaS, e-commerce, and AI-driven platforms, Ethereal Design Studio helps teams launch faster, reduce development friction, and deliver consistent user experiences that adapt as products grow.",
+            )}
           </p>
           <p>
-            Our approach emphasizes long-term product thinking, ensuring that
-            every interface is built to scale alongside evolving user needs and
-            business objectives. By combining design strategy, technical
-            expertise, and continuous iteration, we help organizations build
-            digital experiences that remain effective, adaptable, and
-            competitive in rapidly changing markets.
+            {t(
+              "home_seo_p7",
+              "Our approach emphasizes long-term product thinking, ensuring that every interface is built to scale alongside evolving user needs and business objectives. By combining design strategy, technical expertise, and continuous iteration, we help organizations build digital experiences that remain effective, adaptable, and competitive in rapidly changing markets.",
+            )}
           </p>
         </details>
       </section>

@@ -2,10 +2,12 @@ import React, { useEffect, useRef, useState, useLayoutEffect } from "react";
 import UserConfiguration from "../../Config/UserConfiguration.json";
 import { motion } from "framer-motion";
 import { Indicator } from "../../components/icons/icons";
+import { useLanguage } from "../../context/LanguageContext";
 
 function RightSecContent({ setActiveIndex, parentActiveIndex }) {
   const { TeamsTrust } = UserConfiguration;
   const { RightSecContent: rightSecContentData } = TeamsTrust;
+  const { t } = useLanguage();
 
   const [activeIndex, setActiveIndexState] = useState(0);
   const [isResetting, setIsResetting] = useState(false);
@@ -19,6 +21,7 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
   const autoScrollTimeoutRef = useRef(null);
   const autoScrollIntervalRef = useRef(null);
   const activeIndexRef = useRef(activeIndex);
+  const dragStartRef = useRef(0);
 
   const numCards = rightSecContentData.length;
   const infiniteData = [
@@ -128,6 +131,7 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
     function handleMouseDown(e) {
       isDragging = true;
       startX = e.clientX;
+      dragStartRef.current = e.clientX;
       if (wrapper) wrapper.style.cursor = "grabbing";
     }
 
@@ -150,6 +154,13 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
     function processSwipe(diffX) {
       if (isThrottled) return;
       restartAutoScrollAfterDelay();
+
+      if (Math.abs(diffX) > 10) {
+        if (wrapper) wrapper.dataset.dragged = "true";
+        setTimeout(() => {
+          if (wrapper) wrapper.dataset.dragged = "false";
+        }, 100);
+      }
 
       let newIndex = activeIndexRef.current;
       if (diffX > 30) newIndex = newIndex + 1;
@@ -240,14 +251,22 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
 
       {/* ===== SEO ONLY ===== */}
       <h2 id="teams-trust-heading" className="sr-only">
-        Why Teams Trust Us – Client Testimonials and Key Strengths
+        {t(
+          "teams_trust_seo_heading",
+          "Why Teams Trust Us – Client Testimonials and Key Strengths",
+        )}
       </h2>
       <p className="sr-only">
-        Our design studio is trusted by startups and teams worldwide for product
-        design, UI UX, branding, and digital experiences that drive results.
+        {t(
+          "teams_trust_seo_p1",
+          "Our design studio is trusted by startups and teams worldwide for product design, UI UX, branding, and digital experiences that drive results.",
+        )}
       </p>
       <p className="sr-only">
-        Learn more about our <a href="/design-studio">design studio services</a>
+        {t("teams_trust_seo_p2", "Learn more about our")}{" "}
+        <a href="/design-studio">
+          {t("teams_trust_seo_link", "design studio services")}
+        </a>
         .
       </p>
 
@@ -282,7 +301,11 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
               key={index}
               role="listitem"
               ref={index === 1 ? cardRef : null}
-              onClick={() => handleCardClick(index)}
+              onDragStart={(e) => e.preventDefault()}
+              onClick={(e) => {
+                if (wrapperRef.current?.dataset.dragged === "true") return;
+                handleCardClick(index);
+              }}
               itemScope
               itemType="https://schema.org/Review"
               aria-current={index % numCards === activeIndex % numCards}
@@ -310,14 +333,14 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
                 itemProp="name"
                 className="text-[22px] sm:text-[24px] md:text-[26px] xl:text-[28px] font-anton uppercase"
               >
-                {item.Title}
+                {t(`teams_trust_card_${index % numCards}_title`, item.Title)}
               </h3>
 
               <p
                 itemProp="reviewBody"
                 className="pt-[12px] sm:pt-[14px] md:pt-[16px] pb-[8px] sm:pb-[10px] md:pb-[20px] lg:pb-[32px] text-left text-[14px] sm:text-[15px] md:text-[16px]"
               >
-                {item.Para}
+                {t(`teams_trust_card_${index % numCards}_para`, item.Para)}
               </p>
 
               <ul
@@ -325,7 +348,12 @@ function RightSecContent({ setActiveIndex, parentActiveIndex }) {
                 className="list-disc pl-[15px] text-[12px] sm:text-[13px] md:text-[14px] lg:text-[16px]"
               >
                 {item["Bullet ponts"].map((point, i) => (
-                  <li key={i}>{point}</li>
+                  <li key={i}>
+                    {t(
+                      `teams_trust_card_${index % numCards}_bullet_${i}`,
+                      point,
+                    )}
+                  </li>
                 ))}
               </ul>
             </motion.article>
